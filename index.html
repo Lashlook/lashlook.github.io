@@ -322,10 +322,6 @@ canvas#burst { position: fixed; inset: 0; pointer-events: none; z-index: 30; }
 @keyframes sk { to { background-position: -200% 0; } }
 
 @media (max-width: 420px) { .svc { padding: 14px 10px; gap: 0 10px; } .fact { font-size: 9.5px; letter-spacing: .05em; padding: 14px 6px; } }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  .reveal { transform: none; opacity: 1; }
-}
 
 /* ---------- Мобильные исправления ---------- */
 html, body { overflow-x: hidden; }
@@ -503,7 +499,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 const $ = id => document.getElementById(id);
 const state = { cfg: null, cat: null, service: null, date: null, time: null };
 let API = '';
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduce = false; // эффекты всегда включены
 
 const pad = n => String(n).padStart(2, '0');
 const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
