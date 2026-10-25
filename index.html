@@ -235,8 +235,31 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .btn .spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+
+/* ---------- Подтверждение / управление ---------- */
+.btn.sm { padding: 11px 18px; font-size: 14px; }
+.btn.danger { background: #E5484D; box-shadow: 0 10px 26px -12px rgba(229,72,77,.9); }
+.notice { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 16px 18px; border-radius: 18px; font-size: 14px; line-height: 1.55;
+  background: linear-gradient(140deg, rgba(255,46,136,.16), rgba(255,46,136,.04)); border: 1px solid rgba(255,46,136,.35); }
+.notice.soft { background: var(--surface); border-color: var(--line); }
+.notice .ic { font-size: 20px; line-height: 1.2; }
+.notice b { color: var(--ink); }
+.linkbox { display: grid; gap: 10px; padding: 16px 18px; border-radius: 18px; background: var(--surface); border: 1px dashed var(--line); }
+.linkbox .k { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.linkbox input { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); font-size: 13px; color: var(--pink-2); }
+.status { justify-self: start; display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; letter-spacing: .02em; }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; }
+.status.wait { color: #FFC46B; background: rgba(255,196,107,.12); }
+.status.ok { color: #6FE3A0; background: rgba(111,227,160,.12); }
+.status.bad { color: var(--err); background: rgba(255,138,128,.12); }
+.mine { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 16px; border-radius: 16px; text-decoration: none; font-size: 14px;
+  background: rgba(28,25,30,.8); border: 1px solid rgba(255,46,136,.45); backdrop-filter: blur(10px); animation: rowIn .6s var(--ease) both; }
+.mine i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 10px var(--pink); flex: none; animation: live 1.6s ease-in-out infinite; }
+.mine .go { margin-left: auto; color: var(--pink-2); font-weight: 700; white-space: nowrap; }
+@keyframes live { 50% { opacity: .3; } }
+
 /* ---------- Готово ---------- */
-.done { min-height: 80vh; display: grid; align-content: center; gap: 18px; padding-block: 40px; }
+.done { min-height: 80vh; display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 18px; padding-block: 40px; }
 .done .check { width: 84px; height: 84px; }
 .done .check circle { fill: none; stroke: var(--pink); stroke-width: 2; stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw 1s var(--ease) forwards; }
 .done .check path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw .6s var(--ease) .7s forwards; }
@@ -425,7 +448,7 @@ function renderTabs() {
   requestAnimationFrame(moveInd);
 }
 function moveInd() {
-  const on = $('tabs').querySelector('[aria-selected="true"]'); if (!on) return;
+  const on = $('tabs')?.querySelector('[aria-selected="true"]'); if (!on) return;
   const ind = $('tabInd');
   ind.style.width = on.offsetWidth + 'px';
   ind.style.transform = `translateX(${on.offsetLeft - 4}px)`;
@@ -559,30 +582,153 @@ function icsLink(b) {
   return URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
 }
 
-function showDone(b, name) {
-  $('bar').classList.remove('show');
+// ---------- Мои записи (на этом устройстве) ----------
+const MY = 'bl_bookings';
+const myGet = () => { try { return JSON.parse(localStorage.getItem(MY) || '[]'); } catch { return []; } };
+const mySet = list => { try { localStorage.setItem(MY, JSON.stringify(list)); } catch {} };
+const mySave = b => mySet([...myGet().filter(x => x.token !== b.token), { token: b.token, date: b.date, time: b.time, service: b.service }]);
+const myUpcoming = () => myGet().filter(x => new Date(`${x.date}T${x.time}`) > new Date()).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+const manageHref = t => location.origin + location.pathname + '?b=' + t;
+
+function copyBtn(text) {
+  return `<button type="button" class="btn ghost sm" data-copy="${esc(text)}">Скопировать ссылку</button>`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-copy]'); if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Скопировано ✓'; }
+  catch { const i = b.parentElement.querySelector('input'); if (i) { i.select(); } b.textContent = 'Выделено — скопируйте'; }
+  setTimeout(() => b.textContent = 'Скопировать ссылку', 2200);
+});
+
+function ticketHtml(b) {
   const end = toHHMM(toMin(b.time) + b.duration);
-  const svc = state.cfg.services.find(s => s.name === b.service);
-  $('app').innerHTML = `
-    <header class="topbar"><span class="logo">browlash<i>.</i>look</span></header>
-    <section class="done">
-      <svg class="check" viewBox="0 0 84 84"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg>
-      <h2>${esc(name.trim().split(' ')[0])}, вы<span class="script">записаны!</span></h2>
-      <div class="ticket">
+  const price = b.price ? b.price.toLocaleString('ru-RU') + ' ₸' : (state.cfg?.services.find(s => s.name === b.service)?.price || '');
+  return `<div class="ticket">
         <div><div class="k">Когда</div><div class="big">${esc(fmtDay(b.date))}</div><div style="font:500 20px var(--display);color:var(--pink-2)">${b.time} – ${end}</div></div>
         <hr>
         <div class="row"><span class="k">Процедура</span><span class="v">${esc(b.service)}</span></div>
-        ${svc?.price ? `<div class="row"><span class="k">Стоимость</span><span class="v">${esc(svc.price)}</span></div>` : ''}
+        ${price ? `<div class="row"><span class="k">Стоимость</span><span class="v">${esc(price)}</span></div>` : ''}
         <div class="row"><span class="k">Адрес</span><span class="v">ул. Ульянова, 49</span></div>
+      </div>`;
+}
+
+function showDone(b, name) {
+  $('bar').classList.remove('show'); $('bar').hidden = true;
+  mySave(b);
+  const svc = state.cfg.services.find(s => s.name === b.service);
+  const link = manageHref(b.token);
+  let next = '';
+  if ((svc?.category || '') === 'Наращивание') {
+    const d = new Date(b.date + 'T00:00'); d.setDate(d.getDate() + 21);
+    next = `<div class="notice soft">
+        <div class="ic">✨</div>
+        <div><b>Через 3–4 недели понадобится коррекция.</b> Займите удобное время заранее — потом окошки быстро разбирают.
+        <div class="cta-row" style="margin-top:10px"><a class="btn sm" href="?svc=${encodeURIComponent(b.service)}&d=${ymd(d)}">Запланировать следующий визит</a></div></div>
+      </div>`;
+  }
+  $('app').innerHTML = `
+    <header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header>
+    <section class="done">
+      <svg class="check" viewBox="0 0 84 84"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg>
+      <h2>${esc(name.trim().split(' ')[0])}, вы<span class="script">записаны!</span></h2>
+      ${ticketHtml(b)}
+      <div class="notice">
+        <div class="ic">💗</div>
+        <div><b>Подтвердите, пожалуйста, запись</b> — по ссылке ниже или ответом мастеру в WhatsApp, не позднее чем <b>за 2 часа</b> до процедуры.
+        Так мастер будет знать, что вы точно придёте, и не отдаст ваше время другой клиентке.</div>
       </div>
-      <p style="margin:0;color:var(--muted)">Мастер напишет вам в WhatsApp, чтобы подтвердить запись. Если планы изменятся — просто ответьте на сообщение.</p>
+      <div class="linkbox">
+        <span class="k">Ваша ссылка на запись — подтвердить, перенести или отменить</span>
+        <input readonly value="${esc(link)}" onclick="this.select()">
+        <div class="cta-row">
+          <a class="btn sm" href="${esc(link)}">Открыть запись</a>
+          ${copyBtn(link)}
+        </div>
+      </div>
+      ${next}
       <div class="cta-row">
-        <a class="btn" href="${icsLink(b)}" download="browlash-look.ics">Добавить в календарь</a>
+        <a class="btn ghost" href="${icsLink(b)}" download="browlash-look.ics">Добавить в календарь</a>
         <a class="btn ghost" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">Маршрут в 2ГИС</a>
       </div>
     </section>`;
   scrollTo({ top: 0, behavior: 'auto' });
   if (!reduce) burst();
+}
+
+// ---------- Управление записью (?b=ссылка) ----------
+const STATUS = { new: ['Ждёт подтверждения', 'wait'], confirmed: ['Подтверждена', 'ok'], came: ['Визит состоялся', 'ok'], noshow: ['Визит не состоялся', 'bad'], cancelled: ['Отменена', 'bad'] };
+async function manage(token) {
+  const app = $('app');
+  $('bar').classList.remove('show'); $('bar').hidden = true;
+  app.innerHTML = `<header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header><section class="done"><div class="skeleton" style="height:240px"></div></section>`;
+  let b;
+  try { ({ booking: b } = await api('/api/b/' + encodeURIComponent(token))); }
+  catch (err) {
+    app.querySelector('.done').innerHTML = `<h2>Запись<span class="script">не найдена</span></h2><p class="lead">${err instanceof TypeError ? 'Нет связи с мастером. Попробуйте чуть позже.' : 'Ссылка устарела или запись удалена.'}</p><div class="cta-row"><a class="btn" href="./">Записаться</a></div>`;
+    return;
+  }
+  if (b.status !== 'cancelled') mySave(b); else mySet(myGet().filter(x => x.token !== token));
+  const [stTxt, stCls] = STATUS[b.status] || [b.status, 'wait'];
+  const active = !b.past && b.status !== 'cancelled';
+  app.querySelector('.done').innerHTML = `
+      <h2>${esc(b.name)},<span class="script">ваша запись</span></h2>
+      <span class="status ${stCls}">${stTxt}</span>
+      ${ticketHtml(b)}
+      ${active && b.status === 'new' ? `<div class="notice"><div class="ic">💗</div><div>Подтвердите запись не позднее чем <b>за 2 часа</b> до процедуры — так мастер не отдаст ваше время другой клиентке.</div></div>` : ''}
+      ${active ? `<div class="cta-row" id="mActs">
+          ${b.status === 'new' ? '<button class="btn" type="button" id="mConfirm">Подтвердить запись</button>' : ''}
+          <button class="btn ghost" type="button" id="mMove">Перенести</button>
+          <button class="btn ghost" type="button" id="mCancel">Отменить</button>
+        </div>
+        <div id="mArea"></div>` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
+      <div class="msg" id="mMsg" style="color:var(--err)"></div>`;
+  if (!active) return;
+  const msg = t => $('mMsg').textContent = t;
+  const act = async (path, body) => {
+    try { await api(`/api/b/${encodeURIComponent(token)}/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }); manage(token); if (path !== 'cancel' && !reduce) burst(); }
+    catch (err) { msg(err instanceof TypeError ? 'Нет связи с мастером. Попробуйте чуть позже' : err.message); }
+  };
+  $('mConfirm')?.addEventListener('click', () => act('confirm'));
+  $('mCancel').addEventListener('click', () => {
+    $('mArea').innerHTML = `<div class="notice"><div class="ic">🥺</div><div><b>Точно отменить запись?</b> Время освободится для других клиенток.
+      <div class="cta-row" style="margin-top:10px"><button class="btn sm danger" type="button" id="mYes">Да, отменить</button><button class="btn ghost sm" type="button" id="mNo">Нет, оставить</button></div></div></div>`;
+    $('mYes').onclick = () => act('cancel');
+    $('mNo').onclick = () => $('mArea').innerHTML = '';
+  });
+  $('mMove').addEventListener('click', () => {
+    const area = $('mArea');
+    area.innerHTML = `<div class="sec-head" style="margin-top:8px"><h2 style="font-size:24px">Новый день и время</h2></div><div class="days" id="mDays"></div><div id="mSlots"></div>
+      <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Перенести</button></div>`;
+    const sel = { date: null, time: null };
+    const daysBox = $('mDays'), today = new Date(); today.setHours(0, 0, 0, 0);
+    for (let i = 0; i <= state.cfg.daysAhead; i++) {
+      const d = new Date(today); d.setDate(d.getDate() + i);
+      const key = ymd(d), off = state.cfg.daysOff.includes(d.getDay());
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'day' + ([0, 6].includes(d.getDay()) ? ' we' : ''); btn.disabled = off;
+      btn.innerHTML = `<span class="wd">${i === 0 ? 'Сег' : i === 1 ? 'Завт' : d.toLocaleDateString('ru-RU', { weekday: 'short' })}</span><span class="dn">${d.getDate()}</span><span class="mo">${d.toLocaleDateString('ru-RU', { month: 'short' }).replace('.', '')}</span>`;
+      btn.setAttribute('aria-pressed', 'false');
+      btn.onclick = async () => {
+        sel.date = key; sel.time = null; $('mGo').disabled = true;
+        daysBox.querySelectorAll('.day').forEach(x => x.setAttribute('aria-pressed', x === btn));
+        const box = $('mSlots'); box.innerHTML = '<div class="skeleton"></div>';
+        try {
+          const { slots } = await api(`/api/slots?date=${key}&service=${encodeURIComponent(b.service)}&b=${encodeURIComponent(token)}`);
+          const free = slots.filter(s => s.free);
+          if (!free.length) { box.innerHTML = '<p class="empty">На этот день всё занято — выберите другой</p>'; return; }
+          box.innerHTML = '<div class="slots"></div>';
+          free.forEach((s, n) => {
+            const t = document.createElement('button'); t.type = 'button'; t.className = 'slot'; t.textContent = s.time; t.style.setProperty('--i', n);
+            t.setAttribute('aria-pressed', 'false');
+            t.onclick = () => { sel.time = s.time; box.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', x === t)); $('mGo').disabled = false; $('mGo').textContent = `Перенести на ${fmtShort(key)}, ${s.time}`; };
+            box.firstChild.append(t);
+          });
+        } catch { box.innerHTML = '<p class="empty">Не получилось загрузить время</p>'; }
+      };
+      daysBox.append(btn);
+    }
+    $('mGo').onclick = () => act('move', sel);
+    area.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
 }
 
 // ---------- Салют из розовых «ресничек» ----------
@@ -624,18 +770,36 @@ function burst() {
 
 // ---------- Старт ----------
 (async function init() {
+  const params = new URLSearchParams(location.search);
   try {
     if (location.hostname.endsWith('github.io')) {
       const c = await fetch('config.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.json());
       API = c.api;
     }
     state.cfg = await api('/api/config');
+    if (params.get('b')) return manage(params.get('b'));
     if (state.cfg.master) $('masterName').textContent = state.cfg.master;
     const off = state.cfg.daysOff || [];
     $('hours').textContent = (off.length ? '' : 'ежедневно ') + `${state.cfg.open}–${state.cfg.close}`;
     state.cat = cats()[0];
-    renderTabs(); renderServices(false); renderDays();
+    // предзаполнение: ?svc=...&d=...
+    const pre = state.cfg.services.find(s => s.name === params.get('svc'));
+    if (pre) { state.cat = pre.category || 'Услуги'; state.service = pre; }
+    renderTabs(); renderServices(false);
+    const d = params.get('d');
+    if (pre && d && /^\d{4}-\d{2}-\d{2}$/.test(d)) state.date = d;
+    renderDays();
+    if (pre) { loadSlots(); update(); setTimeout(() => $(state.date ? 'timeSec' : 'book').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }), 400); }
+    // баннер «ваша запись»
+    const mine = myUpcoming()[0];
+    if (mine) {
+      const a = document.createElement('a');
+      a.className = 'mine'; a.href = '?b=' + mine.token;
+      a.innerHTML = `<i></i><span>Ваша запись: <b>${esc(fmtShort(mine.date))}, ${mine.time}</b></span><span class="go">Управлять →</span>`;
+      document.querySelector('.topbar').after(a);
+    }
   } catch {
+    if (params.get('b')) { $('app').innerHTML = '<header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header><section class="done"><h2>Нет связи<span class="script">с мастером</span></h2><p class="lead">Попробуйте открыть ссылку чуть позже.</p></section>'; return; }
     $('services').innerHTML = '<p class="empty">Онлайн-запись сейчас недоступна. Напишите мастеру в <a href="https://www.instagram.com/browlash.look/" target="_blank" rel="noopener" style="color:var(--pink-2)">Instagram</a></p>';
     $('tabs').hidden = true;
   }
