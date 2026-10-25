@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>browlash.look — журнал записей</title>
 <meta name="robots" content="noindex">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="browlash">
+<meta name="theme-color" content="#0A090B">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A090B'/%3E%3Cpath d='M8 36 Q32 12 56 36' fill='none' stroke='%23F7F2F5' stroke-width='3.5' stroke-linecap='round'/%3E%3Cpath d='M8 36 Q32 56 56 36' fill='none' stroke='%23A99EA6' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='36' r='8' fill='%23FF2E88'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -290,6 +297,49 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .period .range { min-width: 0; }
 
 
+
+/* ---------- Лента / настройки / лист ожидания ---------- */
+.badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: #fff; color: var(--accent); font-size: 11px; font-weight: 800; vertical-align: 1px; }
+.seg button[aria-selected="true"] .badge { display: none; }
+.feed-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.feed-head p { margin: 0; color: var(--muted); font-size: 14px; max-width: 60ch; }
+.feed { display: grid; gap: 12px; }
+.msg-card { position: relative; padding: 16px 18px; border-radius: var(--r); border: 1px solid var(--line); background: rgba(20,18,22,.85); display: grid; gap: 10px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); animation: dayIn .5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+.msg-card.fresh { border-color: rgba(255,46,136,.55); box-shadow: 0 0 0 4px var(--accent-soft); }
+.msg-card.fresh::after { content: "новое"; position: absolute; top: 14px; right: 16px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.mc-top { display: flex; align-items: center; gap: 10px; }
+.mc-ic { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); font-size: 16px; }
+.mc-time { color: var(--muted); font-size: 12.5px; }
+.mc-text { font-size: 14.5px; line-height: 1.55; overflow-wrap: anywhere; }
+.mc-text b { color: #fff; }
+.mc-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.wrow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 12px 14px 12px 20px; border-top: 1px dashed var(--line);
+  background: linear-gradient(90deg, rgba(255,196,107,.07), transparent 60%); }
+.wrow .wi { font-size: 18px; }
+.wrow .wm { font-size: 13.5px; min-width: 0; }
+.wrow .wm span { display: block; color: var(--muted); font-size: 12.5px; }
+.svc-ed { display: grid; gap: 12px; }
+.se { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-2); animation: dayIn .4s var(--ease) both; }
+.se-row1 { display: flex; gap: 8px; align-items: center; }
+.se-row1 .se-cat { flex: 1; min-width: 0; font-size: 14px; color: var(--accent-2); font-weight: 600; }
+.se-tools { display: flex; gap: 6px; }
+.se-tools .icon-btn:disabled { opacity: .3; }
+.se-name { font-weight: 600; }
+.se-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.icon-btn.danger-ic { border-color: var(--err); color: var(--err); background: rgba(255,138,128,.12); }
+.save-bar { position: sticky; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end;
+  padding: 12px; border-radius: 22px; background: rgba(28,25,30,.9); border: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.save-bar .err { margin-right: auto; }
+@media (max-width: 560px) {
+  .seg#tabs { display: flex; overflow-x: auto; scrollbar-width: none; border-radius: 999px; }
+  .seg#tabs::-webkit-scrollbar { display: none; }
+  .seg#tabs button { flex: none; padding: 10px 14px; }
+  .save-bar .btn { flex: 1; }
+  .wrow { padding-left: 16px; }
+}
+@media (display-mode: standalone) { .topline { padding-top: max(12px, env(safe-area-inset-top, 0px)); } }
+
 /* ---------- Мобильные исправления ---------- */
 html, body { overflow-x: hidden; }
 @supports (overflow: clip) { html, body { overflow-x: clip; } }
@@ -370,8 +420,10 @@ dialog { overflow: auto; overscroll-behavior: contain; }
     <div class="seg" id="tabs" role="tablist">
       <span class="ind" id="tabInd"></span>
       <button type="button" role="tab" data-view="journal" aria-selected="true">Журнал</button>
+      <button type="button" role="tab" data-view="feed" aria-selected="false">Лента <b class="badge" id="feedBadge" hidden></b></button>
       <button type="button" role="tab" data-view="clients" aria-selected="false">Клиентки</button>
       <button type="button" role="tab" data-view="stats" aria-selected="false">Статистика</button>
+      <button type="button" role="tab" data-view="settings" aria-selected="false">Настройки</button>
     </div>
 
     <!-- Журнал -->
@@ -409,6 +461,54 @@ dialog { overflow: auto; overscroll-behavior: contain; }
     </div>
 
     <!-- Статистика -->
+    <!-- Лента бота -->
+    <div class="view" id="v-feed" hidden>
+      <div class="feed-head">
+        <p>Всё, что бот пишет в общую группу в Telegram: новые записи, напоминания, кому попросить отзыв, кого позвать на коррекцию.</p>
+        <button class="btn ghost" type="button" id="notifBtn" hidden>🔔 Включить уведомления</button>
+      </div>
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <!-- Настройки -->
+    <div class="view" id="v-settings" hidden>
+      <div class="panel">
+        <h3>График работы<small>Онлайн-запись предлагает время только в эти часы</small></h3>
+        <div class="row2">
+          <label for="sOpen">Начало дня<input id="sOpen" type="time" step="900"></label>
+          <label for="sClose">Конец дня<input id="sClose" type="time" step="900"></label>
+        </div>
+        <div>
+          <div class="chips-hint" style="margin-bottom:8px">Выходные дни (нажмите, чтобы отметить)</div>
+          <div class="chips" id="sDays"></div>
+        </div>
+        <div class="row2">
+          <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
+          <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Контакты и бот<small>Номер WhatsApp — для записи, когда компьютер выключен</small></h3>
+        <div class="row2">
+          <label for="sMaster">Имя мастера<input id="sMaster" maxlength="40"></label>
+          <label for="sWa">WhatsApp мастера<input id="sWa" type="tel" inputmode="tel"></label>
+        </div>
+        <div class="row2">
+          <label for="sRemind">Вечерняя сводка «кому напомнить»<input id="sRemind" type="time" step="900"></label>
+          <label for="sReview">Ссылка для отзывов (2ГИС)<input id="sReview" type="url" placeholder="https://2gis.kz/..."></label>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Прайс<small>Название, длительность и цена. Порядок — стрелками</small></h3>
+        <div class="svc-ed" id="svcEd"></div>
+        <button class="btn ghost" type="button" id="svcAdd">+ Добавить услугу</button>
+      </div>
+      <div class="save-bar">
+        <span class="err" id="setErr"></span>
+        <button class="btn shine" type="button" id="setSave">Сохранить настройки</button>
+      </div>
+    </div>
+
     <div class="view" id="v-stats" hidden>
       <div class="period">
         <div class="seg" id="perSeg">
@@ -581,10 +681,13 @@ $('tabs').addEventListener('click', e => {
   view = b.dataset.view;
   $('tabs').querySelectorAll('[data-view]').forEach(x => x.setAttribute('aria-selected', x === b));
   moveInd($('tabs'), $('tabInd'));
-  ['journal', 'clients', 'stats'].forEach(v => { const el = $('v-' + v); el.hidden = v !== view; if (v === view) { el.classList.remove('enter-v'); void el.offsetWidth; el.classList.add('enter-v'); } });
+  ['journal', 'feed', 'clients', 'stats', 'settings'].forEach(v => { const el = $('v-' + v); el.hidden = v !== view; if (v === view) { el.classList.remove('enter-v'); void el.offsetWidth; el.classList.add('enter-v'); } });
   if (view === 'journal') { animNext = true; load(); }
   if (view === 'clients') loadClients(true);
   if (view === 'stats') loadStats();
+  if (view === 'feed') loadFeed(true);
+  if (view === 'settings') loadSettings();
+  $('tabs').querySelector('[aria-selected="true"]').scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   requestAnimationFrame(() => moveInd($('perSeg'), $('perInd')));
 });
 
@@ -601,7 +704,7 @@ async function load() {
       api(`/api/admin/bookings?from=${ymd(new Date())}&to=${ymd(addDays(new Date(), 60))}`),
     ]);
     renderStats(ahead);
-    qv ? renderSearch(week.bookings) : renderWeek(week.bookings, week.blocks);
+    qv ? renderSearch(week.bookings) : renderWeek(week.bookings, week.blocks, week.waitlist || []);
   } catch {}
 }
 
@@ -654,7 +757,13 @@ function blockRow(bl) {
     <button class="icon-btn" type="button" data-unblock="${bl.id}" title="Убрать перерыв" aria-label="Убрать перерыв">${ICON.x}</button></div>`;
 }
 
-function renderWeek(list, blocks = []) {
+const PARTS = { any: 'любое время', morning: 'утро', day: 'день', evening: 'вечер' };
+function waitRow(w) {
+  return `<div class="wrow"><span class="wi">⏳</span><div class="wm"><b>${esc(w.name)}</b> ждёт окошко · ${esc(w.service)} · ${PARTS[w.part] || ''}<span>${esc(fmtPhone(w.phone))}${w.comment ? ' · «' + esc(w.comment) + '»' : ''}</span></div>
+    <a class="icon-btn wa" href="${esc(w.waUrl)}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">${ICON.wa}</a>
+    <button class="icon-btn" type="button" data-wdone="${w.id}" title="Убрать из листа" aria-label="Убрать из листа ожидания">${ICON.x}</button></div>`;
+}
+function renderWeek(list, blocks = [], waits = []) {
   const end = addDays(weekStart, 6);
   const sameMonth = weekStart.getMonth() === end.getMonth();
   const dm = d => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
@@ -687,6 +796,7 @@ function renderWeek(list, blocks = []) {
         </div>
         ${full ? `<div class="closed-note"><span>День закрыт для онлайн-записи${full.note ? ' · ' + esc(full.note) : ''}</span><button class="mini" type="button" data-unblock="${full.id}">Открыть день</button></div>` : ''}
         ${rows.length ? rows.map(r => r.h).join('') : (full ? '' : `<div class="free">${off ? 'Выходной' : 'Свободный день'}</div>`)}
+        ${waits.filter(w => w.date === key).map(waitRow).join('')}
       </section>`;
   }
   $('days').innerHTML = html; enter();
@@ -709,6 +819,7 @@ function renderSearch(list) {
 $('days').addEventListener('click', async e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.add) return openAdd(t.dataset.add);
+  if (t.dataset.wdone) { await api('/api/admin/waitlist/' + t.dataset.wdone, { method: 'DELETE' }).catch(() => {}); toast('Убрано из листа ожидания'); load(); return; }
   if (t.dataset.break) return openBlock(t.dataset.break);
   if (t.dataset.closeDay) {
     try { await api('/api/admin/blocks', { method: 'POST', body: JSON.stringify({ date: t.dataset.closeDay, allDay: true }) }); toast('День закрыт для записи'); load(); } catch (err) { toast(err.message); }
@@ -868,6 +979,143 @@ async function loadStats() {
 
 $('wdChart').addEventListener('click', e => { const v = e.target.closest('.vb'); document.querySelectorAll('.vb.on').forEach(x => x !== v && x.classList.remove('on')); v?.classList.toggle('on'); });
 
+// ---------- Лента бота ----------
+let feedLast = Number(store.get('feedSeen') || 0), feedMax = 0, feedTimer = null;
+const FEED_ICON = t => /Новая запись/.test(t) ? '🆕' : /отменил|удалена|отменена/.test(t) ? '❌' : /подтвердила/.test(t) ? '✅' : /перенесла/.test(t) ? '🔁' : /отзыв/i.test(t) ? '💌' : /коррекц/i.test(t) ? '✨' : /ожидани|Освободил|Открылось/.test(t) ? '⏳' : /Напомни/.test(t) ? '🔔' : /не подтвердила/.test(t) ? '⏰' : /Отметь/.test(t) ? '📝' : '💬';
+function feedTime(ts) {
+  const d = new Date(ts.replace(' ', 'T')), today = ymd(new Date()), k = ymd(d);
+  const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return k === today ? `сегодня, ${hm}` : k === ymd(addDays(new Date(), -1)) ? `вчера, ${hm}` : `${d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}, ${hm}`;
+}
+async function loadFeed(seen) {
+  try {
+    const { items, last } = await api('/api/admin/feed');
+    feedMax = last;
+    const box = $('feed');
+    if (view === 'feed' || seen) {
+      box.innerHTML = items.length ? items.map((m, i) => {
+        const btns = (m.markup?.inline_keyboard || []).flat();
+        return `<article class="msg-card${m.id > feedLast ? ' fresh' : ''}" style="--i:${Math.min(i, 12)}">
+          <div class="mc-top"><span class="mc-ic">${FEED_ICON(m.text)}</span><span class="mc-time">${feedTime(m.ts)}</span></div>
+          <div class="mc-text">${m.text.replace(/\n/g, '<br>')}</div>
+          ${btns.length ? `<div class="mc-btns">${btns.map(b => b.url
+            ? `<a class="mini" href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.text)}</a>`
+            : `<button class="mini" type="button" data-cb="${esc(b.callback_data)}">${esc(b.text)}</button>`).join('')}</div>` : ''}
+        </article>`;
+      }).join('') : '<div class="empty-big">Пока пусто — здесь появятся сообщения бота</div>';
+      if (view === 'feed') { feedLast = last; store.set('feedSeen', String(last)); }
+    }
+    const unread = Math.max(0, feedMax - feedLast);
+    $('feedBadge').hidden = !unread || view === 'feed';
+    $('feedBadge').textContent = unread > 9 ? '9+' : unread;
+    if (navigator.setAppBadge) unread ? navigator.setAppBadge(unread).catch(() => {}) : navigator.clearAppBadge?.().catch(() => {});
+    return items;
+  } catch { return []; }
+}
+$('feed').addEventListener('click', async e => {
+  const b = e.target.closest('[data-cb]'); if (!b) return;
+  try { const r = await api('/api/admin/feed/action', { method: 'POST', body: JSON.stringify({ data: b.dataset.cb }) }); toast('Статус: ' + ST[r.status]); loadFeed(); }
+  catch (err) { toast(err.message); }
+});
+// фоновая проверка ленты + системное уведомление
+let lastNotified = Number(store.get('feedNotified') || 0);
+async function pollFeed() {
+  const items = await loadFeed(false);
+  const fresh = items.filter(m => m.id > lastNotified).reverse();
+  if (fresh.length && lastNotified && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+    const reg = await navigator.serviceWorker?.getRegistration?.();
+    fresh.slice(-3).forEach(m => {
+      const body = m.text.replace(/<[^>]+>/g, '').slice(0, 180);
+      const opts = { body, icon: 'icon-192.png', badge: 'icon-192.png', tag: 'feed-' + m.id };
+      reg ? reg.showNotification('browlash.look', opts) : new Notification('browlash.look', opts);
+    });
+  }
+  if (items[0]) { lastNotified = Math.max(lastNotified, items[0].id); store.set('feedNotified', String(lastNotified)); }
+}
+if ('Notification' in window && Notification.permission === 'default') $('notifBtn').hidden = false;
+$('notifBtn').onclick = async () => { const p = await Notification.requestPermission(); $('notifBtn').hidden = p !== 'default'; if (p === 'granted') toast('Уведомления включены'); };
+
+// ---------- Настройки ----------
+let setCfg = null;
+const DAYN = [[1, 'Пн'], [2, 'Вт'], [3, 'Ср'], [4, 'Чт'], [5, 'Пт'], [6, 'Сб'], [0, 'Вс']];
+async function loadSettings() {
+  try {
+    setCfg = await api('/api/admin/settings');
+    $('sOpen').value = setCfg.open; $('sClose').value = setCfg.close;
+    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21;
+    $('sMaster').value = setCfg.master || ''; $('sWa').value = setCfg.whatsapp ? fmtPhone(setCfg.whatsapp) : '';
+    $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || '';
+    $('sDays').innerHTML = DAYN.map(([d, n]) => `<button type="button" class="chip" data-dayoff="${d}" aria-pressed="${(setCfg.daysOff || []).includes(d)}">${n}</button>`).join('');
+    renderSvcEd();
+    $('setErr').textContent = '';
+  } catch (err) { toast(err.message); }
+}
+$('sDays').addEventListener('click', e => { const c = e.target.closest('[data-dayoff]'); if (c) c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true'); });
+$('sWa').addEventListener('input', phoneMask);
+function renderSvcEd() {
+  const cats = [...new Set(setCfg.services.map(s => s.category))];
+  $('svcEd').innerHTML = `<datalist id="catList">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist>` + setCfg.services.map((s, i) => `
+    <div class="se" data-i="${i}">
+      <div class="se-row1">
+        <input class="se-cat" list="catList" value="${esc(s.category)}" placeholder="Раздел" aria-label="Раздел">
+        <div class="se-tools">
+          <button class="icon-btn" type="button" data-up="${i}" aria-label="Выше" ${i ? '' : 'disabled'}>↑</button>
+          <button class="icon-btn" type="button" data-down="${i}" aria-label="Ниже" ${i < setCfg.services.length - 1 ? '' : 'disabled'}>↓</button>
+          <button class="icon-btn" type="button" data-rm="${i}" aria-label="Удалить услугу">${ICON.trash}</button>
+        </div>
+      </div>
+      <input class="se-name" value="${esc(s.name)}" placeholder="Название услуги" aria-label="Название">
+      <div class="se-row2">
+        <label>Мин<input class="se-dur" type="number" min="15" max="600" step="15" inputmode="numeric" value="${s.duration}"></label>
+        <label>Цена, ₸<input class="se-price" inputmode="numeric" value="${esc(String(s.price || '').replace(/[^\d]/g, ''))}" placeholder="0"></label>
+      </div>
+      <input class="se-note" value="${esc(s.note || '')}" placeholder="Пояснение — необязательно" aria-label="Пояснение">
+    </div>`).join('');
+}
+function readSvcEd() {
+  return [...$('svcEd').querySelectorAll('.se')].map((el, i) => ({
+    ...setCfg.services[i],
+    category: el.querySelector('.se-cat').value.trim(), name: el.querySelector('.se-name').value.trim(),
+    duration: Number(el.querySelector('.se-dur').value), price: el.querySelector('.se-price').value.replace(/\D/g, ''),
+    note: el.querySelector('.se-note').value.trim(),
+    title: setCfg.services[i]?.name === el.querySelector('.se-name').value.trim() ? setCfg.services[i].title : el.querySelector('.se-name').value.trim(),
+  }));
+}
+$('svcEd').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  setCfg.services = readSvcEd();
+  const s = setCfg.services;
+  if (t.dataset.up) { const i = +t.dataset.up; [s[i - 1], s[i]] = [s[i], s[i - 1]]; }
+  if (t.dataset.down) { const i = +t.dataset.down; [s[i + 1], s[i]] = [s[i], s[i + 1]]; }
+  if (t.dataset.rm) {
+    if (t.dataset.sure !== '1') { t.dataset.sure = '1'; t.classList.add('danger-ic'); toast('Нажмите ещё раз, чтобы удалить'); setTimeout(() => { t.dataset.sure = ''; t.classList.remove('danger-ic'); }, 2500); return; }
+    s.splice(+t.dataset.rm, 1);
+  }
+  renderSvcEd();
+});
+$('svcAdd').onclick = () => {
+  setCfg.services = readSvcEd();
+  setCfg.services.push({ category: setCfg.services.at(-1)?.category || 'Услуги', name: '', duration: 60, price: '' });
+  renderSvcEd();
+  const last = [...$('svcEd').querySelectorAll('.se-name')].at(-1); last.focus(); last.scrollIntoView({ block: 'center', behavior: 'smooth' });
+};
+$('setSave').onclick = async () => {
+  $('setErr').textContent = '';
+  const body = {
+    open: $('sOpen').value, close: $('sClose').value, step: Number($('sStep').value), daysAhead: Number($('sAhead').value),
+    daysOff: [...$('sDays').querySelectorAll('[aria-pressed="true"]')].map(c => Number(c.dataset.dayoff)),
+    master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value,
+    services: readSvcEd(),
+  };
+  const btn = $('setSave'); btn.disabled = true;
+  try {
+    const r = await api('/api/admin/settings', { method: 'POST', body: JSON.stringify(body) });
+    setCfg = r.settings; cfg = { ...cfg, ...r.settings }; renderSvcEd();
+    toast('Сохранено — сайт обновится через 1–2 минуты');
+  } catch (err) { $('setErr').textContent = err.message; }
+  btn.disabled = false;
+};
+
 // ---------- Навигация ----------
 $('prev').onclick = () => { weekStart = addDays(weekStart, -7); animNext = true; load(); };
 $('next').onclick = () => { weekStart = addDays(weekStart, 7); animNext = true; load(); };
@@ -881,6 +1129,7 @@ async function showPanel() {
   hello(); requestAnimationFrame(() => moveInd($('tabs'), $('tabInd')));
   load(); clearInterval(timer);
   timer = setInterval(() => { if (document.querySelector('dialog[open]')) return; if (view === 'journal') load(); }, 5000);
+  pollFeed(); clearInterval(feedTimer); feedTimer = setInterval(pollFeed, 15000);
 }
 function logout(manual) {
   if (manual === true && token) api('/api/logout', { method: 'POST' }).catch(() => {});
@@ -896,6 +1145,7 @@ $('login').addEventListener('submit', async e => {
 });
 $('logout').onclick = () => logout(true);
 if (token) showPanel();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
 </html>
