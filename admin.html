@@ -45,17 +45,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border: 0; border-radius: 999px; overflow: hidden;
   background: var(--accent); color: var(--on-accent); font-weight: 700; letter-spacing: .01em; cursor: pointer; white-space: nowrap; text-decoration: none;
   box-shadow: 0 10px 30px -12px rgba(255,46,136,.9); transition: transform .25s var(--ease), box-shadow .25s; }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -12px rgba(255,46,136,1); }
+@media (hover: hover) { .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -12px rgba(255,46,136,1); } }
 .btn:active { transform: scale(.97); }
 .btn.shine::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); transform: translateX(-120%); animation: shine 5s 2s infinite; }
 @keyframes shine { 0%, 72% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
 .btn.ghost { background: rgba(20,18,22,.6); color: var(--ink); border: 1px solid var(--line); box-shadow: none; backdrop-filter: blur(8px); }
-.btn.ghost:hover { border-color: var(--accent); background: var(--accent-soft); }
+@media (hover: hover) { .btn.ghost:hover { border-color: var(--accent); background: var(--accent-soft); } }
 .btn.danger { background: #E5484D; color: #fff; box-shadow: 0 10px 26px -12px rgba(229,72,77,.9); }
 .btn:disabled { opacity: .5; cursor: default; transform: none; }
 .icon-btn { width: 38px; height: 38px; display: inline-grid; place-items: center; border-radius: 50%; border: 1px solid var(--line);
   background: rgba(20,18,22,.7); cursor: pointer; color: var(--ink); text-decoration: none; transition: border-color .2s, color .2s, background .2s, transform .25s var(--ease); flex: none; }
-.icon-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); }
+@media (hover: hover) { .icon-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); } }
 
 input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); font-size: 16px; transition: border-color .2s, box-shadow .2s; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
@@ -142,7 +142,7 @@ select option { color: var(--ink); }
 .free::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
 
 .bk { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 16px; align-items: start; padding: 16px 14px 16px 20px; transition: background .25s; }
-.bk:hover { background: rgba(255,255,255,.025); }
+@media (hover: hover) { .bk:hover { background: rgba(255,255,255,.025); } }
 .bk + .bk { border-top: 1px dashed var(--line); }
 .bk.done { opacity: .5; }
 .bk-time { font-variant-numeric: tabular-nums; position: relative; }
@@ -155,7 +155,7 @@ select option { color: var(--ink); }
 .bk-note { color: var(--muted); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; font-style: italic; }
 .bk-act { display: flex; gap: 6px; align-items: center; }
 .wa { color: var(--wa); }
-.wa:hover { color: var(--wa); border-color: var(--wa); background: rgba(95,211,143,.12); }
+@media (hover: hover) { .wa:hover { color: var(--wa); border-color: var(--wa); background: rgba(95,211,143,.12); } }
 .del-confirm { display: flex; gap: 6px; animation: pop2 .3s var(--ease); }
 @keyframes pop2 { from { opacity: 0; transform: scale(.9); } }
 .del-confirm .btn { padding: 8px 14px; font-size: 13px; }
@@ -179,7 +179,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 @media (max-width: 440px) { .row2 { grid-template-columns: 1fr; } }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); cursor: pointer; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; transition: .2s; }
-.chip:hover { border-color: var(--accent); }
+@media (hover: hover) { .chip:hover { border-color: var(--accent); } }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 6px 18px -8px rgba(255,46,136,1); }
 .chips-hint { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .modal-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; }
@@ -212,9 +212,9 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .bk.cancelled .bk-name > span:first-child { text-decoration: line-through; }
 .bk-note.client { font-style: normal; color: var(--gold); }
 .mini { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(20,18,22,.7); font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: .2s; color: var(--ink); text-decoration: none; }
-.mini:hover { border-color: var(--accent); background: var(--accent-soft); }
-.mini.ok:hover { border-color: #6FE3A0; background: rgba(111,227,160,.12); }
-.mini.bad:hover { border-color: var(--err); background: rgba(255,138,128,.12); }
+@media (hover: hover) { .mini:hover { border-color: var(--accent); background: var(--accent-soft); } }
+@media (hover: hover) { .mini.ok:hover { border-color: #6FE3A0; background: rgba(111,227,160,.12); } }
+@media (hover: hover) { .mini.bad:hover { border-color: var(--err); background: rgba(255,138,128,.12); } }
 .bk-quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 
 /* Перерывы */
@@ -234,7 +234,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 /* ---------- Клиентки ---------- */
 .clients { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
 .cl { text-align: left; display: grid; gap: 10px; padding: 18px; border-radius: var(--r); border: 1px solid var(--line); background: rgba(20,18,22,.78); cursor: pointer; transition: transform .3s var(--ease), border-color .3s; backdrop-filter: blur(10px); }
-.cl:hover { transform: translateY(-3px); border-color: rgba(255,46,136,.5); }
+@media (hover: hover) { .cl:hover { transform: translateY(-3px); border-color: rgba(255,46,136,.5); } }
 .clients.enter .cl { animation: dayIn .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 40ms); }
 .cl-top { display: flex; align-items: center; gap: 12px; }
 .ava { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font: 500 18px/1 var(--display); color: #fff; flex: none;
@@ -280,16 +280,54 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .vb { position: relative; display: grid; grid-template-rows: 1fr auto; gap: 8px; height: 100%; cursor: default; }
 .vb .col { align-self: end; height: var(--h); min-height: 2px; border-radius: 4px 4px 0 0; background: var(--accent); transform-origin: bottom; animation: rise .9s var(--ease) both; animation-delay: calc(var(--i) * 50ms); opacity: .9; transition: opacity .2s; }
 .vb.peak .col { background: linear-gradient(180deg, #FFC2DD, var(--accent)); opacity: 1; box-shadow: 0 0 22px -4px rgba(255,46,136,.8); }
-.vb:hover .col { opacity: 1; }
+@media (hover: hover) { .vb:hover .col { opacity: 1; } }
 .vb .lb { text-align: center; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .vb .val { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(var(--h) + 34px); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
 .vb .tip { position: absolute; left: 50%; bottom: calc(var(--h) + 54px); transform: translateX(-50%); background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 10px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 2; }
-.vb:hover .tip { opacity: 1; }
+@media (hover: hover) { .vb:hover .tip { opacity: 1; } }
 @keyframes rise { from { transform: scaleY(0); } }
 .period { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .period .range { min-width: 0; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+
+/* ---------- Мобильные исправления ---------- */
+html, body { overflow-x: hidden; }
+@supports (overflow: clip) { html, body { overflow-x: clip; } }
+button, a, .svc, .day, .slot, .tab { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+input[type="date"], input[type="time"] { -webkit-appearance: none; appearance: none; min-height: 48px; }
+input::-webkit-date-and-time-value { text-align: left; }
+/* эффекты — на отдельных GPU-слоях, чтобы анимация не перерисовывала страницу */
+.atmo { contain: strict; }
+.atmo .blob, .atmo .grain { will-change: transform; transform: translateZ(0); backface-visibility: hidden; }
+
+.topline { padding-top: env(safe-area-inset-top, 0px); }
+.login-wrap { min-height: calc(100vh - 44px); min-height: calc(100svh - 44px); }
+.seg button { min-height: 44px; }
+.vb .tip { display: none; }
+.vb.on .tip { display: block; opacity: 1; }
+@media (hover: hover) { .vb:hover .tip { display: block; opacity: 1; } }
+.vb:first-child .tip { left: 0; transform: none; }
+.vb:last-child .tip { left: auto; right: 0; transform: none; }
+.panel { overflow: hidden; }
+.mini:active, .icon-btn:active, .btn:active, .cl:active { transform: scale(.96); }
+dialog { overflow: auto; overscroll-behavior: contain; }
+@media (pointer: coarse) {
+  .icon-btn, .period .icon-btn { width: 42px; height: 42px; min-width: 42px; }
+  .mini { padding: 10px 14px; font-size: 13px; }
+}
+@media (max-width: 560px) {
+  .stat .k, .kpi .k { letter-spacing: .06em; }
+  .range { font-size: 17px; }
+  .top-actions, .top-actions .btn { width: 100%; }
+  dialog { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 26px 26px 0 0; max-height: 92dvh; border-bottom: 0; }
+  dialog[open] { animation: sheetIn .4s var(--ease); }
+  .modal { padding: 22px 18px calc(22px + env(safe-area-inset-bottom, 0px)); }
+  .modal-foot { position: sticky; bottom: calc(-22px - env(safe-area-inset-bottom, 0px)); margin: 0 -18px calc(-22px - env(safe-area-inset-bottom, 0px)); padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); background: rgba(20,18,22,.98); border-top: 1px solid var(--line); }
+  .modal-foot .btn { flex: 1 1 auto; }
+  label { letter-spacing: .06em; }
+}
+@keyframes sheetIn { from { transform: translateY(100%); } }
 </style>
 </head>
 <body>
@@ -342,7 +380,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
       <div class="stats">
         <div class="stat"><span class="k">Сегодня</span><span class="v" id="sToday">—</span></div>
         <div class="stat"><span class="k">За 7 дней</span><span class="v" id="sWeek">—</span></div>
-        <div class="stat"><span class="k">Ждут подтверждения</span><span class="v" id="sWait">—</span></div>
+        <div class="stat"><span class="k">Не подтвердили</span><span class="v" id="sWait">—</span></div>
         <div class="stat hot"><span class="k">Ближайшая</span><span class="t" id="sNextT">—</span><span class="v sm" id="sNext"></span></div>
       </div>
       <div class="nav">
@@ -828,6 +866,8 @@ async function loadStats() {
       : '<div class="free" style="padding:0">За этот период записей нет</div>';
   } catch {}
 }
+
+$('wdChart').addEventListener('click', e => { const v = e.target.closest('.vb'); document.querySelectorAll('.vb.on').forEach(x => x !== v && x.classList.remove('on')); v?.classList.toggle('on'); });
 
 // ---------- Навигация ----------
 $('prev').onclick = () => { weekStart = addDays(weekStart, -7); animNext = true; load(); };
