@@ -1191,15 +1191,31 @@ $('hSave').onclick = async () => {
 // ---------- Перезапуск сервера ----------
 $('restartBtn').onclick = async () => {
   const b = $('restartBtn');
-  if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Точно перезапустить? Нажмите ещё раз'; setTimeout(() => { b.dataset.sure = ''; b.textContent = '🔄 Перезапустить сервер'; }, 4000); return; }
-  b.disabled = true; b.textContent = 'Перезапускаю…';
+  if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Точно перезапустить? Нажмите ещё раз'; b._t = setTimeout(() => { b.dataset.sure = ''; b.textContent = '🔄 Перезапустить сервер'; }, 4000); return; }
+  clearTimeout(b._t); b.dataset.sure = ''; b.disabled = true; b.textContent = 'Перезапускаю…';
+  // снимок текущей админки на сайте — чтобы понять, когда GitHub выложит новую
+  const onPages = location.hostname.endsWith('github.io');
+  const snap = async () => { try { const base = location.pathname.replace(/[^/]*$/, ''); const parts = await Promise.all(['admin.html', 'index.html', 'sw.js'].map(f => fetch(base + f + '?v=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.text().then(t => t.length + (r.headers.get('etag') || '')) : ''))); return parts.join('|'); } catch { return ''; } };
+  const before = onPages ? await snap() : '';
   try { await api('/api/admin/restart', { method: 'POST' }); } catch {}
-  // ждём, пока сервер поднимется
-  for (let i = 0; i < 30; i++) {
+  let up = false;
+  for (let i = 0; i < 30 && !up; i++) {
     await new Promise(r => setTimeout(r, 2000));
-    try { await api('/api/config'); toast('Сервер перезапущен ✓'); setTimeout(() => location.reload(), 800); return; } catch {}
+    try { await api('/api/config'); up = true; } catch {}
   }
-  b.disabled = false; b.textContent = '🔄 Перезапустить сервер'; toast('Сервер пока не ответил — проверьте компьютер');
+  if (!up) { b.disabled = false; b.textContent = '🔄 Перезапустить сервер'; toast('Сервер пока не ответил — проверьте компьютер'); return; }
+  const reload = () => location.replace(location.pathname + '?v=' + Date.now());
+  if (!onPages) { toast('Сервер перезапущен ✓'); setTimeout(reload, 800); return; }
+  // ждём, пока GitHub опубликует свежую версию (обычно 1–2 мин)
+  toast('Сервер перезапущен ✓ Обновляю сайт…');
+  for (let s = 0; s < 180; s += 5) {
+    b.textContent = `Обновляю сайт… ${s} сек`;
+    await new Promise(r => setTimeout(r, 5000));
+    const now = await snap();
+    if (now && before && now !== before) { toast('Готово — загружаю новую версию'); setTimeout(reload, 600); return; }
+  }
+  toast('Сервер перезапущен ✓');
+  b.disabled = false; b.textContent = '🔄 Перезапустить сервер';
 };
 
 // ---------- Лента бота ----------
