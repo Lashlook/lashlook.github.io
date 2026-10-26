@@ -678,7 +678,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 <!-- Новая запись -->
 <dialog id="dlg">
   <form class="modal" id="addForm" novalidate>
-    <h3><span>добавить</span>Новая запись</h3>
+    <h3 id="dlgTitle"><span>добавить</span>Новая запись</h3>
     <div class="row2">
       <label for="aName">Имя<input id="aName" maxlength="80" required></label>
       <label for="aPhone">Телефон<input id="aPhone" type="tel" inputmode="tel" placeholder="+7 (7__) ___-__-__" required></label>
@@ -692,7 +692,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <div class="chips-hint" id="chipsHint">Свободное время</div>
       <div class="chips" id="chips"></div>
     </div>
-    <div class="row2">
+    <div class="row2" id="aExtra">
       <label for="aDisc">Скидка, %<input id="aDisc" type="number" min="0" max="90" inputmode="numeric" placeholder="авто"></label>
       <label for="aGift">Сертификат<input id="aGift" maxlength="12" autocapitalize="characters" placeholder="код, если есть"></label>
     </div>
@@ -986,7 +986,7 @@ function bookingRow(b, nowKey, nowMin) {
         ${b.clientNote ? `<div class="bk-note client">📝 ${esc(b.clientNote)}</div>` : ''}
         ${b.tech ? `<div class="bk-tech">🧵 ${esc(techText(b.tech))}</div>` : b.lastTech ? `<div class="bk-tech last">🧵 Прошлый раз (${dShort(b.lastTech.date)}): ${esc(b.lastTech.text)}</div>` : ''}
         ${quick ? `<div class="bk-quick">${quick}</div>` : ''}
-        <div class="bk-more"><button class="sq" type="button" data-tech="${b.id}" title="Техника: изгиб, длина, толщина" aria-label="Техника">🧵<span>${b.tech ? 'техника' : 'техника +'}</span></button>${b.photo ? `<button class="sq hot" type="button" data-photo="${b.id}" title="Фото-референс от клиентки" aria-label="Фото-референс">📸<span>фото</span></button>` : ''}<button class="sq" type="button" data-client="${esc(b.phone)}" title="Карточка клиентки" aria-label="Карточка клиентки">👤<span>карточка</span></button></div>
+        <div class="bk-more"><button class="sq" type="button" data-edit="${b.id}" title="Изменить запись: время, процедуру, данные" aria-label="Изменить запись">✏️<span>изменить</span></button><button class="sq" type="button" data-tech="${b.id}" title="Техника: изгиб, длина, толщина" aria-label="Техника">🧵<span>${b.tech ? 'техника' : 'техника +'}</span></button>${b.photo ? `<button class="sq hot" type="button" data-photo="${b.id}" title="Фото-референс от клиентки" aria-label="Фото-референс">📸<span>фото</span></button>` : ''}<button class="sq" type="button" data-client="${esc(b.phone)}" title="Карточка клиентки" aria-label="Карточка клиентки">👤<span>карточка</span></button></div>
       </div>
       <div class="bk-act">
         <a class="icon-btn wa" href="${esc(b.waUrl || '#')}" target="_blank" rel="noopener" title="Написать в WhatsApp — готовое напоминание со ссылкой" aria-label="Написать в WhatsApp">${ICON.wa}</a>
@@ -1062,6 +1062,7 @@ function renderSearch(list) {
 $('days').addEventListener('click', async e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.add) return openAdd(t.dataset.add);
+  if (t.dataset.edit) return openEdit(Number(t.dataset.edit));
   if (t.dataset.tech) return openTech(Number(t.dataset.tech));
   if (t.dataset.nodisc) {
     if (t.dataset.sure !== '1') { t.dataset.sure = '1'; const was = t.textContent; t.textContent = 'Точно убрать? Нажмите ещё раз'; setTimeout(() => { t.dataset.sure = ''; t.textContent = was; }, 3000); return; }
@@ -1105,20 +1106,38 @@ const phoneMask = e => {
 $('aPhone').addEventListener('input', phoneMask);
 
 const dlg = $('dlg');
-function openAdd(date) {
-  $('addForm').reset(); $('addErr').textContent = ''; $('force').hidden = true;
+let editing = null; // запись, которую сейчас меняем (null — новая запись)
+function fillServices(extra) {
   const groups = [...new Set(cfg.services.map(s => s.category || 'Услуги'))];
-  $('aService').innerHTML = groups.map(g => `<optgroup label="${esc(g)}">` + cfg.services.filter(s => (s.category || 'Услуги') === g)
+  $('aService').innerHTML = (extra && !cfg.services.some(s => s.name === extra) ? `<option value="${esc(extra)}">${esc(extra)} (нет в прайсе)</option>` : '') +
+    groups.map(g => `<optgroup label="${esc(g)}">` + cfg.services.filter(s => (s.category || 'Услуги') === g)
     .map(s => `<option value="${esc(s.name)}">${esc(s.name)} · ${s.duration} мин${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('') + '</optgroup>').join('');
+}
+function openAdd(date) {
+  editing = null;
+  $('addForm').reset(); $('addErr').textContent = ''; $('force').hidden = true; $('force').textContent = 'Добавить всё равно';
+  $('dlgTitle').innerHTML = '<span>добавить</span>Новая запись'; $('aExtra').hidden = false;
+  fillServices();
   $('aDate').value = date || ymd(new Date());
   dlg.showModal(); $('aName').focus(); loadChips();
+}
+function openEdit(id) {
+  const b = weekBookings.find(x => x.id === id) || (load.ahead || []).find(x => x.id === id);
+  if (!b) return toast('Запись не найдена — обновите страницу', 'bad');
+  editing = b;
+  $('addForm').reset(); $('addErr').textContent = ''; $('force').hidden = true; $('force').textContent = 'Сохранить всё равно';
+  $('dlgTitle').innerHTML = '<span>изменить</span>' + esc(b.name); $('aExtra').hidden = true;
+  fillServices(b.service);
+  $('aName').value = b.name; $('aPhone').value = fmtPhone(b.phone); $('aService').value = b.service;
+  $('aDate').value = b.date; $('aTime').value = b.time; $('aComment').value = b.comment || '';
+  dlg.showModal(); loadChips();
 }
 async function loadChips() {
   const box = $('chips'); box.innerHTML = '';
   const date = $('aDate').value, svc = $('aService').value;
   if (!date || !svc) return;
   try {
-    const { slots } = await api(`/api/slots?date=${date}&service=${encodeURIComponent(svc)}`);
+    const { slots } = await api(`/api/slots?date=${date}&service=${encodeURIComponent(svc)}${editing?.token ? '&b=' + encodeURIComponent(editing.token) : ''}`);
     const free = slots.filter(s => s.free);
     $('chipsHint').textContent = free.length ? 'Свободное время — нажмите, чтобы выбрать' : 'Свободных окон по графику нет — можно указать время вручную';
     free.forEach(s => {
@@ -1136,6 +1155,15 @@ async function save(force) {
   $('addErr').textContent = '';
   const body = { name: $('aName').value, phone: $('aPhone').value, service: $('aService').value, date: $('aDate').value, time: $('aTime').value, comment: $('aComment').value, force,
     discount: $('aDisc').value, gift: $('aGift').value };
+  if (editing) {
+    try {
+      const r = await api(`/api/admin/bookings/${editing.id}/edit`, { method: 'POST', body: JSON.stringify({ name: body.name, phone: body.phone, service: body.service, date: body.date, time: body.time, comment: body.comment, force }) });
+      dlg.close(); toast(r.changed ? 'Запись изменена' + (r.booking?.price ? ' · ' + money(r.booking.price) : '') : 'Ничего не поменялось');
+      const d = new Date(body.date + 'T00:00'); if (!$('q').value.trim() && (d < weekStart || d > addDays(weekStart, 6))) weekStart = d;
+      animNext = true; load.sig = ''; load();
+    } catch (err) { $('addErr').textContent = err.message; $('force').hidden = !err.data?.conflict; }
+    return;
+  }
   try {
     const r = await api('/api/admin/bookings', { method: 'POST', body: JSON.stringify(body) });
     dlg.close(); toast(r.booking?.discount ? `Запись добавлена · скидка −${r.booking.discount}% (${r.booking.discount_why})` : 'Запись добавлена');

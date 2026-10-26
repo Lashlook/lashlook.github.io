@@ -1421,7 +1421,7 @@ function showDone(b, name) {
         Сонда шебер сіздің міндетті түрде келетініңізді біледі және уақытыңызды басқа клиентке бермейді.</div>
       </div>
       <div class="linkbox">
-        <span class="k">Жазылу сілтемесі — растау, ауыстыру немесе болдырмау</span>
+        <span class="k">Жазылу сілтемесі — растау, өзгерту немесе болдырмау</span>
         <input readonly value="${esc(link)}" onclick="this.select()">
         <div class="cta-row">
           <a class="btn sm" href="${esc(link)}">Жазылуды ашу</a>
@@ -1466,7 +1466,7 @@ async function manage(token) {
       ${active && b.status === 'new' ? `<div class="notice"><div class="ic">💗</div><div>Подтвердите запись не позднее чем <b>за 2 часа</b> до процедуры — так мастер не отдаст ваше время другой клиентке.</div></div>` : ''}
       ${active ? `<div class="cta-row" id="mActs">
           ${b.status === 'new' ? '<button class="btn" type="button" id="mConfirm">Подтвердить запись</button>' : ''}
-          ${late ? `<a class="btn ghost" href="https://wa.me/${waNum()}?text=${encodeURIComponent(`Здравствуйте! У меня запись ${fmtDay(b.date).toLowerCase()} в ${b.time} — `)}" target="_blank" rel="noopener">Опаздываю / не смогу — написать мастеру</a>` : `<button class="btn ghost" type="button" id="mMove">Перенести</button>
+          ${late ? `<a class="btn ghost" href="https://wa.me/${waNum()}?text=${encodeURIComponent(`Здравствуйте! У меня запись ${fmtDay(b.date).toLowerCase()} в ${b.time} — `)}" target="_blank" rel="noopener">Опаздываю / не смогу — написать мастеру</a>` : `<button class="btn ghost" type="button" id="mMove">Жазылуды өзгерту</button>
           <button class="btn ghost" type="button" id="mCancel">Отменить</button>`}
         </div>
         <div id="mArea"></div>` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
@@ -1499,36 +1499,62 @@ async function manage(token) {
   });
   if (!late) $('mMove').addEventListener('click', () => {
     const area = $('mArea');
-    area.innerHTML = `<div class="sec-head" style="margin-top:8px"><h2 style="font-size:24px">Новый день и время</h2></div><div class="days" id="mDays"></div><div id="mSlots"></div>
-      <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Перенести</button></div>`;
-    const sel = { date: null, time: null };
+    const svcs = state.cfg.services, known = svcs.some(s => s.name === b.service);
+    const opt = s => `<option value="${esc(s.name)}"${s.name === b.service ? ' selected' : ''}>${esc(s.name)} · ${s.duration} мин${s.price ? ' · ' + esc(s.price) : ''}</option>`;
+    area.innerHTML = `<div class="sec-head" style="margin-top:8px"><h2 style="font-size:24px">Жазылуды өзгерту</h2></div>
+      <label class="k" for="mSvc" style="display:block;margin:4px 0 6px">Процедура</label>
+      <select class="gs-sel" id="mSvc">${known ? '' : `<option value="${esc(b.service)}" selected>${esc(b.service)}</option>`}${svcs.map(opt).join('')}</select>
+      <p class="k" style="margin:16px 0 6px">Күн мен уақыт <span style="color:var(--muted);font-weight:400">— ауыстырғыңыз келсе, таңдаңыз</span></p>
+      <div class="days" id="mDays"></div><div id="mSlots"></div>
+      <div class="field" style="margin-top:14px"><textarea id="mCom" maxlength="500" placeholder=" ">${esc(b.comment || '')}</textarea><label for="mCom">Тілектер — міндетті емес</label></div>
+      <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Өзгерістерді сақтау</button><button class="btn ghost" type="button" id="mBack">Өзгертпеу</button></div>`;
+    const sel = { service: b.service, date: null, time: null };
+    const durOf = n => svcs.find(s => s.name === n)?.duration || b.duration;
+    const upd = () => {
+      const svcCh = sel.service !== b.service, com = $('mCom').value.trim() !== (b.comment || '').trim();
+      const go = $('mGo');
+      if (sel.date && !sel.time) { go.disabled = true; go.textContent = 'Выберите время'; return; }
+      go.disabled = !(svcCh || sel.time || com);
+      go.textContent = sel.time ? `${svcCh ? 'Сменить процедуру и перенести' : 'Перенести'} на ${fmtShort(sel.date)}, ${sel.time}` : svcCh ? 'Сменить процедуру' : 'Сохранить изменения';
+    };
     const daysBox = $('mDays'), today = new Date(); today.setHours(0, 0, 0, 0);
+    let curDay = null;
+    const loadSlots = async () => {
+      if (!curDay) return;
+      const key = curDay.dataset.key, box = $('mSlots'); box.innerHTML = '<div class="skeleton"></div>';
+      try {
+        const { slots } = await api(`/api/slots?date=${key}&service=${encodeURIComponent(sel.service)}&b=${encodeURIComponent(token)}`);
+        if (curDay?.dataset.key !== key) return;
+        const free = slots.filter(s => s.free);
+        if (!free.length) { box.innerHTML = '<p class="empty">На этот день всё занято — выберите другой</p>'; return; }
+        box.innerHTML = '<div class="slots"></div>';
+        free.forEach((s, n) => {
+          const t = document.createElement('button'); t.type = 'button'; t.className = 'slot'; t.textContent = s.time; t.style.setProperty('--i', n);
+          t.setAttribute('aria-pressed', String(s.time === sel.time));
+          t.onclick = () => { sel.time = s.time; box.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', x === t)); upd(); };
+          box.firstChild.append(t);
+        });
+        if (sel.time && !free.some(s => s.time === sel.time)) { sel.time = null; upd(); }
+      } catch { box.innerHTML = '<p class="empty">Не получилось загрузить время</p>'; }
+    };
     for (let i = 0; i <= state.cfg.daysAhead; i++) {
       const d = new Date(today); d.setDate(d.getDate() + i);
       const key = ymd(d), off = state.cfg.daysOff.includes(d.getDay()) || (state.cfg.closed || []).includes(key);
       const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'day' + ([0, 6].includes(d.getDay()) ? ' we' : ''); btn.disabled = off;
+      btn.dataset.key = key;
       btn.innerHTML = `<span class="wd">${i === 0 ? 'Бүгін' : i === 1 ? 'Ертең' : d.toLocaleDateString(LOC, { weekday: 'short' })}</span><span class="dn">${d.getDate()}</span><span class="mo">${d.toLocaleDateString(LOC, { month: 'short' }).replace('.', '')}</span>`;
       btn.setAttribute('aria-pressed', 'false');
-      btn.onclick = async () => {
-        sel.date = key; sel.time = null; $('mGo').disabled = true;
+      btn.onclick = () => {
+        sel.date = key; sel.time = null; curDay = btn;
         daysBox.querySelectorAll('.day').forEach(x => x.setAttribute('aria-pressed', x === btn));
-        const box = $('mSlots'); box.innerHTML = '<div class="skeleton"></div>';
-        try {
-          const { slots } = await api(`/api/slots?date=${key}&service=${encodeURIComponent(b.service)}&b=${encodeURIComponent(token)}`);
-          const free = slots.filter(s => s.free);
-          if (!free.length) { box.innerHTML = '<p class="empty">На этот день всё занято — выберите другой</p>'; return; }
-          box.innerHTML = '<div class="slots"></div>';
-          free.forEach((s, n) => {
-            const t = document.createElement('button'); t.type = 'button'; t.className = 'slot'; t.textContent = s.time; t.style.setProperty('--i', n);
-            t.setAttribute('aria-pressed', 'false');
-            t.onclick = () => { sel.time = s.time; box.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', x === t)); $('mGo').disabled = false; $('mGo').textContent = `Перенести на ${fmtShort(key)}, ${s.time}`; };
-            box.firstChild.append(t);
-          });
-        } catch { box.innerHTML = '<p class="empty">Не получилось загрузить время</p>'; }
+        upd(); loadSlots();
       };
       daysBox.append(btn);
     }
-    $('mGo').onclick = () => act('move', sel);
+    $('mSvc').onchange = () => { sel.service = $('mSvc').value; upd(); loadSlots(); };
+    $('mCom').oninput = upd;
+    $('mBack').onclick = () => { area.innerHTML = ''; msg(''); };
+    $('mGo').onclick = () => act('edit', { service: sel.service, comment: $('mCom').value, ...(sel.time ? { date: sel.date, time: sel.time } : {}) });
     area.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   });
 }
