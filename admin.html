@@ -195,7 +195,8 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 
 .toast.bad { background: #3a1416 !important; color: #FFB4AB !important; border: 1px solid rgba(255,138,128,.5); box-shadow: 0 16px 40px -16px rgba(229,72,77,.8) !important; max-width: min(92vw, 420px); }
 .toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: inline-flex; align-items: center; gap: 10px;
-  background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 600; box-shadow: 0 16px 40px -12px rgba(255,46,136,1);
+  background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 18px; font-weight: 600; box-shadow: 0 16px 40px -12px rgba(255,46,136,1);
+  width: max-content; max-width: min(92vw, 440px); font-size: 14px; line-height: 1.4;
   transform: translateX(-50%); animation: toastIn .45s var(--ease); }
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px) scale(.95); } }
 
@@ -305,6 +306,13 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .perk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; }
 @media (max-width: 560px) { .perk-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .perk-grid label { font-size: 12px; align-content: space-between; } }
 .perk-grid label { text-transform: none; letter-spacing: 0; font-size: 13px; }
+.orders { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.ord { display: grid; gap: 8px; padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: rgba(20,18,22,.8); animation: dayIn .4s var(--ease) both; }
+.ord.receipt { border-color: rgba(111,227,160,.5); box-shadow: 0 0 0 3px rgba(111,227,160,.08); }
+.ord.new { border-color: rgba(255,196,107,.35); }
+.ord.issued, .ord.rejected { opacity: .7; }
+.mini.pulse { animation: pulse 1.2s ease-in-out 3; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255,46,136,.25); transform: scale(1.04); } }
 .gifts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; margin-top: 14px; }
 .gift { display: grid; gap: 8px; padding: 18px; border-radius: var(--r); border: 1px solid var(--line); background: radial-gradient(120% 120% at 100% 0%, rgba(255,46,136,.14), transparent 55%), rgba(20,18,22,.8); animation: dayIn .45s calc(var(--i) * 40ms) var(--ease) both; }
 .g-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -554,6 +562,10 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 
     <!-- Подарочные сертификаты -->
     <div class="view" id="v-gifts" hidden>
+      <div class="panel" id="ordPanel">
+        <h3>Заявки с сайта<small>Покупатель оформил сертификат на сайте и прислал скрин перевода на Kaspi. Проверьте поступление и нажмите «Оплачено — выпустить» — сертификат создастся сам, останется отправить его покупателю</small></h3>
+        <div class="orders" id="orders"></div>
+      </div>
       <div class="panel">
         <h3>Новый сертификат<small>Продали сертификат — создайте его здесь и отправьте покупателю красивую ссылку. Клиентка вводит код при записи, а когда отметите «пришла», он погасится сам</small></h3>
         <div class="row2">
@@ -606,6 +618,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
           <label for="sRemind">Вечерняя сводка «кому напомнить»<input id="sRemind" type="time" step="900"></label>
           <label for="sReview">Ссылка для отзывов (2ГИС)<input id="sReview" type="url" placeholder="https://2gis.kz/..."></label>
         </div>
+        <label for="sKaspi">Kaspi для оплаты сертификатов — номер и имя получателя<input id="sKaspi" maxlength="120" placeholder="+7 707 593 86 77 · Виктория К."></label>
       </div>
       <div class="panel">
         <h3>Скидки и бонусы<small>Скидки не складываются — клиентке достаётся самая большая. 0 — выключить</small></h3>
@@ -1203,6 +1216,52 @@ async function openPhoto(id) {
   } catch { dlgP.close(); toast('Не получилось загрузить фото', 'bad'); }
 }
 
+// ---------- Заявки на сертификат с сайта ----------
+const OST = { new: ['ждём оплату', 'new'], receipt: ['прислали чек', 'confirmed'], issued: ['выпущен', 'came'], rejected: ['отклонена', 'cancelled'] };
+async function loadOrders() {
+  try {
+    const { orders } = await api('/api/admin/gift-orders');
+    $('orders').innerHTML = orders.length ? orders.map(o => {
+      const [t, c] = OST[o.status] || [o.status, 'new'];
+      return `<article class="ord ${o.status}">
+        <div class="g-top"><span class="g-amt">${o.service ? esc(o.service) : money(o.amount)}</span><span class="st ${c}">${t}</span></div>
+        <div class="g-meta">№${o.id} · ${esc(o.buyerName)}, ${esc(fmtPhone(o.buyerPhone))}${o.service ? ` · ${money(o.price)}` : ''}<br>${o.to ? `Кому: <b>${esc(o.to)}</b>` : ''}${o.from ? ` · от: ${esc(o.from)}` : ''}${o.message ? `<br>«${esc(o.message)}»` : ''}${o.gift ? `<br>Код: <b>${esc(o.gift.codeFmt)}</b>` : ''}</div>
+        <div class="bk-quick">
+          ${o.receipt ? `<button class="mini hot" type="button" data-rc="${o.id}">🧾 Чек</button>` : ''}
+          ${['new', 'receipt'].includes(o.status) ? `<button class="mini ok" type="button" data-oiss="${o.id}">✅ Оплачено — выпустить</button><button class="mini bad" type="button" data-orej="${o.id}">Отклонить</button>` : ''}
+          ${o.waUrl ? `<a class="mini${o.status === 'issued' ? ' hot' : ''}" href="${esc(o.waUrl)}" target="_blank" rel="noopener">💬 ${o.status === 'issued' ? 'Отправить сертификат покупателю' : 'Написать покупателю'}</a>` : ''}
+          ${['issued', 'rejected'].includes(o.status) ? `<button class="mini" type="button" data-odel="${o.id}">Убрать</button>` : ''}
+        </div></article>`;
+    }).join('') : '<div class="empty-big" style="padding:22px">Пока нет заявок. Блок «Подарить сертификат» уже есть на сайте 💗</div>';
+  } catch {}
+}
+$('orders').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.rc) return openReceipt(Number(t.dataset.rc));
+  const act = t.dataset.oiss ? 'issue' : t.dataset.orej ? 'reject' : t.dataset.odel ? 'del' : '';
+  const id = t.dataset.oiss || t.dataset.orej || t.dataset.odel; if (!act) return;
+  if (act !== 'issue' && t.dataset.sure !== '1') { const was = t.textContent; t.dataset.sure = '1'; t.textContent = 'Точно? Ещё раз'; setTimeout(() => { t.dataset.sure = ''; t.textContent = was; }, 3000); return; }
+  try {
+    if (act === 'del') await api('/api/admin/gift-orders/' + id, { method: 'DELETE' });
+    else {
+      const r = await api(`/api/admin/gift-orders/${id}/${act}`, { method: 'POST' });
+      toast(act === 'issue' ? `Сертификат ${r.gift?.codeFmt || ''} выпущен — отправьте его покупателю` : 'Заявка отклонена');
+      if (act === 'issue' && r.waUrl) setTimeout(() => { const a = document.querySelector(`#orders a[href="${CSS.escape(r.waUrl)}"]`); a?.classList.add('pulse'); }, 400);
+    }
+    loadGifts();
+  } catch (err) { toast(err.message, 'bad'); }
+});
+async function openReceipt(id) {
+  $('phTitle').textContent = 'Чек по заявке №' + id; $('phImg').removeAttribute('src'); dlgP.showModal();
+  try {
+    await apiReady;
+    let r = await fetch(API + `/api/admin/gift-orders/${id}/receipt`, { headers: { Authorization: 'Bearer ' + token } }).catch(() => null);
+    if ((!r || DEAD.includes(r.status)) && await refreshApi()) r = await fetch(API + `/api/admin/gift-orders/${id}/receipt`, { headers: { Authorization: 'Bearer ' + token } });
+    if (!r?.ok) throw new Error();
+    const url = URL.createObjectURL(await r.blob()); $('phImg').src = url; $('phOpen').href = url;
+  } catch { dlgP.close(); toast('Не получилось загрузить чек', 'bad'); }
+}
+
 // ---------- Подарочные сертификаты ----------
 const GSTATUS = { active: ['действует', 'confirmed'], used: ['использован', 'came'], expired: ['срок истёк', 'cancelled'], void: ['отменён', 'cancelled'] };
 let giftsBooted = false;
@@ -1212,6 +1271,7 @@ async function loadGifts() {
     $('gService').innerHTML = '<option value="">— на сумму —</option>' + (cfg?.services || []).map(s => `<option value="${esc(s.name)}">${esc(s.name)}${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('');
     $('gQuick').innerHTML = [5000, 10000, 15000, 20000, 30000].map(n => `<button type="button" class="chip" data-amt="${n}">${money(n)}</button>`).join('');
   }
+  loadOrders();
   try {
     const { gifts, months } = await api('/api/admin/gifts');
     if (!$('gMonths').value) $('gMonths').value = months || 6;
@@ -1551,7 +1611,7 @@ $('restartBtn').onclick = async () => {
 
 // ---------- Лента бота ----------
 let feedLast = Number(store.get('feedSeen') || 0), feedMax = 0, feedTimer = null;
-const FEED_ICON = t => /Новая запись/.test(t) ? '🆕' : /отменил|удалена|отменена/.test(t) ? '❌' : /подтвердила/.test(t) ? '✅' : /перенесла/.test(t) ? '🔁' : /отзыв/i.test(t) ? '💌' : /коррекц/i.test(t) ? '✨' : /ожидани|Освободил|Открылось/.test(t) ? '⏳' : /Напомни/.test(t) ? '🔔' : /не подтвердила/.test(t) ? '⏰' : /Отметь/.test(t) ? '📝' : '💬';
+const FEED_ICON = t => /Чек по заявке/.test(t) ? '🧾' : /Заявка на сертификат|сертификат|Сертификат/.test(t) ? '🎁' : /Новая запись/.test(t) ? '🆕' : /отменил|удалена|отменена/.test(t) ? '❌' : /подтвердила/.test(t) ? '✅' : /перенесла/.test(t) ? '🔁' : /отзыв/i.test(t) ? '💌' : /коррекц/i.test(t) ? '✨' : /ожидани|Освободил|Открылось/.test(t) ? '⏳' : /Напомни/.test(t) ? '🔔' : /не подтвердила/.test(t) ? '⏰' : /Отметь/.test(t) ? '📝' : '💬';
 function feedTime(ts) {
   const d = new Date(ts.replace(' ', 'T')), today = ymd(new Date()), k = ymd(d);
   const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -1594,7 +1654,7 @@ $('feed').addEventListener('click', async e => {
     return;
   }
   const b = e.target.closest('[data-cb]'); if (!b) return;
-  try { const r = await api('/api/admin/feed/action', { method: 'POST', body: JSON.stringify({ data: b.dataset.cb }) }); toast('Статус: ' + ST[r.status]); loadFeed(); }
+  try { const r = await api('/api/admin/feed/action', { method: 'POST', body: JSON.stringify({ data: b.dataset.cb }) }); toast(r.order ? r.msg : 'Статус: ' + ST[r.status]); loadFeed(); }
   catch (err) { toast(err.message, 'bad'); }
 });
 $('feedClear').onclick = async () => {
@@ -1630,7 +1690,7 @@ async function loadSettings() {
     renderWeekEd();
     $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21;
     $('sMaster').value = setCfg.master || ''; $('sWa').value = setCfg.whatsapp ? fmtPhone(setCfg.whatsapp) : '';
-    $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || '';
+    $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || ''; $('sKaspi').value = setCfg.kaspi || '';
 
     renderSvcEd();
     const P = setCfg.perks || {};
@@ -1708,7 +1768,7 @@ $('setSave').onclick = async () => {
   $('setErr').textContent = '';
   const body = {
     week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value),
-    master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value,
+    master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value, kaspi: $('sKaspi').value,
     services: readSvcEd(),
     perks: Object.fromEntries([['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths']].map(([id, k]) => [k, $(id).value])),
     aftercare: Object.fromEntries([...document.querySelectorAll('.care-t')].map(t => [t.dataset.cat, t.value])),

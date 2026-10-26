@@ -488,6 +488,63 @@ details.care li::marker { color: var(--pink); }
 .mp.hot { background: var(--pink-soft); border-color: rgba(255,46,136,.45); color: var(--pink-2); }
 .me-acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .me-acts:empty { display: none; }
+/* сертификат: промо-блок */
+.gpromo { display: grid; gap: 22px; align-items: center; padding: 22px; border-radius: 26px; border: 1px solid rgba(255,46,136,.3);
+  background: radial-gradient(120% 120% at 0% 0%, rgba(255,46,136,.18), transparent 55%), radial-gradient(90% 90% at 100% 100%, rgba(155,92,255,.14), transparent 60%), var(--surface); }
+.gp-card { perspective: 900px; max-width: 360px; width: 100%; justify-self: center; }
+.gp-card .cert { min-height: 200px; animation: certSpin 6s linear infinite, gpFloat 6s ease-in-out infinite; }
+@keyframes gpFloat { 0%, 100% { transform: rotateX(8deg) rotateY(-10deg) translateY(0); } 50% { transform: rotateX(4deg) rotateY(8deg) translateY(-6px); } }
+.gp-card .cert-amt { font-size: 40px; }
+.gp-text { display: grid; gap: 10px; justify-items: start; }
+.gp-text .num { font: 400 26px/1 var(--script); color: var(--pink); }
+.gp-text h2 { margin: 0; font: 500 clamp(28px, 7vw, 38px)/1.1 var(--display); }
+.gp-text p { margin: 0 0 6px; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+@media (min-width: 640px) { .gpromo { grid-template-columns: 1fr 1fr; } }
+/* окно-шторка */
+.sheet { position: fixed; inset: 0; z-index: 80; display: grid; align-items: end; justify-items: center; background: rgba(5,4,6,.62); backdrop-filter: blur(6px); animation: fadeIn .3s ease both; }
+.sheet[hidden] { display: none; }
+@keyframes fadeIn { from { opacity: 0; } }
+.sheet-in { position: relative; width: min(560px, 100%); max-height: 92vh; overflow: auto; overscroll-behavior: contain; padding: 22px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+  border-radius: 28px 28px 0 0; background: radial-gradient(120% 60% at 100% 0%, rgba(255,46,136,.14), transparent 60%), #141116; border: 1px solid var(--line); border-bottom: 0;
+  box-shadow: 0 -30px 80px -20px rgba(0,0,0,.8); animation: sheetUp .45s var(--ease) both; }
+@keyframes sheetUp { from { transform: translateY(40px); opacity: 0; } }
+@media (min-width: 640px) { .sheet { align-items: center; } .sheet-in { border-radius: 28px; border-bottom: 1px solid var(--line); } }
+.sheet-x { position: absolute; right: 12px; top: 12px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font-size: 24px; line-height: 1; cursor: pointer; z-index: 2; }
+.gs-steps { display: flex; gap: 6px; margin: 4px 56px 18px 0; }
+.gs-steps i { flex: 1; height: 4px; border-radius: 4px; background: var(--surface-2); transition: background .4s; }
+.gs-steps i.on { background: linear-gradient(90deg, var(--pink), #FF6FB0); box-shadow: 0 0 10px rgba(255,46,136,.6); }
+#gsBody { display: grid; gap: 14px; animation: rowIn .35s var(--ease) both; }
+#gsBody h3 { margin: 0; font: 500 26px/1.15 var(--display); }
+#gsBody h3 .script { display: block; font: 400 24px/1 var(--script); color: var(--pink); margin-bottom: 2px; }
+#gsBody .lead { margin: 0; font-size: 14px; color: var(--muted); }
+.gs-prev .cert { min-height: 190px; }
+.gs-prev .cert-amt { font-size: 38px; }
+.gs-amts { display: flex; flex-wrap: wrap; gap: 8px; }
+.gs-or { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.gs-sel { width: 100%; padding: 15px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 15px; }
+.gs-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.gs-row .btn { flex: 1 1 auto; }
+.gs-err { color: var(--err); font-size: 13px; min-height: 0; }
+.pay-steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: ps; }
+.pay-steps li { counter-increment: ps; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; line-height: 1.5; }
+.pay-steps li::before { content: counter(ps); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: var(--pink-soft); color: var(--pink-2); border: 1px solid rgba(255,46,136,.4); }
+.pay-steps li.ok::before { content: "✓"; background: rgba(111,227,160,.15); color: #6FE3A0; border-color: rgba(111,227,160,.4); }
+.pay-steps b { color: var(--ink); }
+.kaspi { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: rgba(242,61,56,.1); border: 1px solid rgba(242,61,56,.35); }
+.kaspi .kn { font: 700 16px/1.2 var(--body); letter-spacing: .02em; color: var(--ink); }
+.kaspi .kl { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #FF6A63; }
+.kaspi .mini-btn { margin-left: auto; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+.rc-drop { position: relative; display: grid; place-items: center; gap: 6px; padding: 22px 16px; border-radius: 18px; border: 2px dashed rgba(255,46,136,.55); background: rgba(255,46,136,.06); text-align: center; cursor: pointer; transition: .25s; }
+.rc-drop:hover { background: rgba(255,46,136,.12); }
+.rc-drop b { font-size: 15px; } .rc-drop small { color: var(--muted); font-size: 12.5px; }
+.rc-drop .big { font-size: 30px; line-height: 1; animation: beat 2.4s ease-in-out infinite; }
+.rc-drop img { max-width: 100%; max-height: 260px; border-radius: 12px; }
+.gs-done { display: grid; justify-items: center; text-align: center; gap: 10px; padding: 10px 0; }
+.gs-done .check { width: 74px; height: 74px; }
+.go-banner { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 16px; border-radius: 16px; font-size: 14px; color: var(--ink); text-decoration: none; cursor: pointer; width: 100%; text-align: left; font-family: inherit;
+  background: rgba(20,18,22,.8); border: 1px solid rgba(255,196,107,.4); }
+.go-banner .go { margin-left: auto; color: #FFC46B; font-weight: 700; white-space: nowrap; }
+body.sheet-open { overflow: hidden; }
 .mine { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 16px; border-radius: 16px; text-decoration: none; font-size: 14px;
   background: rgba(28,25,30,.8); border: 1px solid rgba(255,46,136,.45); backdrop-filter: blur(10px); animation: rowIn .6s var(--ease) both; }
 .mine i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 10px var(--pink); flex: none; animation: live 1.6s ease-in-out infinite; }
@@ -497,8 +554,8 @@ details.care li::marker { color: var(--pink); }
 /* ---------- Готово ---------- */
 .done { min-height: 80vh; display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 18px; padding-block: 40px; }
 .done .check { width: 84px; height: 84px; }
-.done .check circle { fill: none; stroke: var(--pink); stroke-width: 2; stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw 1s var(--ease) forwards; }
-.done .check path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw .6s var(--ease) .7s forwards; }
+.gs-done .check circle, .done .check circle { fill: none; stroke: var(--pink); stroke-width: 2; stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw 1s var(--ease) forwards; }
+.gs-done .check path, .done .check path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw .6s var(--ease) .7s forwards; }
 .done h2 { margin: 0; font: 500 clamp(40px, 11vw, 60px)/1 var(--display); }
 .done h2 .script { display: block; font: 400 clamp(44px, 12vw, 64px)/1 var(--script); color: var(--pink); }
 .ticket { position: relative; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); padding: 22px; display: grid; gap: 14px; }
@@ -633,6 +690,23 @@ input::-webkit-date-and-time-value { text-align: left; }
     <p class="rv-hint">Парақтаңыз немесе тоқтату үшін басыңыз</p>
   </section>
 
+  <section class="block reveal" id="giftSec">
+    <div class="gpromo">
+      <div class="gp-card" aria-hidden="true"><div class="cert"><div class="cert-in">
+        <div class="cert-top"><span class="logo">browlash<i>.</i>look</span><span class="cert-k">подарочный<br>сертификат</span></div>
+        <div class="cert-mid"><div class="cert-amt">10 000 ₸</div><div class="cert-to"><span class="k">кому</span><span class="script">тебе</span></div></div>
+        <div class="cert-foot"><span class="cert-code">BL••-••••</span><span>💗</span></div>
+        <svg class="cert-eye" viewBox="0 0 320 120"><path d="M24 96 Q160 6 296 96"/><path d="M24 96 Q160 150 296 96"/><circle cx="160" cy="82" r="24"/></svg>
+      </div><i class="spark" style="--x:14%;--y:24%;--d:0s"></i><i class="spark" style="--x:88%;--y:70%;--d:1.4s"></i></div></div>
+      <div class="gp-text">
+        <span class="num">сыйлық</span>
+        <h2>Сұлулық сыйлаңыз 🎁</h2>
+        <p>Кез келген сомаға немесе процедураға сертификат — кірпік немесе қас. Алушы ыңғайлы уақытты өзі таңдайды, қалған сома келесі келуге сақталады.</p>
+        <button type="button" class="btn" id="gOpen">Сертификат сыйлау</button>
+      </div>
+    </div>
+  </section>
+
   
   <section class="block reveal seo-price" id="price" aria-labelledby="priceTitle">
     <div class="sec-head"><span class="num">прайс</span><h2 id="priceTitle">Кірпік ұзарту, ламинация және қастар — Петропавлдағы бағалар</h2>
@@ -700,6 +774,14 @@ input::-webkit-date-and-time-value { text-align: left; }
     <a href="https://www.instagram.com/browlash.look/" target="_blank" rel="noopener">@browlash.look</a>
     <a href="https://wa.me/77075938677" target="_blank" rel="noopener">WhatsApp: +7 707 593-86-77</a>
   </footer>
+</div>
+
+<div class="sheet" id="gSheet" hidden>
+  <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="gsTitle">
+    <button type="button" class="sheet-x" id="gsClose" aria-label="Закрыть">×</button>
+    <div class="gs-steps" id="gsSteps"><i></i><i></i><i></i></div>
+    <div id="gsBody"></div>
+  </div>
 </div>
 
 <div class="bar" id="bar">
@@ -1554,6 +1636,168 @@ function rvCard([src, tag, text], n) {
   });
 })();
 
+// ---------- Подарить сертификат: заявка → оплата на Kaspi → скрин → мастер выпускает ----------
+const GO = 'bl_gift_orders';
+const goGet = () => { try { return JSON.parse(localStorage.getItem(GO) || '[]'); } catch { return []; } };
+const goSave = list => { try { localStorage.setItem(GO, JSON.stringify(list.slice(-5))); } catch {} };
+const gs = { step: 1, amount: 10000, service: '', to: '', from: '', message: '', buyer: '', phone: '', token: '', order: null, shot: null };
+const gsPrice = () => gs.service ? svcPrice(state.cfg.services.find(s => s.name === gs.service)) : gs.amount;
+function gsOpen(step = 1) { $('gSheet').hidden = false; document.body.classList.add('sheet-open'); gsRender(step); }
+function gsClose() { $('gSheet').hidden = true; document.body.classList.remove('sheet-open'); }
+$('gsClose').onclick = gsClose;
+$('gSheet').addEventListener('click', e => { if (e.target.id === 'gSheet') gsClose(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('gSheet').hidden) gsClose(); });
+$('gOpen').onclick = () => { const last = goGet().at(-1); gsOpen(1); };
+function certPreview() {
+  const svc = gs.service;
+  return `<div class="gs-prev cert-wrap"><div class="cert"><div class="cert-in">
+    <div class="cert-top"><span class="logo">browlash<i>.</i>look</span><span class="cert-k">подарочный<br>сертификат</span></div>
+    <div class="cert-mid"><div class="cert-amt${svc ? ' svc' : ''}" id="gpAmt">${svc ? esc(svc) : money(gs.amount || 0)}</div>
+      <div class="cert-to" id="gpTo"${gs.to ? '' : ' hidden'}><span class="k">кому</span><span class="script">${esc(gs.to)}</span></div>
+      <p class="cert-msg" id="gpMsg"${gs.message ? '' : ' hidden'}>«${esc(gs.message)}»</p></div>
+    <div class="cert-foot"><span class="cert-code">BL••-••••</span><span id="gpFrom">${gs.from ? 'от кого: ' + esc(gs.from) : ''}</span></div>
+    <svg class="cert-eye" viewBox="0 0 320 120"><path d="M24 96 Q160 6 296 96"/><path d="M24 96 Q160 150 296 96"/><circle cx="160" cy="82" r="24"/></svg>
+  </div></div></div>`;
+}
+function gsRender(step) {
+  gs.step = step;
+  $('gsSteps').querySelectorAll('i').forEach((x, k) => x.classList.toggle('on', k < Math.min(step, 3)));
+  const body = $('gsBody'); body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
+  if (step === 1) {
+    const amts = [5000, 10000, 15000, 20000, 30000];
+    body.innerHTML = `<h3 id="gsTitle"><span class="script">подарок</span>Подарочный сертификат</h3>
+      ${certPreview()}
+      <div class="gs-or">Сумма</div>
+      <div class="gs-amts">${amts.map(a => `<button type="button" class="chip-p" data-amt="${a}" aria-pressed="${!gs.service && gs.amount === a}">${money(a)}</button>`).join('')}</div>
+      <div class="field"><input id="gsAmt" inputmode="numeric" placeholder=" " value="${!gs.service && !amts.includes(gs.amount) && gs.amount ? gs.amount : ''}"><label for="gsAmt">Своя сумма, ₸</label></div>
+      <div class="gs-or">или на процедуру</div>
+      <select class="gs-sel" id="gsSvc"><option value="">— на сумму —</option>${state.cfg.services.map(s => `<option value="${esc(s.name)}"${gs.service === s.name ? ' selected' : ''}>${esc(s.name)}${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('')}</select>
+      <div class="field"><input id="gsTo" maxlength="60" placeholder=" " value="${esc(gs.to)}"><label for="gsTo">Кому — имя получательницы</label></div>
+      <div class="field"><input id="gsFrom" maxlength="60" placeholder=" " value="${esc(gs.from)}"><label for="gsFrom">От кого</label></div>
+      <div class="field"><textarea id="gsMsg" maxlength="300" placeholder=" ">${esc(gs.message)}</textarea><label for="gsMsg">Пожелание — необязательно</label></div>
+      <div class="gs-err" id="gsErr"></div>
+      <button type="button" class="btn" id="gsNext">Дальше — ${money(gsPrice())}</button>`;
+    const upd = () => {
+      $('gpAmt').textContent = gs.service || money(gs.amount || 0); $('gpAmt').classList.toggle('svc', !!gs.service);
+      $('gpTo').hidden = !gs.to; $('gpTo').querySelector('.script').textContent = gs.to;
+      $('gpMsg').hidden = !gs.message; $('gpMsg').textContent = `«${gs.message}»`;
+      $('gpFrom').textContent = gs.from ? 'от кого: ' + gs.from : '';
+      $('gsNext').textContent = `Дальше — ${money(gsPrice())}`;
+      body.querySelectorAll('[data-amt]').forEach(x => x.setAttribute('aria-pressed', !gs.service && Number(x.dataset.amt) === gs.amount));
+    };
+    body.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { gs.amount = Number(b.dataset.amt); gs.service = ''; $('gsSvc').value = ''; $('gsAmt').value = ''; upd(); });
+    $('gsAmt').oninput = () => { const v = parseInt($('gsAmt').value.replace(/\D/g, ''), 10) || 0; $('gsAmt').value = v ? v.toLocaleString(LOC) : ''; gs.amount = v; gs.service = ''; $('gsSvc').value = ''; upd(); };
+    $('gsSvc').onchange = () => { gs.service = $('gsSvc').value; upd(); };
+    $('gsTo').oninput = () => { gs.to = $('gsTo').value.trim(); upd(); };
+    $('gsFrom').oninput = () => { gs.from = $('gsFrom').value.trim(); upd(); };
+    $('gsMsg').oninput = () => { gs.message = $('gsMsg').value.trim(); upd(); };
+    $('gsNext').onclick = () => {
+      if (!gs.service && !(gs.amount >= 1000)) { $('gsErr').textContent = 'Выберите сумму от 1 000 ₸ или процедуру'; return; }
+      gsRender(2);
+    };
+  } else if (step === 2) {
+    const me = meGet();
+    body.innerHTML = `<h3 id="gsTitle"><span class="script">почти готово</span>Ваши контакты</h3>
+      <p class="lead">Чтобы мастер прислала вам готовый сертификат в WhatsApp, а если что — уточнила детали.</p>
+      <div class="field"><input id="gsBuyer" maxlength="80" autocomplete="given-name" placeholder=" " value="${esc(gs.buyer || (me?.name || ''))}"><label for="gsBuyer">Атыңыз</label></div>
+      <div class="field"><input id="gsPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" "><label for="gsPhone">Ваш WhatsApp</label></div>
+      <div class="gs-err" id="gsErr"></div>
+      <div class="gs-row"><button type="button" class="btn ghost" id="gsBack">Назад</button><button type="button" class="btn" id="gsSend">Перейти к оплате</button></div>`;
+    const ph = $('gsPhone');
+    const mask = e => { let d = ph.value.replace(/\D/g, ''); if (d[0] === '8') d = '7' + d.slice(1); if (d && d[0] !== '7') d = '7' + d; d = d.slice(0, 11);
+      if (e?.inputType?.startsWith('delete') && d.length === (ph._n || 0) && d.length > 1) d = d.slice(0, -1); ph._n = d.length;
+      const p = [d.slice(1, 4), d.slice(4, 7), d.slice(7, 9), d.slice(9, 11)];
+      ph.value = !d ? '' : '+7' + (p[0] ? ` (${p[0]}` : ' ') + (p[0].length === 3 ? ')' : '') + (p[1] ? ` ${p[1]}` : '') + (p[2] ? `-${p[2]}` : '') + (p[3] ? `-${p[3]}` : ''); };
+    ph.addEventListener('input', mask); ph.addEventListener('focus', () => { if (!ph.value) ph.value = '+7 '; });
+    ph.value = gs.phone || me?.phone || ''; if (ph.value) mask();
+    $('gsBack').onclick = () => gsRender(1);
+    $('gsSend').onclick = async () => {
+      gs.buyer = $('gsBuyer').value.trim(); gs.phone = ph.value;
+      if (!gs.buyer) { $('gsErr').textContent = 'Напишите ваше имя'; return; }
+      if (ph.value.replace(/\D/g, '').length !== 11) { $('gsErr').textContent = 'Проверьте номер WhatsApp'; return; }
+      const btn = $('gsSend'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Жіберілуде';
+      try {
+        const r = await api('/api/gift-orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: gs.amount, service: gs.service, to: gs.to, from: gs.from, message: gs.message, buyer: gs.buyer, phone: gs.phone }) });
+        gs.token = r.token; gs.order = r.order; goSave([...goGet().filter(t => t !== r.token), r.token]);
+        gsRender(3);
+      } catch (err) { btn.disabled = false; btn.textContent = 'Перейти к оплате'; $('gsErr').textContent = err instanceof TypeError ? 'Нет связи с мастером — напишите ей в WhatsApp' : err.message; }
+    };
+  } else if (step === 3) {
+    const o = gs.order, kaspi = o.kaspi || state.cfg.kaspi || '';
+    const mt = kaspi.match(/\+?\d[\d\s-]{8,}\d/), num = mt ? mt[0].trim() : '';
+    const rest = (num ? kaspi.replace(num, '') : kaspi).replace(/[()]/g, '').replace(/^[\s,·—-]+/, '').trim();
+    const nd = num.replace(/\D/g, ''), numFmt = nd.length === 11 ? `+${nd[0]} ${nd.slice(1, 4)} ${nd.slice(4, 7)} ${nd.slice(7, 9)} ${nd.slice(9)}` : num;
+    const link = location.origin + location.pathname + '?go=' + gs.token;
+    body.innerHTML = `<h3 id="gsTitle"><span class="script">заявка №${o.id} принята</span>Как оплатить</h3>
+      <p class="lead">Сертификат на <b style="color:var(--ink)">${o.service ? esc(o.service) : money(o.amount)}</b>${o.to ? ` · кому: ${esc(o.to)}` : ''}. Осталось 3 шага:</p>
+      <ol class="pay-steps">
+        <li><div>Переведите <b>${money(o.price)}</b> на Kaspi по номеру:
+          <div class="kaspi"><span><span class="kl">Kaspi</span><br><span class="kn">${esc(numFmt || rest || 'номер уточнит мастер')}</span>${num && rest ? `<br><small style="color:var(--muted)">получатель: ${esc(rest)}</small>` : ''}</span>${num ? `<button type="button" class="mini-btn" data-copy="${esc(nd.length === 11 ? '+' + nd : num)}">Скопировать</button>` : ''}</div></div></li>
+        <li><div><b>Сделайте скриншот</b> экрана с успешным переводом.</div></li>
+        <li id="rcStep"><div><b>Прикрепите скриншот сюда</b> — так мастер сразу увидит оплату:
+          <label class="rc-drop" id="rcDrop" style="margin-top:10px"><input type="file" id="rcIn" accept="image/*" hidden><span class="big">🧾</span><b>Прикрепить скриншот перевода</b><small>из галереи телефона</small></label>
+          <div class="gs-err" id="gsErr"></div></div></li>
+      </ol>
+      <p class="lead">✨ После проверки мастер пришлёт <b style="color:var(--ink)">красивую ссылку-сертификат</b> вам в WhatsApp — останется переслать её тому, кому дарите. Обычно это занимает пару часов.</p>
+      <div class="linkbox"><span class="k">Ссылка на ваш заказ — можно вернуться и прикрепить скрин позже</span><input readonly value="${esc(link)}" onclick="this.select()"><div class="cta-row">${copyBtn(link)}</div></div>`;
+    const rcHandler = async () => {
+      const f = $('rcIn').files[0]; if (!f) return;
+      const drop = $('rcDrop');
+      try {
+        const data = await shrinkPhoto(f);
+        drop.innerHTML = `<img src="${data}" alt="Скриншот перевода"><small><span class="spin" style="border-color:rgba(255,255,255,.3);border-top-color:#fff;display:inline-block;width:14px;height:14px;vertical-align:-2px"></span> отправляем мастеру…</small>`;
+        const r = await api(`/api/gift-orders/${encodeURIComponent(gs.token)}/receipt`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+        gs.order = r.order; gsRender(4); if (!reduce) burst();
+      } catch (err) {
+        drop.innerHTML = '<input type="file" id="rcIn" accept="image/*" hidden><span class="big">🧾</span><b>Прикрепить скриншот перевода</b><small>попробуйте ещё раз</small>';
+        $('gsErr').textContent = err instanceof TypeError ? 'Нет связи — попробуйте ещё раз или отправьте скрин мастеру в WhatsApp' : err.message;
+        $('rcIn').onchange = rcHandler;
+      }
+    };
+    $('rcIn').onchange = rcHandler;
+  } else if (step === 4) {
+    const o = gs.order;
+    body.innerHTML = `<div class="gs-done">
+        <svg class="check" viewBox="0 0 84 84"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg>
+        <h3 id="gsTitle"><span class="script">спасибо!</span>Чек получен 💗</h3>
+        <p class="lead">Мастер проверит поступление на Kaspi и пришлёт сертификат в WhatsApp${gs.phone ? ` на <b style="color:var(--ink)">${esc(gs.phone)}</b>` : ''}. Обычно в течение пары часов.</p>
+      </div>
+      <ol class="pay-steps"><li class="ok"><div>Заявка №${o.id} — ${o.service ? esc(o.service) : money(o.amount)}</div></li><li class="ok"><div>Скриншот перевода отправлен</div></li><li><div><b>Ждём сертификат</b> — ссылку можно сразу переслать получательнице</div></li></ol>
+      <button type="button" class="btn ghost" id="gsOk">Хорошо</button>`;
+    $('gsOk').onclick = gsClose;
+  } else if (step === 5) {
+    const o = gs.order, g = o.gift;
+    const url = g ? location.origin + location.pathname + '?g=' + g.code : '';
+    body.innerHTML = o.status === 'rejected' ? `<h3 id="gsTitle"><span class="script">заявка №${o.id}</span>Заявка закрыта</h3><p class="lead">Если это ошибка — напишите мастеру, она поможет.</p><a class="btn" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">Написать в WhatsApp</a>`
+      : `<div class="gs-done"><svg class="check" viewBox="0 0 84 84"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg>
+        <h3 id="gsTitle"><span class="script">готово!</span>Сертификат выпущен 🎁</h3><p class="lead">Код <b style="color:var(--ink)">${esc(g.codeFmt)}</b>. Откройте его и перешлите получательнице.</p></div>
+        <div class="gs-row"><a class="btn" href="${esc(url)}">Открыть сертификат</a>${navigator.share ? `<button type="button" class="btn ghost" data-share="${esc('Тебе подарок 💗 ' + url)}">Отправить</button>` : `<a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent('Тебе подарок 💗 ' + url)}" target="_blank" rel="noopener">WhatsApp-қа жіберу</a>`}</div>`;
+  }
+  $('gSheet').querySelector('.sheet-in').scrollTop = 0;
+}
+async function openOrder(token) {
+  try {
+    const { order } = await api('/api/gift-orders/' + encodeURIComponent(token));
+    gs.token = token; gs.order = order;
+    gsOpen(order.status === 'new' ? 3 : order.status === 'receipt' ? 4 : 5);
+  } catch (err) { if (err.status === 404) goSave(goGet().filter(t => t !== token)); }
+}
+async function orderBanner() {
+  for (const t of goGet().slice().reverse()) {
+    try {
+      const { order: o } = await api('/api/gift-orders/' + encodeURIComponent(t));
+      if (o.status === 'rejected') continue;
+      const txt = o.status === 'new' ? 'ждём скриншот перевода' : o.status === 'receipt' ? 'мастер проверяет оплату' : 'сертификат готов!';
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'go-banner';
+      b.innerHTML = `<span>🎁</span><span>Ваш заказ сертификата: <b>${txt}</b></span><span class="go">Открыть →</span>`;
+      b.onclick = () => openOrder(t);
+      document.querySelector('.topbar').after(b);
+      if (o.status === 'issued') goSave(goGet().filter(x => x !== t)); // показали один раз — хватит
+      return;
+    } catch (err) { if (err.status === 404) goSave(goGet().filter(x => x !== t)); }
+  }
+}
+
 // ---------- Салют из розовых «ресничек» ----------
 function burst() {
   const c = document.createElement('canvas'); c.id = 'burst'; document.body.append(c);
@@ -1618,6 +1862,8 @@ function goOffline() {
     }
     if (params.get('b')) return manage(params.get('b'));
     if (params.get('g')) return giftPage(params.get('g'));
+    if (params.get('go')) { goSave([...goGet().filter(t => t !== params.get('go')), params.get('go')]); setTimeout(() => openOrder(params.get('go')), 300); }
+    else orderBanner();
     if (state.cfg.master) $('masterName').textContent = state.cfg.master;
     const off = state.cfg.daysOff || [];
     $('hours').textContent = hoursText(state.cfg);
