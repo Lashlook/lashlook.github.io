@@ -990,7 +990,7 @@ function renderWeek(list, blocks = [], waits = []) {
           ${n ? `<span class="pill muted">${n} ${plural(n)}</span>` : ''}
           ${full ? '<span class="pill muted">🔒 закрыт</span>' : ''}
           <div class="day-tools">
-            ${future && !full ? `<button class="icon-btn" type="button" data-break="${key}" title="Перерыв" aria-label="Добавить перерыв">${ICON.clock}</button>
+            ${future && !full && (weekHours[key]?.windows?.length ?? 1) ? `<button class="icon-btn" type="button" data-break="${key}" title="Перерыв" aria-label="Добавить перерыв">${ICON.clock}</button>
             <button class="icon-btn" type="button" data-close-day="${key}" title="Закрыть день" aria-label="Закрыть день">${ICON.lock}</button>` : ''}
             <button class="icon-btn" type="button" data-add="${key}" title="Добавить запись" aria-label="Добавить запись на ${wd}">${ICON.plus}</button>
           </div>
