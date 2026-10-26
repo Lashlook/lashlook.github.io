@@ -858,6 +858,7 @@ async function api(path, opts) {
   let r;
   try { r = await fetch(API + path, opts); if (DEAD.includes(r.status) && await refreshApi()) r = await fetch(API + path, opts); }
   catch (e) { if (await refreshApi()) r = await fetch(API + path, opts); else throw e; }
+  if (DEAD.includes(r.status)) throw new TypeError('Сервер недоступен'); // туннель не отвечает — как «нет связи»
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { status: r.status, field: j.field });
   return j;
@@ -1646,8 +1647,13 @@ const goGet = () => { try { return JSON.parse(localStorage.getItem(GO) || '[]');
 const goSave = list => { try { localStorage.setItem(GO, JSON.stringify(list.slice(-5))); } catch {} };
 const gs = { step: 1, amount: 10000, service: '', to: '', from: '', message: '', buyer: '', phone: '', token: '', order: null, shot: null };
 const gsPrice = () => gs.service ? svcPrice(state.cfg.services.find(s => s.name === gs.service)) : gs.amount;
-function gsOpen(step = 1) { $('gSheet').hidden = false; document.body.classList.add('sheet-open'); gsRender(step); }
-function gsClose() { $('gSheet').hidden = true; document.body.classList.remove('sheet-open'); }
+function gsOpen(step = 1) {
+  if ($('gSheet').hidden) { try { history.pushState({ sheet: 1 }, ''); } catch {} }
+  $('gSheet').hidden = false; document.body.classList.add('sheet-open'); gsRender(step);
+}
+function gsHide() { $('gSheet').hidden = true; document.body.classList.remove('sheet-open'); }
+function gsClose() { if (history.state?.sheet) history.back(); else gsHide(); }
+addEventListener('popstate', () => { if (!$('gSheet').hidden) gsHide(); });
 $('gsClose').onclick = gsClose;
 $('gSheet').addEventListener('click', e => { if (e.target.id === 'gSheet') gsClose(); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && !$('gSheet').hidden) gsClose(); });

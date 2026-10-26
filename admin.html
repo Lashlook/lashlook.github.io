@@ -406,7 +406,7 @@ button.hrs:hover { border-color: var(--accent); color: var(--ink); }
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .feed.enter .msg-card { animation: dayIn .5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
 .msg-card.fresh { border-color: rgba(255,46,136,.55); box-shadow: 0 0 0 4px var(--accent-soft); }
-.msg-card.fresh::after { content: "новое"; position: absolute; top: 14px; right: 16px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.msg-card.fresh::after { content: "новое"; position: absolute; top: 24px; right: 58px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 .mc-top { display: flex; align-items: center; gap: 10px; }
 .mc-ic { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); font-size: 16px; }
 .mc-time { color: var(--muted); font-size: 12.5px; }
@@ -1597,6 +1597,11 @@ $('restartBtn').onclick = async () => {
   if (!up) { b.disabled = false; b.textContent = '🔄 Перезапустить сервер'; toast('Сервер пока не ответил — проверьте компьютер'); return; }
   const reload = () => location.replace(location.pathname + '?v=' + Date.now());
   if (!onPages) { toast('Сервер перезапущен ✓'); setTimeout(reload, 800); return; }
+  // сервер сам говорит, менялись ли файлы сайта
+  b.textContent = 'Публикую сайт…';
+  let pub = null;
+  for (let i = 0; i < 20 && !pub; i++) { try { const st = await api('/api/admin/publish-status'); if (st.publish) pub = st.publish; } catch {} if (!pub) await new Promise(r => setTimeout(r, 2000)); }
+  if (pub && !pub.changed) { toast(pub.ok ? 'Сервер перезапущен ✓ (сайт без изменений)' : 'Сервер перезапущен ✓'); b.disabled = false; b.textContent = '🔄 Перезапустить сервер'; return; }
   // ждём, пока GitHub опубликует свежую версию (обычно 1–2 мин)
   toast('Сервер перезапущен ✓ Обновляю сайт…');
   for (let s = 0; s < 180; s += 5) {
