@@ -373,6 +373,7 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .eye-blink.wink { animation: wink .42s var(--ease); }
 @media (max-width: 360px) { .bar-eye { width: 34px; height: 24px; } }
 .msg:empty { display: none; }
+.hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .need { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; text-align: center; }
 .need:empty, .bar.kb .need { display: none; }
@@ -786,6 +787,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 
 
   <form id="form" novalidate>
+    <input type="text" name="hp_extra" id="hpExtra" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <section class="block reveal" id="book">
       <div class="sec-head"><span class="num">01</span><h2>Выберите процедуру</h2><p>Можно несколько за один визит — время и цена сложатся</p></div>
       <div class="tabs" id="tabs" role="tablist"><span class="tab-ind" id="tabInd"></span></div>
@@ -950,6 +952,7 @@ const WA_DEFAULT = '+77075938677';
 const waNum = () => String(state.cfg?.whatsapp || WA_DEFAULT).replace(/\D/g, '');
 let API = '';
 const reduce = false; // эффекты всегда включены
+const T0 = Date.now(); // сколько заполняли форму — защита от спам-скриптов
 const NUM = 'ru' + '-RU'; // числа всегда с пробелами: 10 000 ₸ (и на казахской версии)
 
 const pad = n => String(n).padStart(2, '0');
@@ -1007,7 +1010,7 @@ async function api(path, opts) {
   catch (e) { if (await refreshApi()) r = await fetch(API + path, opts); else throw e; }
   if (DEAD.includes(r.status)) throw new TypeError('Сервер недоступен'); // туннель не отвечает — как «нет связи»
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { status: r.status, field: j.field });
+  if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { status: r.status, field: j.field, blocked: !!j.blocked });
   return j;
 }
 
@@ -1512,7 +1515,7 @@ $('form').addEventListener('submit', async e => {
   if (state.sending) return;
   const btn = $('submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Отправляем'; state.sending = true;
   try {
-    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time, wish: hasLash() ? state.wish : null,
+    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time, wish: hasLash() ? state.wish : null, hp_extra: $('hpExtra').value, t: Date.now() - T0,
       birthday: $('bday').value, gift: $('gift').value, ref: state.ref };
     const { booking } = await api('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (state.photo) {
@@ -1524,7 +1527,7 @@ $('form').addEventListener('submit', async e => {
     showDone(booking, body.name);
   } catch (err) {
     state.sending = false;
-    if (err.status === 403) { state.perk = { blocked: true, key: perkKey() }; renderPerk(); btn.textContent = 'Написать в WhatsApp'; btn.disabled = false; $('msg').textContent = err.message; return; }
+    if (err.status === 403 || err.blocked) { state.perk = { blocked: true, key: perkKey() }; renderPerk(); btn.textContent = 'Написать в WhatsApp'; btn.disabled = false; $('msg').textContent = err.message; return; }
     if (err.field === 'gift') { $('giftMsg').textContent = err.message; $('giftMsg').className = 'fmsg bad'; }
     if (err.status === 409) { state.time = null; loadSlots(); }
     if (err instanceof TypeError) { goOffline(); btn.textContent = 'Отправить в WhatsApp'; update(); $('msg').textContent = 'Сервер записи недоступен — отправьте заявку мастеру в WhatsApp, это займёт секунду'; return; }

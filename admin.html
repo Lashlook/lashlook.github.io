@@ -293,6 +293,15 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .bk-gift { font-size: 13px; font-weight: 600; color: #FFC46B; }
 .bk-tech { font-size: 13px; color: var(--gold); overflow-wrap: anywhere; }
 .bk-tech.last { color: var(--muted); font-style: italic; }
+.spam { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px 16px; border-radius: 18px; border: 1px solid rgba(255,138,128,.45); background: rgba(255,138,128,.08); }
+.spam-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.spam-top b { font-size: 15px; } .spam-top span { color: var(--muted); font-size: 13px; }
+.spam-list { display: grid; gap: 6px; max-height: 280px; overflow: auto; }
+.spam-list label { display: flex !important; justify-content: flex-start; align-items: center; gap: 10px; font: 500 13.5px var(--body); letter-spacing: 0; text-transform: none; color: var(--ink); cursor: pointer; }
+.spam-list input { width: 18px !important; height: 18px; min-height: 0; flex: none; margin: 0; padding: 0; accent-color: var(--accent); }
+.spam-list label span { min-width: 0; }
+.spam-list label small { color: var(--muted); }
+.spam-acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .bk-wish { font-size: 13px; color: var(--accent-2); overflow-wrap: anywhere; }
 .t-wish { margin: -4px 0 4px; padding: 10px 12px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-2); font-size: 13px; }
 .bk-doc { display: grid; gap: 8px; justify-items: start; padding: 10px 12px; border-radius: 12px; background: rgba(255,196,107,.1); border: 1px dashed rgba(255,196,107,.45); color: #FFC46B; font-size: 13px; font-weight: 600; }
@@ -571,6 +580,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
           <input id="q" type="search" placeholder="Поиск: имя, телефон, услуга">
         </div>
       </div>
+      <div class="spam" id="spam" hidden></div>
       <div class="days" id="days"></div>
     </div>
 
@@ -965,7 +975,7 @@ async function load() {
     const sig = JSON.stringify([qv, from, week, ahead.bookings.map(b => [b.id, b.status, b.date, b.time]), new Date().getHours() * 60 + new Date().getMinutes() >> 4]);
     if (sig === load.sig && !animNext) return; // ничего не поменялось — не трогаем страницу
     load.sig = sig; load.ahead = ahead.bookings;
-    renderStats(ahead);
+    renderStats(ahead); loadSuspects();
     weekHours = week.hours || {}; weekBookings = week.bookings || [];
     qv ? renderSearch(week.bookings) : renderWeek(week.bookings, week.blocks, week.waitlist || []);
   } catch {}
@@ -1120,6 +1130,26 @@ $('days').addEventListener('click', async e => {
   if (t.dataset.yes) { try { await api('/api/admin/bookings/' + t.dataset.yes, { method: 'DELETE' }); pendingDel = null; toast('Запись удалена'); } catch (err) { pendingDel = null; toast(err.message, 'bad'); } load.sig = ''; load(); return; }
   if ('no' in t.dataset) { const act = t.closest('.bk-act'); act.innerHTML = act.dataset.html; pendingDel = null; }
 });
+
+// ---------- Спам: записи с новых номеров, которые никто не подтверждал ----------
+async function loadSuspects() {
+  const box = $('spam');
+  try {
+    const { list } = await api('/api/admin/suspects');
+    if (list.length < 3) { box.hidden = true; return; } // 1–2 новые записи — это обычные клиентки
+    if (box.dataset.sig === JSON.stringify(list.map(x => x.id)) && !box.hidden) return;
+    box.dataset.sig = JSON.stringify(list.map(x => x.id)); box.hidden = false;
+    box.innerHTML = `<div class="spam-top"><b>⚠️ Похоже на спам</b><span>${list.length} неподтверждённых записей с новых номеров за 2 суток</span><button class="mini" type="button" id="spamOpen">Посмотреть</button></div>
+      <div id="spamBody" hidden><div class="spam-list">${list.map(x => `<label><input type="checkbox" value="${x.id}" checked><span>${esc(x.name)} · ${esc(fmtPhone(x.phone))}<br><small>запись на ${dShort(x.date)} ${x.time} · ${esc(x.service)} · создана ${esc(x.created_at.slice(5, 16).replace('-', '.').replace(' ', ' в '))}</small></span></label>`).join('')}</div>
+      <div class="spam-acts"><button class="mini bad" type="button" id="spamDel">Удалить отмеченные и заблокировать номера</button><button class="mini" type="button" id="spamDelOnly">Только удалить</button></div></div>`;
+    $('spamOpen').onclick = () => { $('spamBody').hidden = !$('spamBody').hidden; };
+    const del = async block => {
+      const ids = [...box.querySelectorAll('input:checked')].map(i => Number(i.value)); if (!ids.length) return;
+      try { const r = await api('/api/admin/suspects/delete', { method: 'POST', body: JSON.stringify({ ids, block }) }); toast(`Удалено записей: ${r.removed}${block ? ', номера заблокированы' : ''}`); box.dataset.sig = ''; load.sig = ''; load(); } catch (err) { toast(err.message, 'bad'); }
+    };
+    $('spamDel').onclick = () => del(true); $('spamDelOnly').onclick = () => del(false);
+  } catch {}
+}
 
 // ---------- Модалки ----------
 document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => b.closest('dialog').close());
