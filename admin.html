@@ -299,6 +299,35 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 
 
 
+/* ---------- Окошки ---------- */
+.hrs { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: rgba(20,18,22,.7);
+  font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums; transition: .2s; }
+button.hrs:hover { border-color: var(--accent); color: var(--ink); }
+.hrs.custom { border-color: rgba(255,46,136,.6); color: var(--accent-2); background: var(--accent-soft); }
+.hrs.off { color: var(--err); }
+.hrs.past { cursor: default; opacity: .7; }
+.win-list { display: grid; gap: 8px; }
+.win { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: 8px; align-items: center; animation: dayIn .3s var(--ease) both; }
+.win .w-l { font-size: 13px; font-weight: 600; color: var(--muted); }
+.win input { min-height: 46px; padding: 10px 12px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.win.bad input { border-color: var(--err); box-shadow: 0 0 0 3px rgba(255,138,128,.15); }
+.win-list .w-add { justify-self: start; }
+.hgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 6px; touch-action: none; user-select: none; -webkit-user-select: none; }
+.hc { position: relative; padding: 10px 0; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-size: 13px; font-weight: 600; color: var(--muted);
+  font-variant-numeric: tabular-nums; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.hc.on { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 6px 16px -10px rgba(255,46,136,1); }
+.hc.booked { cursor: not-allowed; }
+.hc.booked i { position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: #FFC46B; box-shadow: 0 0 6px #FFC46B; }
+.hsum { font-size: 14px; color: var(--muted); padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px dashed var(--line); }
+.hsum b { color: var(--ink); }
+.wk { display: grid; gap: 10px; }
+.wk-day { padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface-2); display: grid; gap: 10px; }
+.wk-day.off { opacity: .75; }
+.wk-head { display: flex; justify-content: space-between; align-items: baseline; }
+.wk-head b { font: 500 18px/1.2 var(--display); }
+.wk-sum { font-size: 12px; font-weight: 700; color: var(--err); text-transform: uppercase; letter-spacing: .08em; }
+@media (max-width: 380px) { .win { grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) 40px; gap: 5px; } .win input { padding: 10px 6px; } .hgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
 /* ---------- Лента / настройки / лист ожидания ---------- */
 .badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: #fff; color: var(--accent); font-size: 11px; font-weight: 800; vertical-align: 1px; }
 .seg button[aria-selected="true"] .badge { display: none; }
@@ -475,15 +504,8 @@ dialog { overflow: auto; overscroll-behavior: contain; }
     <!-- Настройки -->
     <div class="view" id="v-settings" hidden>
       <div class="panel">
-        <h3>График работы<small>Онлайн-запись предлагает время только в эти часы</small></h3>
-        <div class="row2">
-          <label for="sOpen">Начало дня<input id="sOpen" type="time" step="900"></label>
-          <label for="sClose">Конец дня<input id="sClose" type="time" step="900"></label>
-        </div>
-        <div>
-          <div class="chips-hint" style="margin-bottom:8px">Выходные дни (нажмите, чтобы отметить)</div>
-          <div class="chips" id="sDays"></div>
-        </div>
+        <h3>Обычный график по дням недели<small>Когда у вас обычно есть окошки. Конкретный день всегда можно поменять в журнале — кнопка с часами у дня</small></h3>
+        <div class="wk" id="sWeek"></div>
         <div class="row2">
           <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
           <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
@@ -504,6 +526,10 @@ dialog { overflow: auto; overscroll-behavior: contain; }
         <h3>Прайс<small>Название, длительность и цена. Порядок — стрелками</small></h3>
         <div class="svc-ed" id="svcEd"></div>
         <button class="btn ghost" type="button" id="svcAdd">+ Добавить услугу</button>
+      </div>
+      <div class="panel">
+        <h3>Сервер<small>Если что-то зависло или после обновлений — перезапуск займёт секунд 10, записи не пропадут</small></h3>
+        <button class="btn ghost" type="button" id="restartBtn">🔄 Перезапустить сервер</button>
       </div>
       <div class="save-bar">
         <span class="err" id="setErr"></span>
@@ -558,6 +584,29 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <button class="btn shine" type="submit" id="save">Сохранить</button>
     </div>
   </form>
+</dialog>
+
+<!-- Окошки на день -->
+<dialog id="dlgHours">
+  <div class="modal">
+    <h3><span>когда есть окошки</span><b id="hTitle" style="font-weight:500">День</b></h3>
+    <div class="chips" id="hPresets">
+      <button type="button" class="chip" data-preset="usual">Как обычно</button>
+      <button type="button" class="chip" data-preset="full">Весь день</button>
+      <button type="button" class="chip" data-preset="off">Выходной</button>
+    </div>
+    <div class="win-list" id="hList"></div>
+    <div>
+      <div class="chips-hint" style="margin-bottom:8px">Или отмечайте на сетке — нажмите или проведите пальцем</div>
+      <div class="hgrid" id="hGrid"></div>
+    </div>
+    <div class="hsum" id="hSum"></div>
+    <div class="modal-foot">
+      <div class="err" id="hErr"></div>
+      <button class="btn ghost" type="button" data-close>Отмена</button>
+      <button class="btn shine" type="button" id="hSave">Сохранить</button>
+    </div>
+  </div>
 </dialog>
 
 <!-- Перерыв -->
@@ -709,6 +758,7 @@ async function load() {
     if (sig === load.sig && !animNext) return; // ничего не поменялось — не трогаем страницу
     load.sig = sig;
     renderStats(ahead);
+    weekHours = week.hours || {}; weekBookings = week.bookings || [];
     qv ? renderSearch(week.bookings) : renderWeek(week.bookings, week.blocks, week.waitlist || []);
   } catch {}
 }
@@ -790,6 +840,7 @@ function renderWeek(list, blocks = [], waits = []) {
       <section class="day${key === nowKey ? ' today' : ''}${key < nowKey ? ' past' : ''}${full ? ' closed' : ''}" style="--i:${i}">
         <div class="day-head">
           <h2>${wd}<span>${dm(d)}</span></h2>
+          ${hoursChip(key, future)}
           ${key === nowKey ? '<span class="pill">Сегодня</span>' : ''}
           ${n ? `<span class="pill muted">${n} ${plural(n)}</span>` : ''}
           ${full ? '<span class="pill muted">🔒 закрыт</span>' : ''}
@@ -824,6 +875,7 @@ function renderSearch(list) {
 $('days').addEventListener('click', async e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.add) return openAdd(t.dataset.add);
+  if (t.dataset.hours) return openHours(t.dataset.hours);
   if (t.dataset.wdone) { await api('/api/admin/waitlist/' + t.dataset.wdone, { method: 'DELETE' }).catch(() => {}); toast('Убрано из листа ожидания'); load.sig = ''; load(); return; }
   if (t.dataset.break) return openBlock(t.dataset.break);
   if (t.dataset.closeDay) {
@@ -987,6 +1039,165 @@ async function loadStats() {
 
 $('wdChart').addEventListener('click', e => { const v = e.target.closest('.vb'); document.querySelectorAll('.vb.on').forEach(x => x !== v && x.classList.remove('on')); v?.classList.toggle('on'); });
 
+// ---------- Окошки (рабочее время) ----------
+let weekHours = {}, weekBookings = [];
+const fmtWins = ws => ws.length ? ws.map(w => `${w.start}–${w.end}`).join(', ') : 'выходной';
+function hoursChip(key, future) {
+  const h = weekHours[key]; if (!h) return '';
+  const label = fmtWins(h.windows);
+  return future
+    ? `<button type="button" class="hrs${h.custom ? ' custom' : ''}${h.windows.length ? '' : ' off'}" data-hours="${key}" title="Изменить окошки на этот день">🕐 ${esc(label)}${h.custom ? ' ✎' : ''}</button>`
+    : `<span class="hrs past">🕐 ${esc(label)}</span>`;
+}
+// мин ↔ «ЧЧ:ММ»
+const mm = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const hhmm = m => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`;
+function mergeWins(ws) {
+  const r = ws.filter(w => w.start && w.end && mm(w.end) > mm(w.start)).map(w => [mm(w.start), mm(w.end)]).sort((a, b) => a[0] - b[0]);
+  const out = []; for (const [s, e] of r) { const l = out.at(-1); if (l && s <= l[1]) l[1] = Math.max(l[1], e); else out.push([s, e]); }
+  return out.map(([s, e]) => ({ start: hhmm(s), end: hhmm(e) }));
+}
+// Редактор окошек «С … до …» (используется в окне дня и в недельном графике)
+function winEditor(box, wins, onChange, opts = {}) {
+  const draw = () => {
+    box.innerHTML = wins.map((w, i) => `
+      <div class="win" data-i="${i}">
+        <span class="w-l">С</span><input type="time" step="900" class="w-s" value="${w.start}" aria-label="Начало окошка">
+        <span class="w-l">до</span><input type="time" step="900" class="w-e" value="${w.end}" aria-label="Конец окошка">
+        <button type="button" class="icon-btn w-rm" aria-label="Убрать окошко">${ICON.x}</button>
+      </div>`).join('') + `<button type="button" class="mini w-add">+ ${wins.length ? 'Добавить окошко' : (opts.emptyLabel || 'Добавить окошко')}</button>`;
+  };
+  box.oninput = e => {
+    const row = e.target.closest('.win'); if (!row) return;
+    const w = wins[+row.dataset.i];
+    if (e.target.classList.contains('w-s')) {
+      const len = w.start && w.end && mm(w.end) > mm(w.start) ? mm(w.end) - mm(w.start) : 60;
+      w.start = e.target.value;
+      // начало поставили позже конца — сдвигаем конец, сохраняя длину окошка
+      if (w.start && (!w.end || mm(w.end) <= mm(w.start))) { w.end = hhmm(Math.min(mm(w.start) + len, 23 * 60 + 45)); row.querySelector('.w-e').value = w.end; }
+    } else w.end = e.target.value;
+    row.classList.toggle('bad', !(w.start && w.end && mm(w.end) > mm(w.start)));
+    onChange?.(wins);
+  };
+  box.onclick = e => {
+    if (e.target.closest('.w-rm')) { wins.splice(+e.target.closest('.win').dataset.i, 1); draw(); onChange?.(wins); }
+    if (e.target.closest('.w-add')) {
+      const base = opts.base || { start: '10:00', end: '20:00' };
+      // новое окошко — сразу после последнего (на 2 часа), а если поздно — утром
+      const lastEnd = wins.length ? Math.max(...wins.filter(w => w.end).map(w => mm(w.end))) : null;
+      let s = lastEnd == null ? mm(base.start) : lastEnd + 60;
+      if (s + 60 > 22 * 60) s = Math.max(8 * 60, mm(base.start) - 180);
+      wins.push({ start: hhmm(s), end: hhmm(Math.min(s + (lastEnd == null ? mm(base.end) - mm(base.start) : 120), 22 * 60)) }); draw(); onChange?.(wins);
+      box.querySelectorAll('.w-s')[wins.length - 1]?.focus();
+    }
+  };
+  draw();
+  return { set(ws) { wins.splice(0, wins.length, ...ws.map(w => ({ ...w }))); draw(); }, get: () => wins };
+}
+
+// Окно «Окошки на день»
+const dlgH = $('dlgHours');
+let hDate = '', hWins = [], hEd = null, hDefault = [];
+const STEP = () => Number(cfg?.step) || 30;
+function usualFor(key) {
+  const dow = new Date(key + 'T00:00').getDay();
+  if (cfg?.week && Array.isArray(cfg.week[dow])) return cfg.week[dow].map(w => ({ ...w }));
+  return (cfg?.daysOff || []).includes(dow) ? [] : [{ start: cfg?.open || '10:00', end: cfg?.close || '20:00' }];
+}
+function openHours(key) {
+  hDate = key; $('hErr').textContent = '';
+  $('hTitle').textContent = dayLong(key);
+  hDefault = usualFor(key);
+  hWins = (weekHours[key]?.windows || hDefault).map(w => ({ ...w }));
+  hEd = winEditor($('hList'), hWins, () => { drawGrid(); drawSum(); }, { base: hDefault[0] || { start: cfg?.open || '10:00', end: cfg?.close || '20:00' }, emptyLabel: 'Добавить окошко (сейчас выходной)' });
+  drawGrid(); drawSum();
+  dlgH.showModal();
+}
+// сетка: каждая ячейка — отрезок [t, t+шаг)
+function gridRange() {
+  const all = [...hWins, ...hDefault, { start: cfg?.open || '10:00', end: cfg?.close || '20:00' }].filter(w => w.start && w.end);
+  const from = Math.min(8 * 60, ...all.map(w => mm(w.start))), to = Math.max(21 * 60, ...all.map(w => mm(w.end)));
+  return [Math.floor(from / 60) * 60, Math.ceil(to / 60) * 60];
+}
+function bookedAt(t) {
+  return weekBookings.find(b => b.date === hDate && b.status !== 'cancelled' && mm(b.time) < t + STEP() && t < mm(b.time) + b.duration);
+}
+function drawGrid() {
+  const [from, to] = gridRange(), st = STEP(), merged = mergeWins(hWins);
+  const isOn = t => merged.some(w => t >= mm(w.start) && t + st <= mm(w.end));
+  let html = '';
+  for (let t = from; t < to; t += st) {
+    const b = bookedAt(t);
+    html += `<button type="button" class="hc${isOn(t) ? ' on' : ''}${b ? ' booked' : ''}" data-t="${t}" ${b ? `title="${esc(b.time + ' ' + b.name)}"` : ''}>${hhmm(t)}${b ? '<i></i>' : ''}</button>`;
+  }
+  $('hGrid').innerHTML = html;
+}
+function gridToWins() {
+  const st = STEP(), on = [...$('hGrid').querySelectorAll('.hc')].filter(c => c.classList.contains('on')).map(c => +c.dataset.t);
+  const out = []; for (const t of on) { const l = out.at(-1); if (l && l[1] === t) l[1] = t + st; else out.push([t, t + st]); }
+  return out.map(([s, e]) => ({ start: hhmm(s), end: hhmm(e) }));
+}
+function drawSum() {
+  const ws = mergeWins(hWins), st = STEP();
+  const n = ws.reduce((s, w) => s + Math.floor((mm(w.end) - mm(w.start)) / st), 0);
+  const total = ws.reduce((s, w) => s + mm(w.end) - mm(w.start), 0);
+  $('hSum').innerHTML = ws.length
+    ? `Открыто: <b>${fmtWins(ws)}</b> · ${Math.floor(total / 60)} ч${total % 60 ? ' ' + total % 60 + ' мин' : ''} работы`
+    : 'В этот день <b>выходной</b> — онлайн-запись будет закрыта';
+}
+// нажатие и «закрашивание» пальцем по сетке
+// провели пальцем от одного времени до другого — выделяется весь промежуток (как в календаре)
+let paint = null, pStart = 0, pSnap = [];
+$('hGrid').addEventListener('pointerdown', e => {
+  const c = e.target.closest('.hc'); if (!c || c.classList.contains('booked')) return;
+  const cells = [...$('hGrid').querySelectorAll('.hc')];
+  pSnap = cells.map(x => x.classList.contains('on')); pStart = cells.indexOf(c);
+  paint = !c.classList.contains('on'); c.classList.toggle('on', paint); e.preventDefault();
+  $('hGrid').setPointerCapture?.(e.pointerId);
+});
+$('hGrid').addEventListener('pointermove', e => {
+  if (paint === null) return;
+  const c = document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.hc'); if (!c) return;
+  const cells = [...$('hGrid').querySelectorAll('.hc')], cur = cells.indexOf(c);
+  const lo = Math.min(pStart, cur), hi = Math.max(pStart, cur);
+  cells.forEach((x, i) => { if (!x.classList.contains('booked')) x.classList.toggle('on', i >= lo && i <= hi ? paint : pSnap[i]); });
+});
+const endPaint = () => { if (paint === null) return; paint = null; const ws = gridToWins(); weekBookings.filter(b => b.date === hDate && b.status !== 'cancelled'); hEd.set(ws); hWins = hEd.get(); drawGrid(); drawSum(); };
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => $('hGrid').addEventListener(ev, endPaint));
+$('hPresets').addEventListener('click', e => {
+  const p = e.target.closest('[data-preset]')?.dataset.preset; if (!p) return;
+  if (p === 'usual') hEd.set(hDefault);
+  if (p === 'full') hEd.set([{ start: cfg?.open || '10:00', end: cfg?.close || '20:00' }]);
+  if (p === 'off') hEd.set([]);
+  hWins = hEd.get(); hWins._preset = p; drawGrid(); drawSum();
+});
+$('hSave').onclick = async () => {
+  $('hErr').textContent = '';
+  if (hWins.some(w => !(w.start && w.end && mm(w.end) > mm(w.start)))) { $('hErr').textContent = 'В каком-то окошке конец раньше начала — поправьте'; return; }
+  const ws = mergeWins(hWins);
+  const same = JSON.stringify(ws) === JSON.stringify(mergeWins(hDefault));
+  try {
+    const r = await api('/api/admin/schedule', { method: 'POST', body: JSON.stringify({ date: hDate, windows: same ? null : ws }) });
+    dlgH.close();
+    toast(r.outside?.length ? `Сохранено. Вне окошек осталась запись: ${r.outside.join(', ')}` : 'Окошки сохранены — на сайте уже обновилось');
+    load.sig = ''; load();
+  } catch (err) { $('hErr').textContent = err.message; }
+};
+
+// ---------- Перезапуск сервера ----------
+$('restartBtn').onclick = async () => {
+  const b = $('restartBtn');
+  if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Точно перезапустить? Нажмите ещё раз'; setTimeout(() => { b.dataset.sure = ''; b.textContent = '🔄 Перезапустить сервер'; }, 4000); return; }
+  b.disabled = true; b.textContent = 'Перезапускаю…';
+  try { await api('/api/admin/restart', { method: 'POST' }); } catch {}
+  // ждём, пока сервер поднимется
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 2000));
+    try { await api('/api/config'); toast('Сервер перезапущен ✓'); setTimeout(() => location.reload(), 800); return; } catch {}
+  }
+  b.disabled = false; b.textContent = '🔄 Перезапустить сервер'; toast('Сервер пока не ответил — проверьте компьютер');
+};
+
 // ---------- Лента бота ----------
 let feedLast = Number(store.get('feedSeen') || 0), feedMax = 0, feedTimer = null;
 const FEED_ICON = t => /Новая запись/.test(t) ? '🆕' : /отменил|удалена|отменена/.test(t) ? '❌' : /подтвердила/.test(t) ? '✅' : /перенесла/.test(t) ? '🔁' : /отзыв/i.test(t) ? '💌' : /коррекц/i.test(t) ? '✨' : /ожидани|Освободил|Открылось/.test(t) ? '⏳' : /Напомни/.test(t) ? '🔔' : /не подтвердила/.test(t) ? '⏰' : /Отметь/.test(t) ? '📝' : '💬';
@@ -1052,16 +1263,31 @@ const DAYN = [[1, 'Пн'], [2, 'Вт'], [3, 'Ср'], [4, 'Чт'], [5, 'Пт'], [
 async function loadSettings() {
   try {
     setCfg = await api('/api/admin/settings');
-    $('sOpen').value = setCfg.open; $('sClose').value = setCfg.close;
+    renderWeekEd();
     $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21;
     $('sMaster').value = setCfg.master || ''; $('sWa').value = setCfg.whatsapp ? fmtPhone(setCfg.whatsapp) : '';
     $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || '';
-    $('sDays').innerHTML = DAYN.map(([d, n]) => `<button type="button" class="chip" data-dayoff="${d}" aria-pressed="${(setCfg.daysOff || []).includes(d)}">${n}</button>`).join('');
+
     renderSvcEd();
     $('setErr').textContent = '';
   } catch (err) { toast(err.message); }
 }
-$('sDays').addEventListener('click', e => { const c = e.target.closest('[data-dayoff]'); if (c) c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true'); });
+let weekState = {};
+const DAYFULL = { 1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота', 0: 'Воскресенье' };
+function renderWeekEd() {
+  const box = $('sWeek'); box.innerHTML = '';
+  weekState = {};
+  DAYN.forEach(([d]) => {
+    const ws = setCfg.week && Array.isArray(setCfg.week[d]) ? setCfg.week[d] : ((setCfg.daysOff || []).includes(d) ? [] : [{ start: setCfg.open, end: setCfg.close }]);
+    weekState[d] = ws.map(w => ({ ...w }));
+    const card = document.createElement('div'); card.className = 'wk-day';
+    card.innerHTML = `<div class="wk-head"><b>${DAYFULL[d]}</b><span class="wk-sum"></span></div><div class="win-list"></div>`;
+    box.append(card);
+    const sum = () => { card.querySelector('.wk-sum').textContent = weekState[d].length ? '' : 'выходной'; card.classList.toggle('off', !weekState[d].length); };
+    winEditor(card.querySelector('.win-list'), weekState[d], sum, { base: { start: setCfg.open || '10:00', end: setCfg.close || '20:00' }, emptyLabel: 'Добавить окошко' });
+    sum();
+  });
+}
 $('sWa').addEventListener('input', phoneMask);
 function renderSvcEd() {
   const cats = [...new Set(setCfg.services.map(s => s.category))];
@@ -1113,11 +1339,11 @@ $('svcAdd').onclick = () => {
 $('setSave').onclick = async () => {
   $('setErr').textContent = '';
   const body = {
-    open: $('sOpen').value, close: $('sClose').value, step: Number($('sStep').value), daysAhead: Number($('sAhead').value),
-    daysOff: [...$('sDays').querySelectorAll('[aria-pressed="true"]')].map(c => Number(c.dataset.dayoff)),
+    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value),
     master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value,
     services: readSvcEd(),
   };
+  if (Object.values(weekState).flat().some(w => !(w.start && w.end && mm(w.end) > mm(w.start)))) { $('setErr').textContent = 'В графике есть окошко, где конец раньше начала — поправьте'; return; }
   const btn = $('setSave'); btn.disabled = true;
   try {
     const r = await api('/api/admin/settings', { method: 'POST', body: JSON.stringify(body) });
