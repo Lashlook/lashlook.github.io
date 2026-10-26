@@ -310,6 +310,10 @@ button.hrs:hover { border-color: var(--accent); color: var(--ink); }
 .win { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: 8px; align-items: center; animation: dayIn .3s var(--ease) both; }
 .win .w-l { font-size: 13px; font-weight: 600; color: var(--muted); }
 .win input { min-height: 46px; padding: 10px 12px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.win input { text-align: center; font-size: 16px; padding-inline: 6px; }
+.win input::-webkit-calendar-picker-indicator { display: none; }
+.win input::-webkit-date-and-time-value { text-align: center; }
+@media (max-width: 480px) { .wk-day { padding: 12px 10px; } }
 .win.bad input { border-color: var(--err); box-shadow: 0 0 0 3px rgba(255,138,128,.15); }
 .win-list .w-add { justify-self: start; }
 .hgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 6px; touch-action: none; user-select: none; -webkit-user-select: none; }
@@ -505,7 +509,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
     <div class="view" id="v-settings" hidden>
       <div class="panel">
         <h3>Обычный график по дням недели<small>Когда у вас обычно есть окошки. Конкретный день всегда можно поменять в журнале — кнопка с часами у дня</small></h3>
-        <div class="wk" id="sWeek"></div>
+        <div class="wk" id="setWeek"></div>
         <div class="row2">
           <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
           <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
@@ -1275,7 +1279,7 @@ async function loadSettings() {
 let weekState = {};
 const DAYFULL = { 1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота', 0: 'Воскресенье' };
 function renderWeekEd() {
-  const box = $('sWeek'); box.innerHTML = '';
+  const box = $('setWeek'); box.innerHTML = '';
   weekState = {};
   DAYN.forEach(([d]) => {
     const ws = setCfg.week && Array.isArray(setCfg.week[d]) ? setCfg.week[d] : ((setCfg.daysOff || []).includes(d) ? [] : [{ start: setCfg.open, end: setCfg.close }]);
