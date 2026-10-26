@@ -869,7 +869,9 @@ function waText() {
   const s = state.service, end = toHHMM(toMin(state.time) + s.duration);
   const ruDay = cap(new Date(state.date + 'T00:00').toLocaleDateString('ru' + '-RU', { weekday: 'long', day: 'numeric', month: 'long' }));
   return `Здравствуйте! Хочу записаться в browlash.look 💗\n\n💅 ${s.name}${s.price ? ' — ' + s.price : ''}\n📅 ${ruDay}, ${state.time}–${end}\n👤 ${$('name').value.trim()}\n📞 ${phone.value}` +
-    ($('comment').value.trim() ? `\n💬 ${$('comment').value.trim()}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
+    ($('comment').value.trim() ? `\n💬 ${$('comment').value.trim()}` : '') +
+    (normCode($('gift').value) ? `\n🎁 Сертификат: ${$('gift').value.trim()}` : '') +
+    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
 }
 function sendWhatsApp() {
   const url = `https://wa.me/${waNum()}?text=${encodeURIComponent(waText())}`;
@@ -909,11 +911,9 @@ document.addEventListener('focusout', () => setTimeout(() => { if (!document.act
 function update() {
   const s = state.service;
   $('bar').classList.toggle('show', !!s);
-  if (!s) return;
+  if (!s) { refreshPerks(); return; }
   $('sumMain').textContent = s.name;
-  const pk = perkFor();
-  $('sumSub').innerHTML = (pk ? `<s>${money(pk.base)}</s> <span class="pr">${money(pk.price)}</span> · ` : s.price ? `<span class="pr">${esc(s.price)}</span> · ` : '') +
-    (state.date ? fmtShort(state.date) + (state.time ? `, ${state.time}–${toHHMM(toMin(state.time) + s.duration)}` : ' · уақытты таңдаңыз') : 'күнді таңдаңыз');
+  $('sumSub').innerHTML = sumHtml();
   const ok = state.date && state.time && $('name').value.trim() && phone.value.replace(/\D/g, '').length === 11;
   $('submit').disabled = !ok;
   $('msg').textContent = '';
@@ -957,20 +957,40 @@ function renderPerk() {
   if (p.knownBirthday) $('bdayField').hidden = true;
   const gm = $('giftMsg');
   if (!normCode($('gift').value)) { gm.textContent = ''; gm.className = 'fmsg'; }
-  else if (p.gift?.error) { gm.textContent = p.gift.error; gm.className = 'fmsg bad'; }
+  else if (p.gift?.error) { gm.textContent = (p.gift.mismatch ? '⚠ ' : '') + p.gift.error; gm.className = 'fmsg bad'; }
   else if (p.gift) {
-    const g = p.gift, cost = perkFor()?.price ?? (parseInt(String(state.service?.price || '').replace(/\D/g, ''), 10) || 0);
-    gm.textContent = !g.amount ? `✓ Сертификат ${g.code}${g.service ? ' — ' + g.service : ''}`
+    const g = p.gift, cost = perkFor()?.price ?? svcPrice(state.service);
+    gm.textContent = !g.amount ? `✓ Сертификат ${g.code} на «${g.service}» — процедура уже оплачена 💗`
       : `✓ Сертификат ${g.code}: на нём ${money(g.balance)}${g.balance < g.amount ? ' (из ' + money(g.amount) + ')' : ''}` +
         (cost ? (cost > g.balance ? ` — спишется всё, доплата ${money(cost - g.balance)} на месте` : ` — спишется ${money(cost)}, останется ${money(g.balance - cost)} на следующий раз`) : '');
     gm.className = 'fmsg ok';
   }
-  const s = state.service;
-  if (s && $('sumSub')) {
-    const pk = perkFor();
-    const priceHtml = pk ? `<s>${money(pk.base)}</s> <span class="pr">${money(pk.price)}</span> · ` : s.price ? `<span class="pr">${esc(s.price)}</span> · ` : '';
-    $('sumSub').innerHTML = priceHtml + (state.date ? fmtShort(state.date) + (state.time ? `, ${state.time}–${toHHMM(toMin(state.time) + s.duration)}` : ' · уақытты таңдаңыз') : 'күнді таңдаңыз');
+  if (state.service && $('sumSub')) $('sumSub').innerHTML = sumHtml();
+  // сертификат на процедуру — сразу выбираем её
+  const gs = p.gift && !p.gift.error ? p.gift.service : p.gift?.mismatch ? p.gift.service : '';
+  if (gs && state.giftAuto !== p.gift.code) {
+    state.giftAuto = p.gift.code;
+    const svc = state.cfg.services.find(x => x.name === gs);
+    if (svc && state.service?.name !== svc.name) {
+      state.cat = svc.category || 'Услуги'; state.service = svc; state.time = null;
+      renderTabs(); renderServices(false); loadSlots(); update();
+      setTimeout(() => $('book').scrollIntoView({ behavior: 'smooth', block: 'start' }), 250);
+    }
   }
+}
+// цена в нижней плашке: со скидкой или с учётом сертификата
+const svcPrice = s => parseInt(String(s?.price || '').replace(/\D/g, ''), 10) || 0;
+function sumHtml() {
+  const s = state.service; if (!s) return '';
+  const when = state.date ? fmtShort(state.date) + (state.time ? `, ${state.time}–${toHHMM(toMin(state.time) + s.duration)}` : ' · уақытты таңдаңыз') : 'күнді таңдаңыз';
+  const pk = perkFor(), g = state.perk && state.perk.key === perkKey() && state.perk.gift && !state.perk.gift.error ? state.perk.gift : null;
+  const base = svcPrice(s), cost = pk ? pk.price : base;
+  if (g && g.service) return `<s>${money(base)}</s> <span class="pr">0 ₸</span> · по сертификату · ${when}`;
+  if (g && g.amount && cost) {
+    const pay = Math.max(0, cost - g.balance);
+    return `<s>${money(cost)}</s> <span class="pr">${money(pay)}</span> ${pay ? 'доплата' : '· по сертификату'} · ${when}`;
+  }
+  return (pk ? `<s>${money(pk.base)}</s> <span class="pr">${money(pk.price)}</span> · ` : s.price ? `<span class="pr">${esc(s.price)}</span> · ` : '') + when;
 }
 // день рождения: ДД.ММ
 $('bday').addEventListener('input', e => {
@@ -1072,7 +1092,7 @@ function ticketHtml(b) {
         ${price ? `<div class="row"><span class="k">Бағасы</span><span class="v">${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(price)}${b.discount ? ` <span class="disc">−${b.discount}%</span>` : ''}</span></div>` : ''}
         ${b.discount && b.discount_why ? `<div class="row"><span class="k">Скидка</span><span class="v">${esc(b.discount_why.replace(' (по документу)', ''))}</span></div>` : ''}
         ${b.discount_kind === 'birthday' ? `<div class="doc">🪪 Возьмите удостоверение или паспорт — скидка ко дню рождения по документу</div>` : ''}
-        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${b.gift.amount ? (b.status === 'came' ? ` · списано ${money(b.gift.charge)}` : ` · спишется ${money(b.gift.charge)}`) : ''}</span></div>
+        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${!b.gift.amount ? ' · процедура оплачена' : ''}${b.gift.amount ? (b.status === 'came' ? ` · списано ${money(b.gift.charge)}` : ` · спишется ${money(b.gift.charge)}`) : ''}</span></div>
           ${b.gift.amount ? `<div class="row"><span class="k">${b.status === 'came' ? 'Осталось' : 'Останется'}</span><span class="v">${money(b.status === 'came' ? b.gift.balance : Math.max(0, b.gift.balance - b.gift.charge))}${b.price > b.gift.charge && b.status !== 'came' ? ` · доплата ${money(b.price - b.gift.charge)}` : ''}</span></div>` : ''}` : ''}
         <div class="row"><span class="k">Мекенжай</span><span class="v">Ульянов к-сі, 49</span></div>
       </div>`;
@@ -1275,7 +1295,7 @@ async function giftPage(code) {
     <h2>${g.to ? esc(g.to) + ', это' : 'Это'}<span class="script">подарок для тебя</span></h2>
     <p class="lead">${st ? 'Этот сертификат уже нельзя использовать. Если это ошибка — напишите мастеру.' : 'Сертификат действует на любую процедуру в browlash.look — ресницы или брови. Если процедура дешевле — остаток сохранится на следующий раз. Выберите удобное время, код подставится сам.'}</p>
     <div class="cta-row">
-      ${st ? `<a class="btn" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">Написать мастеру</a>` : `<a class="btn" href="./?gift=${encodeURIComponent(g.code)}#book">Записаться по сертификату</a>`}
+      ${st ? `<a class="btn" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">Написать мастеру</a>` : `<a class="btn" href="./?gift=${encodeURIComponent(g.code)}${g.service ? '&svc=' + encodeURIComponent(g.service) : ''}#book">Записаться по сертификату</a>`}
       ${navigator.share ? `<button type="button" class="btn ghost" data-share="${esc(shareText)}">Подарить — отправить</button>` : `<a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(shareText)}" target="_blank" rel="noopener">WhatsApp-қа жіберу</a>`}
       <button type="button" class="btn ghost" data-copy="${esc(g.codeFmt)}">Скопировать код</button>
     </div>
