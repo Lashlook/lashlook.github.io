@@ -260,6 +260,49 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .hist div { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 10px; padding: 10px 14px; font-size: 13.5px; align-items: center; }
 .hist div + div { border-top: 1px solid var(--line); }
 .hist .d { color: var(--muted); font-variant-numeric: tabular-nums; }
+.hist div { grid-template-columns: 86px minmax(0, 1fr) auto auto; }
+.hist .h-act { display: flex; gap: 4px; } .hist .h-act .mini { padding: 5px 9px; }
+.hist .h-tech { display: block; color: var(--gold); font-size: 12px; margin-top: 2px; }
+@media (max-width: 480px) { .hist div { grid-template-columns: minmax(0, 1fr) auto; } .hist .d { grid-column: 1 / -1; } }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; white-space: nowrap; background: rgba(255,255,255,.06); border: 1px solid var(--line); color: var(--ink); }
+.tag.disc { background: var(--accent-soft); border-color: rgba(255,46,136,.45); color: var(--accent-2); }
+.tag.bd { background: rgba(255,196,107,.12); border-color: rgba(255,196,107,.35); color: #FFC46B; }
+.bk-svc s { color: var(--muted); }
+.bk-gift { font-size: 13px; font-weight: 600; color: #FFC46B; }
+.bk-tech { font-size: 13px; color: var(--gold); overflow-wrap: anywhere; }
+.bk-tech.last { color: var(--muted); font-style: italic; }
+.bk-doc { display: grid; gap: 8px; justify-items: start; padding: 10px 12px; border-radius: 12px; background: rgba(255,196,107,.1); border: 1px dashed rgba(255,196,107,.45); color: #FFC46B; font-size: 13px; font-weight: 600; }
+.linkish { justify-self: start; background: none; border: 0; padding: 0; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.bk-more { display: flex; gap: 6px; flex-wrap: wrap; }
+.bk-more .sq { display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--muted); font-size: 14px; cursor: pointer; transition: .2s; }
+.bk-more .sq span { font-size: 11.5px; font-weight: 600; }
+.bk-more .sq.hot { border-color: rgba(255,46,136,.55); background: var(--accent-soft); color: var(--accent-2); }
+@media (hover: hover) { .bk-more .sq:hover { border-color: var(--accent); color: var(--ink); } }
+.mini.hot { border-color: rgba(255,46,136,.55); background: var(--accent-soft); color: var(--accent-2); }
+.tech-last { padding: 12px 14px; border-radius: 14px; background: rgba(255,196,107,.08); border: 1px dashed rgba(255,196,107,.4); font-size: 14px; color: var(--ink); display: grid; gap: 2px; }
+.tech-last b { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #FFC46B; }
+.ph-box { border-radius: 18px; overflow: hidden; background: #000; min-height: 200px; display: grid; place-items: center; }
+.ph-box img { width: 100%; max-height: 65vh; object-fit: contain; display: block; }
+.cl-perks { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.cl-perks .cp { display: grid; gap: 2px; padding: 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); min-width: 0; }
+.cl-perks .cp span { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.cl-perks .cp b { font: 500 22px/1.1 var(--display); }
+.cl-perks .cp small { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.block-hint { font-size: 13px; color: var(--err); margin-top: -6px; }
+.block-hint:empty { display: none; }
+.perk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+@media (max-width: 560px) { .perk-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .perk-grid label { font-size: 12px; align-content: space-between; } }
+.perk-grid label { text-transform: none; letter-spacing: 0; font-size: 13px; }
+.gifts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; margin-top: 14px; }
+.gift { display: grid; gap: 8px; padding: 18px; border-radius: var(--r); border: 1px solid var(--line); background: radial-gradient(120% 120% at 100% 0%, rgba(255,46,136,.14), transparent 55%), rgba(20,18,22,.8); animation: dayIn .45s calc(var(--i) * 40ms) var(--ease) both; }
+.g-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.g-amt { font: 500 26px/1.1 var(--display); }
+.g-code { font: 700 15px/1 ui-monospace, Menlo, monospace; letter-spacing: .12em; color: var(--accent-2); }
+.g-meta { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.g-meta b { color: var(--ink); }
+.g-new { margin-top: 12px; display: grid; gap: 8px; padding: 16px; border-radius: 16px; border: 1px solid rgba(255,46,136,.5); background: var(--accent-soft); animation: dayIn .4s var(--ease) both; }
+.g-new span { font-size: 13px; color: var(--muted); }
+.g-new input { color: var(--accent-2); }
 
 /* ---------- Статистика ---------- */
 .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -457,6 +500,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <button type="button" role="tab" data-view="journal" aria-selected="true">Журнал</button>
       <button type="button" role="tab" data-view="feed" aria-selected="false">Лента <b class="badge" id="feedBadge" hidden></b></button>
       <button type="button" role="tab" data-view="clients" aria-selected="false">Клиентки</button>
+      <button type="button" role="tab" data-view="gifts" aria-selected="false">Подарки</button>
       <button type="button" role="tab" data-view="stats" aria-selected="false">Статистика</button>
       <button type="button" role="tab" data-view="settings" aria-selected="false">Настройки</button>
     </div>
@@ -495,7 +539,30 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <div class="clients" id="clients"></div>
     </div>
 
-    <!-- Статистика -->
+    <!-- Подарочные сертификаты -->
+    <div class="view" id="v-gifts" hidden>
+      <div class="panel">
+        <h3>Новый сертификат<small>Продали сертификат — создайте его здесь и отправьте покупателю красивую ссылку. Клиентка вводит код при записи, а когда отметите «пришла», он погасится сам</small></h3>
+        <div class="row2">
+          <label for="gAmount">Сумма, ₸<input id="gAmount" inputmode="numeric" placeholder="10 000"></label>
+          <label for="gService">Или процедура<select id="gService"><option value="">— на сумму —</option></select></label>
+        </div>
+        <div class="chips" id="gQuick"></div>
+        <div class="row2">
+          <label for="gTo">Кому<input id="gTo" maxlength="60" placeholder="Например: Алина"></label>
+          <label for="gFrom">От кого<input id="gFrom" maxlength="60" placeholder="Например: Дима"></label>
+        </div>
+        <label for="gMsg">Пожелание на сертификате<textarea id="gMsg" rows="2" maxlength="300" placeholder="С днём рождения! 💗"></textarea></label>
+        <div class="row2">
+          <label for="gMonths">Действует, месяцев<input id="gMonths" type="number" min="1" max="24" inputmode="numeric"></label>
+          <div style="display:flex;align-items:end"><button class="btn shine" type="button" id="gCreate" style="width:100%">🎁 Создать сертификат</button></div>
+        </div>
+        <div class="err" id="gErr"></div>
+        <div id="gNew"></div>
+      </div>
+      <div class="gifts" id="gifts"></div>
+    </div>
+
     <!-- Лента бота -->
     <div class="view" id="v-feed" hidden>
       <div class="feed-head">
@@ -525,6 +592,24 @@ dialog { overflow: auto; overscroll-behavior: contain; }
           <label for="sRemind">Вечерняя сводка «кому напомнить»<input id="sRemind" type="time" step="900"></label>
           <label for="sReview">Ссылка для отзывов (2ГИС)<input id="sReview" type="url" placeholder="https://2gis.kz/..."></label>
         </div>
+      </div>
+      <div class="panel">
+        <h3>Скидки и бонусы<small>Скидки не складываются — клиентке достаётся самая большая. 0 — выключить</small></h3>
+        <div class="perk-grid">
+          <label>🎂 Скидка ко дню рождения, %<input id="pBdPct" type="number" min="0" max="90" inputmode="numeric"></label>
+          <label>🎂 Действует ± дней от ДР<input id="pBdDays" type="number" min="0" max="30" inputmode="numeric"></label>
+          <label>🎂 Напомнить в группу за, дней<input id="pBdRemind" type="number" min="0" max="14" inputmode="numeric"></label>
+          <label>💗 Подруге по приглашению, %<input id="pRefPct" type="number" min="0" max="90" inputmode="numeric"></label>
+          <label>👭 Бонус той, кто пригласила, %<input id="pRefBonus" type="number" min="0" max="90" inputmode="numeric"></label>
+          <label>⭐ Скидка на каждый N-й визит: N<input id="pLoyN" type="number" min="0" max="50" inputmode="numeric"></label>
+          <label>⭐ Размер этой скидки, %<input id="pLoyPct" type="number" min="0" max="90" inputmode="numeric"></label>
+          <label>⛔ Чёрный список после неявок<input id="pNoshow" type="number" min="0" max="10" inputmode="numeric"></label>
+          <label>🎁 Сертификат действует, мес.<input id="pGiftM" type="number" min="1" max="24" inputmode="numeric"></label>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Памятка после процедуры<small>Клиентка видит её после записи и по своей ссылке. Каждый пункт — с новой строки</small></h3>
+        <div id="careEd" style="display:grid;gap:12px"></div>
       </div>
       <div class="panel">
         <h3>Прайс<small>Название, длительность и цена. Порядок — стрелками</small></h3>
@@ -580,6 +665,10 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <div class="chips-hint" id="chipsHint">Свободное время</div>
       <div class="chips" id="chips"></div>
     </div>
+    <div class="row2">
+      <label for="aDisc">Скидка, %<input id="aDisc" type="number" min="0" max="90" inputmode="numeric" placeholder="авто"></label>
+      <label for="aGift">Сертификат<input id="aGift" maxlength="12" autocapitalize="characters" placeholder="код, если есть"></label>
+    </div>
     <label for="aComment">Комментарий<textarea id="aComment" rows="2" maxlength="500"></textarea></label>
     <div class="modal-foot">
       <div class="err" id="addErr"></div>
@@ -632,17 +721,62 @@ dialog { overflow: auto; overscroll-behavior: contain; }
   </form>
 </dialog>
 
+<!-- Техника визита -->
+<dialog id="dlgTech">
+  <form class="modal" id="techForm" novalidate>
+    <h3><span>чтобы повторить точь-в-точь</span><b id="tTitle" style="font-weight:500">Техника</b></h3>
+    <div class="tech-last" id="tLast" hidden></div>
+    <label for="tEffect">Эффект / процедура<input id="tEffect" list="tEffectL" maxlength="60" placeholder="Классика, 2D, мокрый эффект, лисий…"></label>
+    <div><div class="chips-hint">Изгиб — быстрый выбор</div><div class="chips" id="tCurlC"></div></div>
+    <div class="row2">
+      <label for="tCurl">Изгиб<input id="tCurl" list="tCurlL" maxlength="60" placeholder="D"></label>
+      <label for="tThick">Толщина<input id="tThick" list="tThickL" maxlength="60" placeholder="0.07"></label>
+    </div>
+    <div class="chips" id="tThickC"></div>
+    <div class="row2">
+      <label for="tLen">Длина, мм<input id="tLen" list="tLenL" maxlength="60" placeholder="8–12"></label>
+      <label for="tGlue">Клей<input id="tGlue" list="tGlueL" maxlength="60" placeholder="Название клея"></label>
+    </div>
+    <label for="tNote">Заметка<textarea id="tNote" rows="2" maxlength="300" placeholder="Схема, что учесть в следующий раз"></textarea></label>
+    <datalist id="tEffectL"></datalist><datalist id="tCurlL"></datalist><datalist id="tThickL"></datalist><datalist id="tLenL"></datalist><datalist id="tGlueL"></datalist>
+    <div class="modal-foot">
+      <div class="err" id="tErr"></div>
+      <button class="btn ghost" type="button" id="tCopy" hidden>Как в прошлый раз</button>
+      <button class="btn ghost" type="button" data-close>Отмена</button>
+      <button class="btn shine" type="submit">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Фото-референс -->
+<dialog id="dlgPhoto">
+  <div class="modal">
+    <h3><span>референс от клиентки</span><b id="phTitle" style="font-weight:500">Фото</b></h3>
+    <div class="ph-box"><img id="phImg" alt="Фото-референс"></div>
+    <div class="modal-foot">
+      <a class="btn ghost" id="phOpen" target="_blank" rel="noopener">Открыть целиком</a>
+      <button class="btn shine" type="button" data-close>Закрыть</button>
+    </div>
+  </div>
+</dialog>
+
 <!-- Карточка клиентки -->
 <dialog id="dlgClient">
   <div class="modal">
     <div class="cl-top"><span class="ava" id="cAva"></span><div style="min-width:0"><h3 id="cName" style="font-size:26px"></h3><div class="cl-phone" id="cPhone"></div></div></div>
     <div class="cl-nums" id="cNums"></div>
-    <label for="cNote">Заметки мастера — изгиб, длина, толщина, аллергии<textarea id="cNote" rows="3" maxlength="1000" placeholder="Например: изгиб C, 10–12 мм, 0.07; чувствительные глаза"></textarea></label>
+    <div class="cl-perks" id="cPerks"></div>
+    <div class="row2">
+      <label for="cBday">День рождения<input id="cBday" inputmode="numeric" maxlength="5" placeholder="ДД.ММ"></label>
+      <label for="cBlock">Онлайн-запись<select id="cBlock"><option value="">Авто</option><option value="1">⛔ Только через WhatsApp</option><option value="0">✅ Всегда разрешать</option></select></label>
+    </div>
+    <div class="block-hint" id="cBlockHint"></div>
+    <label for="cNote">Заметки мастера — аллергии, особенности<textarea id="cNote" rows="3" maxlength="1000" placeholder="Например: чувствительные глаза, не любит длинные"></textarea></label>
     <div><div class="chips-hint" style="margin-bottom:8px">История визитов</div><div class="hist" id="cHist"></div></div>
     <div class="modal-foot">
       <a class="btn ghost" id="cWa" target="_blank" rel="noopener">WhatsApp</a>
       <button class="btn ghost" type="button" data-close>Закрыть</button>
-      <button class="btn shine" type="button" id="cSave">Сохранить заметку</button>
+      <button class="btn shine" type="button" id="cSave">Сохранить</button>
     </div>
   </div>
 </dialog>
@@ -736,9 +870,10 @@ $('tabs').addEventListener('click', e => {
   view = b.dataset.view;
   $('tabs').querySelectorAll('[data-view]').forEach(x => x.setAttribute('aria-selected', x === b));
   moveInd($('tabs'), $('tabInd'));
-  ['journal', 'feed', 'clients', 'stats', 'settings'].forEach(v => { const el = $('v-' + v); el.hidden = v !== view; if (v === view) { el.classList.remove('enter-v'); void el.offsetWidth; el.classList.add('enter-v'); } });
+  ['journal', 'feed', 'clients', 'gifts', 'stats', 'settings'].forEach(v => { const el = $('v-' + v); el.hidden = v !== view; if (v === view) { el.classList.remove('enter-v'); void el.offsetWidth; el.classList.add('enter-v'); } });
   if (view === 'journal') { animNext = true; load.sig = ''; load(); }
   if (view === 'clients') loadClients(true);
+  if (view === 'gifts') loadGifts();
   if (view === 'stats') loadStats();
   if (view === 'feed') loadFeed(true);
   if (view === 'settings') loadSettings();
@@ -760,7 +895,7 @@ async function load() {
     ]);
     const sig = JSON.stringify([qv, from, week, ahead.bookings.map(b => [b.id, b.status, b.date, b.time]), new Date().getHours() * 60 + new Date().getMinutes() >> 4]);
     if (sig === load.sig && !animNext) return; // ничего не поменялось — не трогаем страницу
-    load.sig = sig;
+    load.sig = sig; load.ahead = ahead.bookings;
     renderStats(ahead);
     weekHours = week.hours || {}; weekBookings = week.bookings || [];
     qv ? renderSearch(week.bookings) : renderWeek(week.bookings, week.blocks, week.waitlist || []);
@@ -798,12 +933,17 @@ function bookingRow(b, nowKey, nowMin) {
     <article class="bk${over && b.status !== 'cancelled' ? ' done' : ''}${b.status === 'cancelled' ? ' cancelled' : ''}" data-id="${b.id}">
       <div class="bk-time"><b>${b.time}</b><span>до ${end}</span></div>
       <div class="bk-main">
-        <div class="bk-name"><span>${esc(b.name)}</span><span class="st ${b.status}">${ST[b.status] || b.status}</span>${b.noshows ? `<span class="warn">⚠ не пришла ${b.noshows}×</span>` : ''}${b.source === 'admin' ? '<span class="pill muted">вручную</span>' : ''}</div>
-        <div class="bk-svc">${esc(b.service)}${priceOf(b) ? ` <span style="color:var(--muted);font-weight:500">· ${esc(priceOf(b))}</span>` : ''}</div>
+        <div class="bk-name"><span>${esc(b.name)}</span><span class="st ${b.status}">${ST[b.status] || b.status}</span>${b.noshows ? `<span class="warn">⚠ не пришла ${b.noshows}×</span>` : ''}${b.blocked ? '<span class="warn">⛔ запись через WhatsApp</span>' : ''}${b.bday ? `<span class="tag bd">🎂 ДР ${esc(b.bday)}</span>` : ''}${b.source === 'admin' ? '<span class="pill muted">вручную</span>' : ''}</div>
+        <div class="bk-svc">${esc(b.service)}${priceOf(b) ? ` <span style="color:var(--muted);font-weight:500">· ${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(priceOf(b))}</span>` : ''}${b.discount ? ` <span class="tag disc" title="${esc(b.discount_why || '')}">−${b.discount}% ${esc((b.discount_why || '').split(' ')[0])}</span>` : ''}</div>
+        ${b.discount_kind === 'birthday' && !['came', 'cancelled'].includes(b.status) ? `<div class="bk-doc">🪪 Скидка на ДР — попросите показать документ с датой рождения <button class="mini bad" type="button" data-nodisc="${b.id}">Нет документа — убрать скидку</button></div>` : ''}
+        ${b.discount && b.discount_kind !== 'birthday' && !['came', 'cancelled'].includes(b.status) ? `<button class="linkish" type="button" data-nodisc="${b.id}">убрать скидку</button>` : ''}
+        ${b.gift ? `<div class="bk-gift">🎁 Сертификат ${esc(b.giftFmt)}${b.giftAmount ? ' · ' + money(b.giftAmount) : ''}${b.status === 'came' ? ' · погашен' : ''}</div>` : ''}
         <div class="bk-phone">${esc(fmtPhone(b.phone))}</div>
         ${b.comment ? `<div class="bk-note">«${esc(b.comment)}»</div>` : ''}
         ${b.clientNote ? `<div class="bk-note client">📝 ${esc(b.clientNote)}</div>` : ''}
+        ${b.tech ? `<div class="bk-tech">🧵 ${esc(techText(b.tech))}</div>` : b.lastTech ? `<div class="bk-tech last">🧵 Прошлый раз (${dShort(b.lastTech.date)}): ${esc(b.lastTech.text)}</div>` : ''}
         ${quick ? `<div class="bk-quick">${quick}</div>` : ''}
+        <div class="bk-more"><button class="sq" type="button" data-tech="${b.id}" title="Техника: изгиб, длина, толщина" aria-label="Техника">🧵<span>${b.tech ? 'техника' : 'техника +'}</span></button>${b.photo ? `<button class="sq hot" type="button" data-photo="${b.id}" title="Фото-референс от клиентки" aria-label="Фото-референс">📸<span>фото</span></button>` : ''}<button class="sq" type="button" data-client="${esc(b.phone)}" title="Карточка клиентки" aria-label="Карточка клиентки">👤<span>карточка</span></button></div>
       </div>
       <div class="bk-act">
         <a class="icon-btn wa" href="${esc(b.waUrl || '#')}" target="_blank" rel="noopener" title="Написать в WhatsApp — готовое напоминание со ссылкой" aria-label="Написать в WhatsApp">${ICON.wa}</a>
@@ -879,6 +1019,14 @@ function renderSearch(list) {
 $('days').addEventListener('click', async e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.add) return openAdd(t.dataset.add);
+  if (t.dataset.tech) return openTech(Number(t.dataset.tech));
+  if (t.dataset.nodisc) {
+    if (t.dataset.sure !== '1') { t.dataset.sure = '1'; const was = t.textContent; t.textContent = 'Точно убрать? Нажмите ещё раз'; setTimeout(() => { t.dataset.sure = ''; t.textContent = was; }, 3000); return; }
+    try { const r = await api(`/api/admin/bookings/${t.dataset.nodisc}/discount`, { method: 'POST', body: JSON.stringify({ pct: 0 }) }); toast('Скидка убрана · цена ' + money(r.price)); load.sig = ''; load(); } catch (err) { toast(err.message); }
+    return;
+  }
+  if (t.dataset.photo) return openPhoto(Number(t.dataset.photo));
+  if (t.dataset.client) return openClient(t.dataset.client);
   if (t.dataset.hours) return openHours(t.dataset.hours);
   if (t.dataset.wdone) { await api('/api/admin/waitlist/' + t.dataset.wdone, { method: 'DELETE' }).catch(() => {}); toast('Убрано из листа ожидания'); load.sig = ''; load(); return; }
   if (t.dataset.break) return openBlock(t.dataset.break);
@@ -943,10 +1091,11 @@ $('aService').addEventListener('change', loadChips);
 $('aTime').addEventListener('input', () => $('chips').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.textContent === $('aTime').value)));
 async function save(force) {
   $('addErr').textContent = '';
-  const body = { name: $('aName').value, phone: $('aPhone').value, service: $('aService').value, date: $('aDate').value, time: $('aTime').value, comment: $('aComment').value, force };
+  const body = { name: $('aName').value, phone: $('aPhone').value, service: $('aService').value, date: $('aDate').value, time: $('aTime').value, comment: $('aComment').value, force,
+    discount: $('aDisc').value, gift: $('aGift').value };
   try {
-    await api('/api/admin/bookings', { method: 'POST', body: JSON.stringify(body) });
-    dlg.close(); toast('Запись добавлена');
+    const r = await api('/api/admin/bookings', { method: 'POST', body: JSON.stringify(body) });
+    dlg.close(); toast(r.booking?.discount ? `Запись добавлена · скидка −${r.booking.discount}% (${r.booking.discount_why})` : 'Запись добавлена');
     const d = new Date(body.date + 'T00:00'); if (d < weekStart || d > addDays(weekStart, 6)) weekStart = d;
     $('q').value = ''; animNext = true; load.sig = ''; load();
   } catch (err) { $('addErr').textContent = err.message; $('force').hidden = !err.data?.conflict; }
@@ -965,6 +1114,112 @@ $('blockForm').addEventListener('submit', async e => {
   } catch (err) { $('blockErr').textContent = err.message; }
 });
 
+// ---------- Техника визита ----------
+const techText = t => t ? [t.effect, t.curl && `изгиб ${t.curl}`, t.length && `${t.length} мм`.replace(' мм мм', ' мм'), t.thickness && `толщина ${t.thickness}`, t.glue && `клей ${t.glue}`, t.note].filter(Boolean).join(' · ') : '';
+const dlgT = $('dlgTech'); let techId = 0, techHints = null;
+const findBk = id => weekBookings.find(b => b.id === id) || (load.ahead || []).find(b => b.id === id) || histCache.find(b => b.id === id);
+function fillTech(t = {}) { $('tEffect').value = t.effect || ''; $('tCurl').value = t.curl || ''; $('tThick').value = t.thickness || ''; $('tLen').value = t.length || ''; $('tGlue').value = t.glue || ''; $('tNote').value = t.note || ''; markTechChips(); }
+function markTechChips() {
+  $('tCurlC').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.textContent === $('tCurl').value));
+  $('tThickC').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.textContent === $('tThick').value));
+}
+async function openTech(id) {
+  const b = findBk(id); if (!b) return;
+  techId = id; $('tErr').textContent = '';
+  $('tTitle').textContent = `${b.name} · ${dShort(b.date)} ${b.time}`;
+  if (!techHints) techHints = await api('/api/admin/tech-hints').catch(() => ({}));
+  const dl = (id, list, base) => $(id).innerHTML = [...new Set([...(list || []), ...base])].map(v => `<option value="${esc(v)}">`).join('');
+  dl('tEffectL', techHints.effect, ['Классика', '2D', '3D', '4D', '5D', 'Мокрый эффект', 'Лисий', 'Кукольный', 'Беличий']);
+  dl('tCurlL', techHints.curl, ['B', 'C', 'CC', 'D', 'DD', 'L', 'M']);
+  dl('tThickL', techHints.thickness, ['0.05', '0.07', '0.10', '0.12']);
+  dl('tLenL', techHints.length, ['6–10', '8–11', '8–12', '9–12', '10–13']);
+  dl('tGlueL', techHints.glue, []);
+  $('tCurlC').innerHTML = ['B', 'C', 'CC', 'D', 'DD', 'L', 'M'].map(v => `<button type="button" class="chip" data-v="${v}">${v}</button>`).join('');
+  $('tThickC').innerHTML = ['0.05', '0.07', '0.10', '0.12'].map(v => `<button type="button" class="chip" data-v="${v}">${v}</button>`).join('');
+  const lt = b.lastTech;
+  $('tLast').hidden = !lt; $('tCopy').hidden = !lt || !!b.tech;
+  if (lt) $('tLast').innerHTML = `<b>Прошлый раз, ${dShort(lt.date)}</b>${esc(lt.text)}`;
+  fillTech(b.tech || {});
+  dlgT.showModal();
+}
+$('tCurlC').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) { $('tCurl').value = $('tCurl').value === c.dataset.v ? '' : c.dataset.v; markTechChips(); } });
+$('tThickC').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) { $('tThick').value = $('tThick').value === c.dataset.v ? '' : c.dataset.v; markTechChips(); } });
+['tCurl', 'tThick'].forEach(id => $(id).addEventListener('input', markTechChips));
+$('tCopy').onclick = () => { const b = findBk(techId); if (b?.lastTech?.tech) fillTech(b.lastTech.tech); };
+$('techForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const r = await api(`/api/admin/bookings/${techId}/tech`, { method: 'POST', body: JSON.stringify({ effect: $('tEffect').value, curl: $('tCurl').value, thickness: $('tThick').value, length: $('tLen').value, glue: $('tGlue').value, note: $('tNote').value }) });
+    const b = findBk(techId); if (b) b.tech = r.tech;
+    techHints = null; dlgT.close(); toast(r.tech ? 'Техника сохранена 🧵' : 'Техника очищена');
+    load.sig = ''; load(); if (dlgC.open && curPhone) openClient(curPhone);
+  } catch (err) { $('tErr').textContent = err.message; }
+});
+
+// ---------- Фото-референс ----------
+const dlgP = $('dlgPhoto');
+async function openPhoto(id) {
+  const b = findBk(id);
+  $('phTitle').textContent = b ? `${b.name} · ${dShort(b.date)} ${b.time}` : 'Фото';
+  $('phImg').removeAttribute('src');
+  dlgP.showModal();
+  try {
+    await apiReady;
+    const r = await fetch(API + '/api/admin/photo/' + id, { headers: { Authorization: 'Bearer ' + token } });
+    if (!r.ok) throw new Error();
+    const url = URL.createObjectURL(await r.blob());
+    $('phImg').src = url; $('phOpen').href = url;
+  } catch { dlgP.close(); toast('Не получилось загрузить фото'); }
+}
+
+// ---------- Подарочные сертификаты ----------
+const GSTATUS = { active: ['действует', 'confirmed'], used: ['использован', 'came'], expired: ['срок истёк', 'cancelled'], void: ['отменён', 'cancelled'] };
+let giftsBooted = false;
+async function loadGifts() {
+  if (!giftsBooted) {
+    giftsBooted = true;
+    $('gService').innerHTML = '<option value="">— на сумму —</option>' + (cfg?.services || []).map(s => `<option value="${esc(s.name)}">${esc(s.name)}${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('');
+    $('gQuick').innerHTML = [5000, 10000, 15000, 20000, 30000].map(n => `<button type="button" class="chip" data-amt="${n}">${money(n)}</button>`).join('');
+  }
+  try {
+    const { gifts, months } = await api('/api/admin/gifts');
+    if (!$('gMonths').value) $('gMonths').value = months || 6;
+    $('gifts').innerHTML = gifts.length ? gifts.map((g, i) => {
+      const [stT, stC] = GSTATUS[g.status] || [g.status, 'new'];
+      return `<article class="gift" style="--i:${Math.min(i, 20)}">
+        <div class="g-top"><span class="g-amt">${g.amount ? money(g.amount) : esc(g.service)}</span><span class="st ${stC}">${stT}</span></div>
+        <div class="g-code">${esc(g.codeFmt)}</div>
+        <div class="g-meta">${g.to ? `Кому: <b>${esc(g.to)}</b>` : ''}${g.from ? ` · от: ${esc(g.from)}` : ''}${g.amount && g.service ? ` · ${esc(g.service)}` : ''}<br>до ${dShort(g.expires)}${g.booking ? ` · 📅 ${esc(g.booking.name)}, ${dShort(g.booking.date)} ${g.booking.time}` : ''}${g.usedAt ? ` · погашен ${dShort(g.usedAt.slice(0, 10))}` : ''}</div>
+        <div class="bk-quick">
+          ${g.url ? `<a class="mini" href="${esc(g.url)}" target="_blank" rel="noopener">Открыть</a><button class="mini" type="button" data-gcopy="${esc(g.url)}">Скопировать ссылку</button><a class="mini" href="https://wa.me/?text=${encodeURIComponent('Подарочный сертификат browlash.look 💗 ' + g.url)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+          ${g.status === 'active' ? `<button class="mini ok" type="button" data-gst="used" data-code="${g.code}">Погасить</button><button class="mini bad" type="button" data-gst="void" data-code="${g.code}">Отменить</button>` : g.status !== 'expired' ? `<button class="mini" type="button" data-gst="active" data-code="${g.code}">Вернуть</button>` : ''}
+        </div></article>`;
+    }).join('') : '<div class="empty-big">Здесь появятся проданные сертификаты.<br>Отличный подарок на 8 Марта, Новый год и дни рождения 💗</div>';
+  } catch {}
+}
+$('gQuick').addEventListener('click', e => { const c = e.target.closest('[data-amt]'); if (!c) return; $('gAmount').value = Number(c.dataset.amt).toLocaleString('ru-RU'); $('gService').value = ''; $('gQuick').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === c)); });
+$('gService').addEventListener('change', () => { if ($('gService').value) { $('gAmount').value = ''; $('gQuick').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', 'false')); } });
+$('gCreate').onclick = async () => {
+  $('gErr').textContent = ''; const btn = $('gCreate'); btn.disabled = true;
+  try {
+    const { gift: g } = await api('/api/admin/gifts', { method: 'POST', body: JSON.stringify({ amount: $('gAmount').value, service: $('gService').value, to: $('gTo').value, from: $('gFrom').value, message: $('gMsg').value, months: $('gMonths').value }) });
+    ['gAmount', 'gTo', 'gFrom', 'gMsg'].forEach(id => $(id).value = ''); $('gService').value = '';
+    $('gNew').innerHTML = `<div class="g-new"><b>🎁 Готово! Код ${esc(g.codeFmt)}</b><span>Отправьте ссылку покупателю — там красивый сертификат, который можно переслать.</span>
+      ${g.url ? `<input readonly value="${esc(g.url)}" onclick="this.select()"><div class="bk-quick"><a class="mini hot" href="https://wa.me/?text=${encodeURIComponent('Подарочный сертификат browlash.look 💗 ' + g.url)}" target="_blank" rel="noopener">Отправить в WhatsApp</a><button class="mini" type="button" data-gcopy="${esc(g.url)}">Скопировать</button><a class="mini" href="${esc(g.url)}" target="_blank" rel="noopener">Посмотреть</a></div>` : ''}</div>`;
+    toast('Сертификат создан'); loadGifts();
+  } catch (err) { $('gErr').textContent = err.message; }
+  btn.disabled = false;
+};
+$('v-gifts').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.gcopy) { try { await navigator.clipboard.writeText(t.dataset.gcopy); toast('Ссылка скопирована'); } catch { toast('Не получилось скопировать'); } }
+  if (t.dataset.gst) {
+    if (t.dataset.gst === 'void' && t.dataset.sure !== '1') { t.dataset.sure = '1'; t.textContent = 'Точно отменить?'; setTimeout(() => { t.dataset.sure = ''; t.textContent = 'Отменить'; }, 3000); return; }
+    await api('/api/admin/gifts/' + t.dataset.code, { method: 'POST', body: JSON.stringify({ status: t.dataset.gst }) }).catch(err => toast(err.message));
+    loadGifts();
+  }
+});
+
 // ---------- Клиентки ----------
 async function loadClients(anim) {
   try {
@@ -975,7 +1230,8 @@ async function loadClients(anim) {
       <button class="cl" type="button" data-phone="${esc(c.phone)}" style="--i:${Math.min(i, 20)}">
         <div class="cl-top"><span class="ava">${esc(c.name.trim()[0] || '?')}</span><div style="min-width:0"><div class="cl-name">${esc(c.name)}</div><div class="cl-phone">${esc(fmtPhone(c.phone))}</div></div></div>
         <div class="cl-nums"><div><b>${c.visits}</b><span>${plural(c.visits, ['визит', 'визита', 'визитов'])}</span></div><div><b>${(c.spent / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 1 })}к</b><span>₸ всего</span></div><div><b>${c.upcoming}</b><span>впереди</span></div></div>
-        <div class="cl-foot">${c.last ? `Последний визит ${dShort(c.last)}` : 'Ещё не была'}${c.noshows ? `<span class="warn">⚠ не пришла ${c.noshows}×</span>` : ''}${c.cancels ? `<span class="pill muted">отмен: ${c.cancels}</span>` : ''}</div>
+        <div class="cl-foot">${c.last ? `Последний визит ${dShort(c.last)}` : 'Ещё не была'}${c.noshows ? `<span class="warn">⚠ не пришла ${c.noshows}×</span>` : ''}${c.blocked ? '<span class="warn">⛔ через WhatsApp</span>' : ''}${c.cancels ? `<span class="pill muted">отмен: ${c.cancels}</span>` : ''}</div>
+        ${c.birthday || c.invited || c.bonus ? `<div class="cl-foot">${c.birthday ? `<span class="tag bd">🎂 ${esc(c.birthday)}${c.bdaySoon ? ' — скоро!' : ''}</span>` : ''}${c.invited ? `<span class="tag">👭 привела ${c.invited}</span>` : ''}${c.bonus ? `<span class="tag disc">🎁 бонус ×${c.bonus}</span>` : ''}</div>` : ''}
         ${c.note ? `<div class="cl-note">📝 ${esc(c.note)}</div>` : ''}
       </button>`).join('');
     if (anim) { box.classList.remove('enter'); void box.offsetWidth; box.classList.add('enter'); }
@@ -983,23 +1239,45 @@ async function loadClients(anim) {
 }
 let cdeb; $('cq').addEventListener('input', () => { clearTimeout(cdeb); cdeb = setTimeout(() => loadClients(true), 250); });
 $('clients').addEventListener('click', e => { const c = e.target.closest('[data-phone]'); if (c) openClient(c.dataset.phone); });
-const dlgC = $('dlgClient'); let curPhone = '';
+const dlgC = $('dlgClient'); let curPhone = '', histCache = [];
+$('cBday').addEventListener('input', e => { let d = $('cBday').value.replace(/\D/g, '').slice(0, 4); $('cBday').value = d.length > 2 ? d.slice(0, 2) + '.' + d.slice(2) : d; });
 async function openClient(phone) {
   curPhone = phone;
-  const { history, note } = await api('/api/admin/clients/' + encodeURIComponent(phone));
+  const info = await api('/api/admin/clients/' + encodeURIComponent(phone));
+  const { history, note } = info;
+  histCache = history;
+  $('cBday').value = info.birthday || '';
+  $('cBlock').value = info.blocked === null ? '' : String(info.blocked);
+  $('cBlockHint').textContent = info.blockedNow ? `Сейчас онлайн-запись для неё закрыта${info.blocked === null ? ` — не пришла ${info.noshows} раз(а)` : ''}. Записаться можно только через WhatsApp.` : '';
+  const L = info.loyalty, ldone = L.every > 1 ? L.visits % L.every : 0;
+  $('cPerks').innerHTML = `
+    ${L.every > 1 && L.pct ? `<div class="cp"><span>⭐ Визиты</span><b>${ldone} из ${L.every}</b><small>${L.every - ldone === 1 ? `следующий — со скидкой ${L.pct}%` : `до скидки ${L.pct}% — ${L.every - ldone}`}</small></div>` : ''}
+    <div class="cp"><span>👭 Привела подруг</span><b>${info.invited.length}</b><small>${info.invited.map(x => esc(x.name.split(' ')[0]) + (x.came ? ' ✓' : '')).join(', ') || 'пока никого'}</small></div>
+    <div class="cp"><span>🎁 Бонус за подругу</span><b>${info.bonus ? '×' + info.bonus : '—'}</b><small>${info.bonus ? `−${info.bonusPct}% спишется при записи` : 'появится, когда подруга придёт'}</small></div>
+    ${info.referredBy ? `<div class="cp"><span>💗 Пришла по совету</span><b style="font-size:16px">${esc(info.referredBy.name || fmtPhone(info.referredBy.phone))}</b></div>` : ''}
+    ${info.refUrl ? `<button class="mini" type="button" id="cRef" data-url="${esc(info.refUrl)}" style="grid-column:1/-1;justify-self:start">🔗 Скопировать её ссылку «приведи подругу»</button>` : ''}`;
+  $('cRef')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.refUrl); toast('Ссылка скопирована'); } catch { toast(info.refUrl); } });
   const name = history[0]?.name || '';
   $('cAva').textContent = name.trim()[0] || '?'; $('cName').textContent = name; $('cPhone').textContent = fmtPhone(phone);
   const now = new Date();
   const done = history.filter(b => !['cancelled', 'noshow'].includes(b.status) && new Date(`${b.date}T${b.time}`) < now);
   $('cNums').innerHTML = `<div><b>${done.length}</b><span>${plural(done.length, ['визит', 'визита', 'визитов'])}</span></div><div><b>${money(done.reduce((s, b) => s + (b.price || 0), 0))}</b><span>потратила</span></div><div><b>${history.filter(b => b.status === 'noshow').length}</b><span>не пришла</span></div>`;
   $('cNote').value = note;
-  $('cHist').innerHTML = history.map(b => `<div><span class="d">${dShort(b.date)} ${b.time}</span><span>${esc(b.service)}</span><span class="st ${b.status}">${ST[b.status]}</span></div>`).join('') || '<div>Пока пусто</div>';
+  $('cHist').innerHTML = history.map(b => `<div><span class="d">${dShort(b.date)} ${b.time}</span><span>${esc(b.service)}${b.discount ? ` <span class="tag disc">−${b.discount}%</span>` : ''}${b.tech ? `<small class="h-tech">🧵 ${esc(techText(b.tech))}</small>` : ''}</span><span class="st ${b.status}">${ST[b.status]}</span>
+    <span class="h-act"><button class="mini" type="button" data-tech="${b.id}">🧵</button>${b.photo ? `<button class="mini hot" type="button" data-photo="${b.id}">📸</button>` : ''}</span></div>`).join('') || '<div>Пока пусто</div>';
   $('cWa').href = `https://wa.me/${phone.replace(/\D/g, '')}`;
   dlgC.showModal();
 }
+$('cHist').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.tech) openTech(Number(t.dataset.tech));
+  if (t.dataset.photo) openPhoto(Number(t.dataset.photo));
+});
 $('cSave').onclick = async () => {
-  await api('/api/admin/clients/' + encodeURIComponent(curPhone), { method: 'POST', body: JSON.stringify({ note: $('cNote').value }) });
-  dlgC.close(); toast('Заметка сохранена'); loadClients(false);
+  try {
+    await api('/api/admin/clients/' + encodeURIComponent(curPhone), { method: 'POST', body: JSON.stringify({ note: $('cNote').value, birthday: $('cBday').value, blocked: $('cBlock').value }) });
+    dlgC.close(); toast('Сохранено'); loadClients(false); load.sig = ''; load();
+  } catch (err) { toast(err.message); }
 };
 
 // ---------- Статистика ----------
@@ -1289,6 +1567,10 @@ async function loadSettings() {
     $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || '';
 
     renderSvcEd();
+    const P = setCfg.perks || {};
+    [['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths']]
+      .forEach(([id, k]) => $(id).value = P[k] ?? '');
+    $('careEd').innerHTML = Object.entries(setCfg.aftercare || {}).map(([k, v]) => `<label>${esc(k)}<textarea class="care-t" data-cat="${esc(k)}" rows="6" maxlength="2000">${esc(v)}</textarea></label>`).join('') || '<p style="margin:0;color:var(--muted)">Добавьте услуги — для каждого раздела появится памятка</p>';
     $('setErr').textContent = '';
   } catch (err) { toast(err.message); }
 }
@@ -1362,12 +1644,14 @@ $('setSave').onclick = async () => {
     week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value),
     master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value,
     services: readSvcEd(),
+    perks: Object.fromEntries([['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths']].map(([id, k]) => [k, $(id).value])),
+    aftercare: Object.fromEntries([...document.querySelectorAll('.care-t')].map(t => [t.dataset.cat, t.value])),
   };
   if (Object.values(weekState).flat().some(w => !(w.start && w.end && mm(w.end) > mm(w.start)))) { $('setErr').textContent = 'В графике есть окошко, где конец раньше начала — поправьте'; return; }
   const btn = $('setSave'); btn.disabled = true;
   try {
     const r = await api('/api/admin/settings', { method: 'POST', body: JSON.stringify(body) });
-    setCfg = r.settings; cfg = { ...cfg, ...r.settings }; renderSvcEd();
+    setCfg = { ...setCfg, ...r.settings }; cfg = { ...cfg, ...r.settings }; renderSvcEd();
     toast('Сохранено — сайт обновится через 1–2 минуты');
   } catch (err) { $('setErr').textContent = err.message; }
   btn.disabled = false;

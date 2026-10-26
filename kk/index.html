@@ -305,6 +305,7 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .chip-p[aria-pressed="true"] { background: var(--pink); border-color: var(--pink); color: #fff; box-shadow: 0 8px 20px -10px rgba(255,46,136,1); }
 .wl .btn { justify-self: start; }
 .wl .msg { color: var(--err); font-size: 13px; }
+.wl-open { background: none; border: 0; padding: 8px 0; color: var(--pink-2); cursor: pointer; font-family: inherit; text-align: left; }
 .wl-open { margin-top: 14px; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
 #offNote { margin-top: 4px; }
 .wa-btn { color: #6FE3A0 !important; }
@@ -328,6 +329,85 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .status.wait { color: #FFC46B; background: rgba(255,196,107,.12); }
 .status.ok { color: #6FE3A0; background: rgba(111,227,160,.12); }
 .status.bad { color: var(--err); background: rgba(255,138,128,.12); }
+.extras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.extra { display: flex; align-items: center; gap: 10px; text-align: left; padding: 12px 14px; border-radius: 16px; border: 1px dashed var(--line); background: var(--surface); color: var(--ink); cursor: pointer; transition: .25s var(--ease); min-width: 0; }
+.extra .ei { font-size: 22px; line-height: 1; flex: none; }
+.extra b { display: block; font-size: 14px; }
+.extra small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.extra[aria-expanded="true"] { border-style: solid; border-color: var(--pink); background: var(--pink-soft); }
+@media (max-width: 380px) { .extras { grid-template-columns: 1fr; } }
+.photo-prev { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); animation: rowIn .4s var(--ease) both; }
+.photo-prev img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; }
+.photo-prev b { display: block; font-size: 14px; } .photo-prev small { color: var(--muted); font-size: 12px; }
+.photo-prev .x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; }
+.fmsg { font-size: 13px; margin: 6px 4px 0; min-height: 0; }
+.fmsg.ok { color: #6FE3A0; } .fmsg.bad { color: var(--err); }
+.perk { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; background: linear-gradient(120deg, rgba(255,46,136,.22), rgba(255,46,136,.06)); border: 1px solid rgba(255,46,136,.45); font-size: 14px; line-height: 1.45; animation: rowIn .45s var(--ease) both; }
+.perk .pi { font-size: 24px; line-height: 1; flex: none; }
+.perk s, .bar s, .ticket s { color: var(--muted); font-weight: 500; }
+.perk b { color: var(--ink); }
+.doc { display: block; margin-top: 6px; font-size: 12.5px; color: #FFC46B; line-height: 1.45; }
+.ticket .doc { margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(255,196,107,.1); border: 1px dashed rgba(255,196,107,.4); }
+.disc { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--pink); color: #fff; font: 700 11px/1.5 var(--body); vertical-align: 2px; }
+.ref-banner { position: relative; z-index: 3; display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 14px 16px; border-radius: 18px; font-size: 14px; line-height: 1.45;
+  background: linear-gradient(120deg, rgba(255,46,136,.28), rgba(138,43,226,.14)); border: 1px solid rgba(255,46,136,.5); box-shadow: 0 18px 40px -24px rgba(255,46,136,.9); animation: rowIn .6s var(--ease) both; }
+.ref-banner .pi { font-size: 26px; line-height: 1; }
+.loyal { display: grid; gap: 12px; padding: 16px 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+.loyal .lt { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+.loyal .lt span { color: var(--muted); }
+.loyal .dots { display: flex; gap: 8px; }
+.loyal .dots i { flex: 1; height: 10px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); position: relative; }
+.loyal .dots i.on { background: linear-gradient(90deg, var(--pink), #FF6FB0); border-color: transparent; box-shadow: 0 0 12px rgba(255,46,136,.6); }
+.loyal .dots i.gift::after { content: "🎁"; position: absolute; right: -2px; top: -20px; font-size: 14px; }
+.refbox { display: grid; gap: 10px; padding: 16px 18px; border-radius: 18px; border: 1px dashed rgba(255,46,136,.55); background: radial-gradient(120% 140% at 100% 0%, rgba(255,46,136,.16), transparent 60%), var(--surface); font-size: 14px; line-height: 1.5; }
+.refbox h3 { margin: 0; font: 500 22px/1.2 var(--display); }
+.refbox input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); font-size: 15px; color: var(--pink-2); }
+details.care { border-radius: 18px; background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+details.care summary { cursor: pointer; list-style: none; padding: 16px 18px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+details.care summary::-webkit-details-marker { display: none; }
+details.care summary::after { content: "+"; margin-left: auto; font-size: 22px; color: var(--pink-2); transition: transform .3s var(--ease); }
+details.care[open] summary::after { transform: rotate(45deg); }
+details.care ul { margin: 0; padding: 0 18px 18px 38px; display: grid; gap: 8px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+details.care li::marker { color: var(--pink); }
+/* подарочный сертификат */
+@property --ca { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.giftp { display: grid; gap: 22px; justify-items: center; text-align: center; padding-block: 28px 70px; }
+.giftp h2 { margin: 0; font: 500 clamp(34px, 9vw, 50px)/1.05 var(--display); }
+.giftp h2 .script { display: block; font: 400 clamp(40px, 11vw, 58px)/1 var(--script); color: var(--pink); }
+.giftp .lead { max-width: 460px; margin: 0 auto; }
+.giftp .cta-row { justify-content: center; }
+.cert-wrap { perspective: 1000px; width: min(100%, 460px); }
+.cert { position: relative; border-radius: 28px; padding: 2px; min-height: 250px; display: grid; transform-style: preserve-3d; transition: transform .25s ease-out;
+  background: conic-gradient(from var(--ca), #FF2E88, #FFD1E6, #9B5CFF 35%, #FF2E88 55%, #FFE4A8 75%, #FF2E88); animation: certSpin 6s linear infinite;
+  box-shadow: 0 40px 90px -40px rgba(255,46,136,.95), 0 0 0 1px rgba(255,255,255,.04); }
+@keyframes certSpin { to { --ca: 360deg; } }
+.cert-in { position: relative; height: 100%; border-radius: 26px; overflow: hidden; padding: 20px 22px; display: grid; grid-template-rows: auto 1fr auto; text-align: left;
+  background: radial-gradient(110% 90% at 88% 6%, rgba(255,46,136,.38), transparent 55%), radial-gradient(90% 80% at 0% 105%, rgba(155,92,255,.28), transparent 60%), linear-gradient(160deg, #1a1218, #0c0a0d); }
+.cert-in::before { content: ""; position: absolute; inset: -40%; background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.16) 50%, transparent 58%); transform: translateX(-60%); animation: certShine 5s 1s ease-in-out infinite; pointer-events: none; }
+@keyframes certShine { 0%, 55% { transform: translateX(-60%); } 100% { transform: translateX(60%); } }
+.cert-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; position: relative; }
+.cert-top .logo { font-size: 17px; }
+.cert-k { font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--pink-2); text-align: right; }
+.cert-mid { align-self: center; position: relative; }
+.cert-amt { font: 500 clamp(40px, 12.5vw, 60px)/1 var(--display); letter-spacing: -.01em; background: linear-gradient(90deg, #fff, #FFD1E6 60%, #FF6FB0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cert-amt.svc { font-size: clamp(26px, 7.5vw, 36px); line-height: 1.1; }
+.cert-to { margin-top: 6px; font-size: 15px; color: var(--muted); }
+.cert-to .script { font: 400 30px/1 var(--script); color: var(--pink); margin-left: 4px; }
+.cert-msg { margin: 6px 0 0; font: italic 500 15px/1.35 var(--display); color: #f2dbe6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cert-foot { display: flex; justify-content: space-between; align-items: end; gap: 10px; position: relative; font-size: 12px; color: var(--muted); }
+.cert-code { font: 700 15px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .12em; color: var(--ink); padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+.cert-eye { position: absolute; right: -30px; top: 38%; width: 170px; opacity: .13; pointer-events: none; }
+.cert-mid { padding-block: 14px; }
+.cert-to .k { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.giftp .cta-row { flex-direction: column; width: min(100%, 360px); }
+.giftp .cta-row .btn { width: 100%; }
+.cert-eye path, .cert-eye circle { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; }
+.cert .spark { z-index: 4; }
+.cert.used .cert-in, .cert.expired .cert-in { filter: grayscale(.85) brightness(.75); }
+.cert.used, .cert.expired { animation: none; background: #3a3438; }
+.stamp { position: absolute; z-index: 5; top: 46%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg); border: 3px solid var(--err); color: var(--err); padding: 8px 18px; border-radius: 14px;
+  font: 800 18px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; background: rgba(10,9,11,.7); box-shadow: 0 0 30px rgba(255,138,128,.35); }
+@media (max-width: 380px) { .cert-in { padding: 16px; } .cert-msg { -webkit-line-clamp: 1; } .cert-eye { width: 110px; } }
 .mine { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 16px; border-radius: 16px; text-decoration: none; font-size: 14px;
   background: rgba(28,25,30,.8); border: 1px solid rgba(255,46,136,.45); backdrop-filter: blur(10px); animation: rowIn .6s var(--ease) both; }
 .mine i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 10px var(--pink); flex: none; animation: live 1.6s ease-in-out infinite; }
@@ -449,6 +529,15 @@ input::-webkit-date-and-time-value { text-align: left; }
         <div class="field"><input id="name" name="name" maxlength="80" autocomplete="given-name" placeholder=" "><label for="name">Атыңыз</label></div>
         <div class="field"><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" "><label for="phone">Телефон / WhatsApp</label></div>
         <div class="field"><textarea id="comment" name="comment" maxlength="500" placeholder=" "></textarea><label for="comment">Тілектер — міндетті емес</label></div>
+        <div class="field" id="bdayField"><input id="bday" name="bday" inputmode="numeric" maxlength="5" autocomplete="bday" placeholder=" "><label for="bday">Туған күн — КК.АА</label><div class="fmsg" style="color:var(--muted)">🎂 Міндетті емес — туған күніңізге жеңілдік сыйлаймыз</div></div>
+        <div class="extras">
+          <button type="button" class="extra" id="photoBtn" aria-expanded="false"><span class="ei">📸</span><span><b>Фото-референс</b><small>Қандай эффект керегін көрсетіңіз</small></span></button>
+          <button type="button" class="extra" id="giftBtn" aria-expanded="false"><span class="ei">🎁</span><span><b>Сертификат бар</b><small>Сыйлық кодын енгізіңіз</small></span></button>
+        </div>
+        <input type="file" id="photoIn" accept="image/*" hidden>
+        <div class="photo-prev" id="photoPrev" hidden><img id="photoImg" alt="Ваш референс"><div><b>Референс тіркелді</b><small>Шебер оны жазылумен бірге көреді</small></div><button type="button" class="x" id="photoX" aria-label="Убрать фото">×</button></div>
+        <div class="field" id="giftField" hidden><input id="gift" name="gift" autocapitalize="characters" autocomplete="off" maxlength="12" placeholder=" "><label for="gift">Сертификат коды, мысалы BLAB-12CD</label><div class="fmsg" id="giftMsg"></div></div>
+        <div id="perkBox"></div>
       </div>
     </section>
   </form>
@@ -533,7 +622,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 <script>
 const LOC = (Intl.DateTimeFormat.supportedLocalesOf(['kk-KZ']).length && new Date(2026, 0, 5).toLocaleDateString('kk-KZ', { weekday: 'long' }) !== 'Monday') ? 'kk-KZ' : 'ru-RU';
 const $ = id => document.getElementById(id);
-const state = { cfg: null, cat: null, service: null, date: null, time: null, offline: false, part: 'any' };
+const state = { cfg: null, cat: null, service: null, date: null, time: null, offline: false, part: 'any', ref: '', perk: null, photo: null, blocked: false };
 const WA_DEFAULT = '+77075938677';
 const waNum = () => String(state.cfg?.whatsapp || WA_DEFAULT).replace(/\D/g, '');
 let API = '';
@@ -581,7 +670,7 @@ setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList
 async function api(path, opts) {
   const r = await fetch(API + path, opts);
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { status: r.status });
+  if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { status: r.status, field: j.field });
   return j;
 }
 
@@ -777,23 +866,114 @@ function update() {
   $('bar').classList.toggle('show', !!s);
   if (!s) return;
   $('sumMain').textContent = s.name;
-  $('sumSub').innerHTML = (s.price ? `<span class="pr">${esc(s.price)}</span> · ` : '') +
+  const pk = perkFor();
+  $('sumSub').innerHTML = (pk ? `<s>${money(pk.base)}</s> <span class="pr">${money(pk.price)}</span> · ` : s.price ? `<span class="pr">${esc(s.price)}</span> · ` : '') +
     (state.date ? fmtShort(state.date) + (state.time ? `, ${state.time}–${toHHMM(toMin(state.time) + s.duration)}` : ' · уақытты таңдаңыз') : 'күнді таңдаңыз');
   const ok = state.date && state.time && $('name').value.trim() && phone.value.replace(/\D/g, '').length === 11;
   $('submit').disabled = !ok;
   $('msg').textContent = '';
+  refreshPerks();
+}
+
+// ---------- Скидки, бонусы, сертификат: подсказка, пока заполняют форму ----------
+const money = n => Number(n || 0).toLocaleString(LOC) + ' ₸';
+const perkKey = () => JSON.stringify([phone.value.replace(/\D/g, ''), state.service?.name, state.date, $('bday').value, normCode($('gift').value), state.ref]);
+const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const perkFor = () => state.perk && state.perk.key === perkKey() && state.perk.pct && state.perk.base ? state.perk : null;
+let perkT = 0, perkSeq = 0, lastPerkKey = '';
+function refreshPerks() {
+  if (state.offline) return;
+  const key = perkKey(); if (key === lastPerkKey) return;
+  lastPerkKey = key; clearTimeout(perkT);
+  perkT = setTimeout(async () => {
+    const ph = phone.value.replace(/\D/g, ''), seq = ++perkSeq;
+    if (ph.length !== 11 && !normCode($('gift').value) && !state.ref) { state.perk = null; renderPerk(); return; }
+    try {
+      const r = await api('/api/perks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        ref: state.ref, phone: ph.length === 11 ? phone.value : '', service: state.service?.name || '', date: state.date || '', birthday: $('bday').value, gift: $('gift').value }) });
+      if (seq !== perkSeq) return;
+      state.perk = { ...r, key }; renderPerk();
+    } catch {}
+  }, 380);
+}
+function renderPerk() {
+  const p = state.perk || {}, box = $('perkBox');
+  state.blocked = !!p.blocked;
+  if (p.blocked) {
+    box.innerHTML = `<div class="notice"><div class="ic">💬</div><div><b>Для этого номера запись — через мастера.</b> Напишите в WhatsApp, она подберёт удобное время.
+      <div class="cta-row" style="margin-top:10px"><button type="button" class="btn sm" id="blockedWa">Написать в WhatsApp</button></div></div></div>`;
+    $('blockedWa').onclick = () => { if (state.service && state.date && state.time) sendWhatsApp(); else location.href = `https://wa.me/${waNum()}`; };
+    $('submit').textContent = 'Написать в WhatsApp';
+  } else {
+    if ($('submit').textContent === 'Написать в WhatsApp') $('submit').textContent = state.offline ? 'WhatsApp-қа жіберу' : 'Записаться';
+    const pk = perkFor();
+    box.innerHTML = pk ? `<div class="perk"><span class="pi">${esc([...pk.why][0])}</span><div><b>Сіздің жеңілдігіңіз −${pk.pct}%</b> — ${esc(pk.why.replace(/^\S+\s/, '').replace(' (по документу)', ''))}<br><s>${money(pk.base)}</s> → <b>${money(pk.price)}</b>${pk.why.startsWith('🎂') ? '<br><span class="doc">🪪 Скидка действует, если на визите покажете документ с датой рождения — удостоверение или паспорт. Без документа процедура по обычной цене.</span>' : ''}</div></div>` : '';
+  }
+  if (p.knownBirthday) $('bdayField').hidden = true;
+  const gm = $('giftMsg');
+  if (!normCode($('gift').value)) { gm.textContent = ''; gm.className = 'fmsg'; }
+  else if (p.gift?.error) { gm.textContent = p.gift.error; gm.className = 'fmsg bad'; }
+  else if (p.gift) { gm.textContent = `✓ Сертификат ${p.gift.code}${p.gift.amount ? ' на ' + money(p.gift.amount) : p.gift.service ? ' — ' + p.gift.service : ''} — оплатите им процедуру у мастера`; gm.className = 'fmsg ok'; }
+  const s = state.service;
+  if (s && $('sumSub')) {
+    const pk = perkFor();
+    const priceHtml = pk ? `<s>${money(pk.base)}</s> <span class="pr">${money(pk.price)}</span> · ` : s.price ? `<span class="pr">${esc(s.price)}</span> · ` : '';
+    $('sumSub').innerHTML = priceHtml + (state.date ? fmtShort(state.date) + (state.time ? `, ${state.time}–${toHHMM(toMin(state.time) + s.duration)}` : ' · уақытты таңдаңыз') : 'күнді таңдаңыз');
+  }
+}
+// день рождения: ДД.ММ
+$('bday').addEventListener('input', e => {
+  let d = $('bday').value.replace(/\D/g, '').slice(0, 4);
+  if (e.inputType?.startsWith('delete') && $('bday').value.endsWith('.')) d = d.slice(0, 1);
+  $('bday').value = d.length > 2 ? d.slice(0, 2) + '.' + d.slice(2) : d.length === 2 && !e.inputType?.startsWith('delete') ? d + '.' : d;
+  update();
+});
+// сертификат
+$('giftBtn').onclick = () => { const f = $('giftField'), open = f.hidden; f.hidden = !open; $('giftBtn').setAttribute('aria-expanded', open); if (open) $('gift').focus(); else { $('gift').value = ''; update(); } };
+$('gift').addEventListener('input', () => { const c = normCode($('gift').value).slice(0, 8); $('gift').value = c.length > 4 ? c.slice(0, 4) + '-' + c.slice(4) : c; update(); });
+// фото-референс: сжимаем на телефоне перед отправкой
+async function shrinkPhoto(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = url; });
+    const k = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', .85);
+  } finally { URL.revokeObjectURL(url); }
+}
+$('photoBtn').onclick = () => $('photoIn').click();
+$('photoIn').addEventListener('change', async () => {
+  const f = $('photoIn').files[0]; if (!f) return;
+  try {
+    state.photo = await shrinkPhoto(f);
+    $('photoImg').src = state.photo; $('photoPrev').hidden = false; $('photoBtn').setAttribute('aria-expanded', 'true');
+  } catch { $('msg').textContent = 'Не получилось открыть фото — попробуйте другое'; }
+  $('photoIn').value = '';
+});
+$('photoX').onclick = () => { state.photo = null; $('photoPrev').hidden = true; $('photoBtn').setAttribute('aria-expanded', 'false'); };
+async function uploadPhoto(token, data) {
+  await api(`/api/b/${encodeURIComponent(token)}/photo`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
 }
 
 // ---------- Отправка ----------
 $('form').addEventListener('submit', async e => {
   e.preventDefault();
-  if (state.offline) return sendWhatsApp();
+  if (state.offline || state.blocked) return sendWhatsApp();
   const btn = $('submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Жіберілуде';
   try {
-    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time };
+    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time,
+      birthday: $('bday').value, gift: $('gift').value, ref: state.ref };
     const { booking } = await api('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (state.photo) {
+      btn.innerHTML = '<span class="spin"></span>Жіберілуде фото';
+      try { await uploadPhoto(booking.token, state.photo); booking.photo = true; } catch {}
+    }
+    try { localStorage.removeItem('bl_ref'); } catch {}
     showDone(booking, body.name);
   } catch (err) {
+    if (err.status === 403) { state.perk = { blocked: true, key: perkKey() }; renderPerk(); btn.textContent = 'Написать в WhatsApp'; btn.disabled = false; $('msg').textContent = err.message; return; }
+    if (err.field === 'gift') { $('giftMsg').textContent = err.message; $('giftMsg').className = 'fmsg bad'; }
     if (err.status === 409) { state.time = null; loadSlots(); }
     if (err instanceof TypeError) { goOffline(); btn.textContent = 'WhatsApp-қа жіберу'; update(); $('msg').textContent = 'Жазылу сервері қолжетімсіз — өтінімді шеберге WhatsApp арқылы жіберіңіз'; return; }
     btn.textContent = 'Жазылу'; update();
@@ -825,9 +1005,10 @@ function copyBtn(text) {
 }
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-copy]'); if (!b) return;
+  const label = b.dataset.label || (b.dataset.label = b.textContent);
   try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Скопировано ✓'; }
-  catch { const i = b.parentElement.querySelector('input'); if (i) { i.select(); } b.textContent = 'Выделено — скопируйте'; }
-  setTimeout(() => b.textContent = 'Сілтемені көшіру', 2200);
+  catch { const i = b.parentElement.parentElement.querySelector('input'); if (i) { i.select(); } b.textContent = 'Выделено — скопируйте'; }
+  setTimeout(() => b.textContent = label, 2200);
 });
 
 function ticketHtml(b) {
@@ -837,10 +1018,41 @@ function ticketHtml(b) {
         <div><div class="k">Қашан</div><div class="big">${esc(fmtDay(b.date))}</div><div style="font:500 20px var(--display);color:var(--pink-2)">${b.time} – ${end}</div></div>
         <hr>
         <div class="row"><span class="k">Процедура</span><span class="v">${esc(b.service)}</span></div>
-        ${price ? `<div class="row"><span class="k">Бағасы</span><span class="v">${esc(price)}</span></div>` : ''}
+        ${price ? `<div class="row"><span class="k">Бағасы</span><span class="v">${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(price)}${b.discount ? ` <span class="disc">−${b.discount}%</span>` : ''}</span></div>` : ''}
+        ${b.discount && b.discount_why ? `<div class="row"><span class="k">Скидка</span><span class="v">${esc(b.discount_why.replace(' (по документу)', ''))}</span></div>` : ''}
+        ${b.discount_kind === 'birthday' ? `<div class="doc">🪪 Возьмите удостоверение или паспорт — скидка ко дню рождения по документу</div>` : ''}
+        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${b.gift.amount ? ' · ' + money(b.gift.amount) : ''}</span></div>` : ''}
         <div class="row"><span class="k">Мекенжай</span><span class="v">Ульянов к-сі, 49</span></div>
       </div>`;
 }
+
+// ---------- Бонусы клиентки: счётчик визитов, «приведи подругу», памятка ----------
+function loyaltyHtml(b) {
+  const L = b.loyalty; if (!L) return '';
+  const done = L.visits % L.every, left = L.every - done;
+  return `<div class="loyal">
+      <div class="lt"><b>⭐ Каждый ${L.every}-й визит — скидка ${L.pct}%</b><span>${done ? `визитов: ${done} из ${L.every}` : L.visits ? `новый круг · всего визитов ${L.visits}` : 'отсчёт начнётся после первого визита'}</span></div>
+      <div class="dots">${Array.from({ length: L.every }, (_, i) => `<i class="${i < done ? 'on' : ''}${i === L.every - 1 ? ' gift' : ''}"></i>`).join('')}</div>
+      <span style="font-size:13px;color:var(--muted)">${left === 1 ? 'Следующий визит — со скидкой 🎁' : `До скидки — ${left} ${left < 5 ? 'визита' : 'визитов'}`}</span>
+    </div>`;
+}
+function refHtml(b) {
+  const R = b.ref; if (!R) return '';
+  const url = R.url || (location.origin + location.pathname + '?r=' + R.code);
+  const text = `Записывайся к моему мастеру по ресницам и бровям 💗 По этой ссылке скидка ${R.friendPct}% на первый визит: ${url}`;
+  return `<div class="refbox">
+      <h3>👭 Құрбыңды әкел</h3>
+      <div>Подруге — <b>скидка ${R.friendPct}%</b> на первый визит, а тебе — <b>−${R.bonusPct}%</b> на следующую запись, когда она придёт.${R.bonus ? `<br>🎁 У тебя ${R.bonus > 1 ? R.bonus + ' бонуса' : 'есть бонус'} — скидка применится сама при следующей записи.` : ''}</div>
+      <input readonly value="${esc(url)}" onclick="this.select()" aria-label="Ваша ссылка для подруги">
+      <div class="cta-row"><a class="btn sm" href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" rel="noopener">WhatsApp-қа жіберу</a>
+        ${navigator.share ? `<button type="button" class="btn ghost sm" data-share="${esc(text)}">Поделиться</button>` : ''}${copyBtn(url)}</div>
+    </div>`;
+}
+function careHtml(b, open) {
+  if (!b.aftercare) return '';
+  return `<details class="care"${open ? ' open' : ''}><summary>💗 Жадынама: процедурадан кейінгі күтім</summary><ul>${b.aftercare.split('\n').filter(Boolean).map(l => `<li>${esc(l)}</li>`).join('')}</ul></details>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-share]'); if (b) navigator.share({ text: b.dataset.share }).catch(() => {}); });
 
 function showDone(b, name) {
   $('bar').classList.remove('show'); $('bar').hidden = true;
@@ -876,6 +1088,10 @@ function showDone(b, name) {
         </div>
       </div>
       ${next}
+      ${b.photo ? '<div class="notice soft"><div class="ic">📸</div><div><b>Референс получен</b> — мастер посмотрит его до вашего визита.</div></div>' : ''}
+      ${careHtml(b)}
+      ${loyaltyHtml(b)}
+      ${refHtml(b)}
       <div class="cta-row">
         <a class="btn ghost" href="${API}/api/b/${encodeURIComponent(b.token)}/ics">Күнтізбеге қосу</a>
         <a class="btn ghost" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">2ГИС маршруты</a>
@@ -900,6 +1116,7 @@ async function manage(token) {
   if (b.status !== 'cancelled') mySave(b); else mySet(myGet().filter(x => x.token !== token));
   const [stTxt, stCls] = STATUS[b.status] || [b.status, 'wait'];
   const active = !b.past && b.status !== 'cancelled';
+  const late = active && new Date(`${b.date}T${b.time}`) - Date.now() < 2 * 3600000;
   app.querySelector('.done').innerHTML = `
       <h2>${esc(b.name)},<span class="script">ваша запись</span></h2>
       <span class="status ${stCls}">${stTxt}</span>
@@ -907,26 +1124,38 @@ async function manage(token) {
       ${active && b.status === 'new' ? `<div class="notice"><div class="ic">💗</div><div>Подтвердите запись не позднее чем <b>за 2 часа</b> до процедуры — так мастер не отдаст ваше время другой клиентке.</div></div>` : ''}
       ${active ? `<div class="cta-row" id="mActs">
           ${b.status === 'new' ? '<button class="btn" type="button" id="mConfirm">Подтвердить запись</button>' : ''}
-          <button class="btn ghost" type="button" id="mMove">Перенести</button>
-          <button class="btn ghost" type="button" id="mCancel">Отменить</button>
+          ${late ? `<a class="btn ghost" href="https://wa.me/${waNum()}?text=${encodeURIComponent(`Здравствуйте! У меня запись ${fmtDay(b.date).toLowerCase()} в ${b.time} — `)}" target="_blank" rel="noopener">Опаздываю / не смогу — написать мастеру</a>` : `<button class="btn ghost" type="button" id="mMove">Перенести</button>
+          <button class="btn ghost" type="button" id="mCancel">Отменить</button>`}
         </div>
         <div id="mArea"></div>` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
-      ${active ? `<div class="cta-row"><a class="btn ghost sm" href="${API}/api/b/${encodeURIComponent(token)}/ics">Күнтізбеге қосу</a><a class="btn ghost sm" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">2ГИС маршруты</a></div>` : ''}
-      <div class="msg" id="mMsg" style="color:var(--err)"></div>`;
+      ${active ? `<div class="cta-row"><a class="btn ghost sm" href="${API}/api/b/${encodeURIComponent(token)}/ics">Күнтізбеге қосу</a><a class="btn ghost sm" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">2ГИС маршруты</a></div>
+        <div class="extras" style="grid-template-columns:1fr"><button type="button" class="extra" id="mPhoto"${b.photo ? ' aria-expanded="true"' : ''}><span class="ei">📸</span><span><b>${b.photo ? 'Референс прикреплён — заменить' : 'Прикрепить фото-референс'}</b><small>Покажите мастеру, какой эффект хотите</small></span></button></div>
+        <input type="file" id="mPhotoIn" accept="image/*" hidden>` : ''}
+      <div class="msg" id="mMsg" style="color:var(--err)"></div>
+      ${careHtml(b, b.past && b.status === 'came')}
+      ${b.status !== 'cancelled' ? loyaltyHtml(b) : ''}
+      ${refHtml(b)}`;
   if (!active) return;
+  $('mPhoto').onclick = () => $('mPhotoIn').click();
+  $('mPhotoIn').onchange = async () => {
+    const f = $('mPhotoIn').files[0]; if (!f) return;
+    const btn = $('mPhoto'); btn.querySelector('b').textContent = 'Жіберілуде фото…';
+    try { await uploadPhoto(token, await shrinkPhoto(f)); btn.setAttribute('aria-expanded', 'true'); btn.querySelector('b').textContent = 'Референс прикреплён — заменить'; }
+    catch (err) { btn.querySelector('b').textContent = 'Прикрепить фото-референс'; $('mMsg').textContent = err instanceof TypeError ? 'Нет связи с мастером — попробуйте позже' : err.message; }
+  };
   const msg = t => $('mMsg').textContent = t;
   const act = async (path, body) => {
     try { await api(`/api/b/${encodeURIComponent(token)}/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }); manage(token); if (path !== 'cancel' && !reduce) burst(); }
     catch (err) { msg(err instanceof TypeError ? 'Нет связи с мастером. Попробуйте чуть позже' : err.message); }
   };
   $('mConfirm')?.addEventListener('click', () => act('confirm'));
-  $('mCancel').addEventListener('click', () => {
+  if (!late) $('mCancel').addEventListener('click', () => {
     $('mArea').innerHTML = `<div class="notice"><div class="ic">🥺</div><div><b>Точно отменить запись?</b> Время освободится для других клиенток.
       <div class="cta-row" style="margin-top:10px"><button class="btn sm danger" type="button" id="mYes">Да, отменить</button><button class="btn ghost sm" type="button" id="mNo">Нет, оставить</button></div></div></div>`;
     $('mYes').onclick = () => act('cancel');
     $('mNo').onclick = () => $('mArea').innerHTML = '';
   });
-  $('mMove').addEventListener('click', () => {
+  if (!late) $('mMove').addEventListener('click', () => {
     const area = $('mArea');
     area.innerHTML = `<div class="sec-head" style="margin-top:8px"><h2 style="font-size:24px">Новый день и время</h2></div><div class="days" id="mDays"></div><div id="mSlots"></div>
       <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Перенести</button></div>`;
@@ -960,6 +1189,49 @@ async function manage(token) {
     $('mGo').onclick = () => act('move', sel);
     area.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   });
+}
+
+// ---------- Подарочный сертификат (?g=КОД) ----------
+async function giftPage(code) {
+  const app = $('app');
+  $('bar').classList.remove('show'); $('bar').hidden = true;
+  app.innerHTML = `<header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header><section class="giftp"><div class="skeleton" style="height:280px;width:min(100%,460px)"></div></section>`;
+  let g;
+  try { ({ gift: g } = await api('/api/gift/' + encodeURIComponent(code))); }
+  catch (err) {
+    app.querySelector('.giftp').innerHTML = `<h2>Сертификат<span class="script">не найден</span></h2><p class="lead">${err instanceof TypeError ? 'Нет связи с мастером. Попробуйте чуть позже.' : 'Проверьте ссылку или напишите мастеру.'}</p><div class="cta-row"><a class="btn" href="./">Басты бетке</a><a class="btn ghost" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">WhatsApp</a></div>`;
+    return;
+  }
+  const until = new Date(g.expires + 'T00:00').toLocaleDateString(LOC, { day: 'numeric', month: 'long', year: 'numeric' }).replace(' г.', '');
+  const st = g.status === 'used' ? 'Использован' : g.status === 'expired' ? 'Срок истёк' : '';
+  const sparks = [[12, 22, 0], [86, 16, .9], [72, 78, 1.8], [30, 70, 2.6], [55, 30, 3.2]].map(([x, y, d]) => `<i class="spark" style="--x:${x}%;--y:${y}%;--d:${d}s"></i>`).join('');
+  const link = location.origin + location.pathname + '?g=' + g.code;
+  const shareText = `Тебе подарок 💗 Сертификат в browlash.look${g.amount ? ' на ' + money(g.amount) : ''}: ${link}`;
+  app.querySelector('.giftp').innerHTML = `
+    <div class="cert-wrap"><div class="cert ${g.status}" id="cert"><div class="cert-in">
+      <div class="cert-top"><span class="logo">browlash<i>.</i>look</span><span class="cert-k">подарочный<br>сертификат</span></div>
+      <div class="cert-mid">
+        <div class="cert-amt${g.amount ? '' : ' svc'}">${g.amount ? money(g.amount) : esc(g.service)}</div>
+        ${g.amount && g.service ? `<div class="cert-to">${esc(g.service)}</div>` : ''}
+        ${g.to ? `<div class="cert-to"><span class="k">кому</span><span class="script">${esc(g.to)}</span></div>` : ''}
+        ${g.message ? `<p class="cert-msg">«${esc(g.message)}»</p>` : ''}
+      </div>
+      <div class="cert-foot"><span class="cert-code">${esc(g.codeFmt)}</span><span style="text-align:right">${g.from ? `от кого: ${esc(g.from)}<br>` : ''}действует до ${esc(until)}</span></div>
+      <svg class="cert-eye" viewBox="0 0 320 120" aria-hidden="true"><path d="M24 96 Q160 6 296 96"/><path d="M24 96 Q160 150 296 96"/><circle cx="160" cy="82" r="24"/></svg>
+    </div>${st ? `<span class="stamp">${st}</span>` : sparks}</div></div>
+    <h2>${g.to ? esc(g.to) + ', это' : 'Это'}<span class="script">подарок для тебя</span></h2>
+    <p class="lead">${st ? 'Этот сертификат уже нельзя использовать. Если это ошибка — напишите мастеру.' : 'Сертификат действует на любую процедуру в browlash.look — ресницы или брови. Выберите удобное время, код подставится сам.'}</p>
+    <div class="cta-row">
+      ${st ? `<a class="btn" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">Написать мастеру</a>` : `<a class="btn" href="./?gift=${encodeURIComponent(g.code)}#book">Записаться по сертификату</a>`}
+      ${navigator.share ? `<button type="button" class="btn ghost" data-share="${esc(shareText)}">Подарить — отправить</button>` : `<a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(shareText)}" target="_blank" rel="noopener">WhatsApp-қа жіберу</a>`}
+      <button type="button" class="btn ghost" data-copy="${esc(g.codeFmt)}">Скопировать код</button>
+    </div>
+    <p style="margin:0;color:var(--muted);font-size:13px">📍 ул. Ульянова, 49 · Петропавловск</p>`;
+  // лёгкий 3D-наклон за пальцем
+  const card = $('cert'), wrap = card.parentElement;
+  wrap.addEventListener('pointermove', e => { const r = wrap.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; card.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`; });
+  wrap.addEventListener('pointerleave', () => card.style.transform = '');
+  if (!st && !reduce) setTimeout(burst, 500);
 }
 
 // ---------- Салют из розовых «ресничек» ----------
@@ -1020,6 +1292,7 @@ function goOffline() {
     }
     state.cfg = await api('/api/config');
     if (params.get('b')) return manage(params.get('b'));
+    if (params.get('g')) return giftPage(params.get('g'));
     if (state.cfg.master) $('masterName').textContent = state.cfg.master;
     const off = state.cfg.daysOff || [];
     $('hours').textContent = hoursText(state.cfg);
@@ -1032,6 +1305,21 @@ function goOffline() {
     if (pre && d && /^\d{4}-\d{2}-\d{2}$/.test(d)) state.date = d;
     renderDays();
     if (pre) { loadSlots(); update(); setTimeout(() => $(state.date ? 'timeSec' : 'book').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }), 400); }
+    // сертификат по ссылке ?gift=КОД
+    const gc = params.get('gift');
+    if (gc) { $('giftField').hidden = false; $('giftBtn').setAttribute('aria-expanded', 'true'); $('gift').value = normCode(gc).replace(/^(.{4})(.+)$/, '$1-$2'); update(); }
+    // пригласила подруга: ?r=КОД (запоминаем на этом телефоне)
+    let ref = params.get('r') || '';
+    try { if (ref) localStorage.setItem('bl_ref', ref); else ref = localStorage.getItem('bl_ref') || ''; } catch {}
+    if (ref) {
+      state.ref = ref;
+      api('/api/perks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref }) }).then(r => {
+        if (!r.refName || !r.refPct) { state.ref = ''; return; }
+        const el = document.createElement('div'); el.className = 'ref-banner';
+        el.innerHTML = `<span class="pi">💗</span><div><b>${esc(r.refName)} сізді шақырады!</b> Алғашқы келуге <b>${r.refPct}%</b> жеңілдік — жазылғанда өзі қолданылады.</div>`;
+        document.querySelector('.topbar').after(el);
+      }).catch(() => {});
+    }
     // баннер «ваша запись»
     const mine = myUpcoming()[0];
     if (mine) {
