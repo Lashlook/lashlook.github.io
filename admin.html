@@ -297,6 +297,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .gift { display: grid; gap: 8px; padding: 18px; border-radius: var(--r); border: 1px solid var(--line); background: radial-gradient(120% 120% at 100% 0%, rgba(255,46,136,.14), transparent 55%), rgba(20,18,22,.8); animation: dayIn .45s calc(var(--i) * 40ms) var(--ease) both; }
 .g-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .g-amt { font: 500 26px/1.1 var(--display); }
+.g-amt small { font: 500 13px var(--body); color: var(--muted); margin-left: 4px; }
 .g-code { font: 700 15px/1 ui-monospace, Menlo, monospace; letter-spacing: .12em; color: var(--accent-2); }
 .g-meta { font-size: 13px; color: var(--muted); line-height: 1.5; }
 .g-meta b { color: var(--ink); }
@@ -937,7 +938,7 @@ function bookingRow(b, nowKey, nowMin) {
         <div class="bk-svc">${esc(b.service)}${priceOf(b) ? ` <span style="color:var(--muted);font-weight:500">· ${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(priceOf(b))}</span>` : ''}${b.discount ? ` <span class="tag disc" title="${esc(b.discount_why || '')}">−${b.discount}% ${esc((b.discount_why || '').split(' ')[0])}</span>` : ''}</div>
         ${b.discount_kind === 'birthday' && !['came', 'cancelled'].includes(b.status) ? `<div class="bk-doc">🪪 Скидка на ДР — попросите показать документ с датой рождения <button class="mini bad" type="button" data-nodisc="${b.id}">Нет документа — убрать скидку</button></div>` : ''}
         ${b.discount && b.discount_kind !== 'birthday' && !['came', 'cancelled'].includes(b.status) ? `<button class="linkish" type="button" data-nodisc="${b.id}">убрать скидку</button>` : ''}
-        ${b.gift ? `<div class="bk-gift">🎁 Сертификат ${esc(b.giftFmt)}${b.giftAmount ? ' · ' + money(b.giftAmount) : ''}${b.status === 'came' ? ' · погашен' : ''}</div>` : ''}
+        ${b.gift ? `<div class="bk-gift">🎁 Сертификат ${esc(b.giftFmt)}${!b.giftAmount ? (b.giftService ? ' — ' + esc(b.giftService) : '') : b.status === 'came' ? ` · списано ${money(b.giftCharge)}, осталось ${money(b.giftBalance)}` : ` · на нём ${money(b.giftBalance)} → спишется ${money(b.giftCharge)}${b.price > b.giftCharge ? `, доплата ${money(b.price - b.giftCharge)}` : ''}`}</div>` : ''}
         <div class="bk-phone">${esc(fmtPhone(b.phone))}</div>
         ${b.comment ? `<div class="bk-note">«${esc(b.comment)}»</div>` : ''}
         ${b.clientNote ? `<div class="bk-note client">📝 ${esc(b.clientNote)}</div>` : ''}
@@ -1187,9 +1188,10 @@ async function loadGifts() {
     $('gifts').innerHTML = gifts.length ? gifts.map((g, i) => {
       const [stT, stC] = GSTATUS[g.status] || [g.status, 'new'];
       return `<article class="gift" style="--i:${Math.min(i, 20)}">
-        <div class="g-top"><span class="g-amt">${g.amount ? money(g.amount) : esc(g.service)}</span><span class="st ${stC}">${stT}</span></div>
+        <div class="g-top"><span class="g-amt">${g.amount ? money(g.balance) : esc(g.service)}${g.amount && g.balance !== g.amount ? `<small> из ${money(g.amount)}</small>` : ''}</span><span class="st ${stC}">${stT}</span></div>
         <div class="g-code">${esc(g.codeFmt)}</div>
-        <div class="g-meta">${g.to ? `Кому: <b>${esc(g.to)}</b>` : ''}${g.from ? ` · от: ${esc(g.from)}` : ''}${g.amount && g.service ? ` · ${esc(g.service)}` : ''}<br>до ${dShort(g.expires)}${g.booking ? ` · 📅 ${esc(g.booking.name)}, ${dShort(g.booking.date)} ${g.booking.time}` : ''}${g.usedAt ? ` · погашен ${dShort(g.usedAt.slice(0, 10))}` : ''}</div>
+        <div class="g-meta">${g.to ? `Кому: <b>${esc(g.to)}</b>` : ''}${g.from ? ` · от: ${esc(g.from)}` : ''}${g.amount && g.service ? ` · ${esc(g.service)}` : ''}<br>до ${dShort(g.expires)}${g.booking ? ` · 📅 ${esc(g.booking.name)}, ${dShort(g.booking.date)} ${g.booking.time}` : ''}${g.usedAt ? ` · погашен ${dShort(g.usedAt.slice(0, 10))}` : ''}
+          ${(g.uses || []).filter(u => u.amount).map(u => `<br>− ${money(u.amount)} · ${esc(u.name || '')}, ${dShort((u.date || u.at).slice(0, 10))}`).join('')}</div>
         <div class="bk-quick">
           ${g.url ? `<a class="mini" href="${esc(g.url)}" target="_blank" rel="noopener">Открыть</a><button class="mini" type="button" data-gcopy="${esc(g.url)}">Скопировать ссылку</button><a class="mini" href="https://wa.me/?text=${encodeURIComponent('Подарочный сертификат browlash.look 💗 ' + g.url)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
           ${g.status === 'active' ? `<button class="mini ok" type="button" data-gst="used" data-code="${g.code}">Погасить</button><button class="mini bad" type="button" data-gst="void" data-code="${g.code}">Отменить</button>` : g.status !== 'expired' ? `<button class="mini" type="button" data-gst="active" data-code="${g.code}">Вернуть</button>` : ''}

@@ -913,7 +913,13 @@ function renderPerk() {
   const gm = $('giftMsg');
   if (!normCode($('gift').value)) { gm.textContent = ''; gm.className = 'fmsg'; }
   else if (p.gift?.error) { gm.textContent = p.gift.error; gm.className = 'fmsg bad'; }
-  else if (p.gift) { gm.textContent = `✓ Сертификат ${p.gift.code}${p.gift.amount ? ' на ' + money(p.gift.amount) : p.gift.service ? ' — ' + p.gift.service : ''} — оплатите им процедуру у мастера`; gm.className = 'fmsg ok'; }
+  else if (p.gift) {
+    const g = p.gift, cost = perkFor()?.price ?? (parseInt(String(state.service?.price || '').replace(/\D/g, ''), 10) || 0);
+    gm.textContent = !g.amount ? `✓ Сертификат ${g.code}${g.service ? ' — ' + g.service : ''}`
+      : `✓ Сертификат ${g.code}: на нём ${money(g.balance)}${g.balance < g.amount ? ' (из ' + money(g.amount) + ')' : ''}` +
+        (cost ? (cost > g.balance ? ` — спишется всё, доплата ${money(cost - g.balance)} на месте` : ` — спишется ${money(cost)}, останется ${money(g.balance - cost)} на следующий раз`) : '');
+    gm.className = 'fmsg ok';
+  }
   const s = state.service;
   if (s && $('sumSub')) {
     const pk = perkFor();
@@ -1021,7 +1027,8 @@ function ticketHtml(b) {
         ${price ? `<div class="row"><span class="k">Бағасы</span><span class="v">${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(price)}${b.discount ? ` <span class="disc">−${b.discount}%</span>` : ''}</span></div>` : ''}
         ${b.discount && b.discount_why ? `<div class="row"><span class="k">Скидка</span><span class="v">${esc(b.discount_why.replace(' (по документу)', ''))}</span></div>` : ''}
         ${b.discount_kind === 'birthday' ? `<div class="doc">🪪 Возьмите удостоверение или паспорт — скидка ко дню рождения по документу</div>` : ''}
-        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${b.gift.amount ? ' · ' + money(b.gift.amount) : ''}</span></div>` : ''}
+        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${b.gift.amount ? (b.status === 'came' ? ` · списано ${money(b.gift.charge)}` : ` · спишется ${money(b.gift.charge)}`) : ''}</span></div>
+          ${b.gift.amount ? `<div class="row"><span class="k">${b.status === 'came' ? 'Осталось' : 'Останется'}</span><span class="v">${money(b.status === 'came' ? b.gift.balance : Math.max(0, b.gift.balance - b.gift.charge))}${b.price > b.gift.charge && b.status !== 'came' ? ` · доплата ${money(b.price - b.gift.charge)}` : ''}</span></div>` : ''}` : ''}
         <div class="row"><span class="k">Мекенжай</span><span class="v">Ульянов к-сі, 49</span></div>
       </div>`;
 }
@@ -1211,7 +1218,8 @@ async function giftPage(code) {
     <div class="cert-wrap"><div class="cert ${g.status}" id="cert"><div class="cert-in">
       <div class="cert-top"><span class="logo">browlash<i>.</i>look</span><span class="cert-k">подарочный<br>сертификат</span></div>
       <div class="cert-mid">
-        <div class="cert-amt${g.amount ? '' : ' svc'}">${g.amount ? money(g.amount) : esc(g.service)}</div>
+        <div class="cert-amt${g.amount ? '' : ' svc'}">${g.amount ? money(g.balance ?? g.amount) : esc(g.service)}</div>
+        ${g.amount && g.balance < g.amount && g.balance > 0 ? `<div class="cert-to">осталось из ${money(g.amount)} — можно потратить в следующий раз</div>` : ''}
         ${g.amount && g.service ? `<div class="cert-to">${esc(g.service)}</div>` : ''}
         ${g.to ? `<div class="cert-to"><span class="k">кому</span><span class="script">${esc(g.to)}</span></div>` : ''}
         ${g.message ? `<p class="cert-msg">«${esc(g.message)}»</p>` : ''}
@@ -1220,7 +1228,7 @@ async function giftPage(code) {
       <svg class="cert-eye" viewBox="0 0 320 120" aria-hidden="true"><path d="M24 96 Q160 6 296 96"/><path d="M24 96 Q160 150 296 96"/><circle cx="160" cy="82" r="24"/></svg>
     </div>${st ? `<span class="stamp">${st}</span>` : sparks}</div></div>
     <h2>${g.to ? esc(g.to) + ', это' : 'Это'}<span class="script">подарок для тебя</span></h2>
-    <p class="lead">${st ? 'Этот сертификат уже нельзя использовать. Если это ошибка — напишите мастеру.' : 'Сертификат действует на любую процедуру в browlash.look — ресницы или брови. Выберите удобное время, код подставится сам.'}</p>
+    <p class="lead">${st ? 'Этот сертификат уже нельзя использовать. Если это ошибка — напишите мастеру.' : 'Сертификат действует на любую процедуру в browlash.look — ресницы или брови. Если процедура дешевле — остаток сохранится на следующий раз. Выберите удобное время, код подставится сам.'}</p>
     <div class="cta-row">
       ${st ? `<a class="btn" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">Написать мастеру</a>` : `<a class="btn" href="./?gift=${encodeURIComponent(g.code)}#book">Записаться по сертификату</a>`}
       ${navigator.share ? `<button type="button" class="btn ghost" data-share="${esc(shareText)}">Подарить — отправить</button>` : `<a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(shareText)}" target="_blank" rel="noopener">WhatsApp-қа жіберу</a>`}
