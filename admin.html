@@ -148,6 +148,15 @@ select option { color: var(--ink); }
 .day.past { opacity: .5; }
 .free { padding: 16px 20px; color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 10px; }
 .free::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+/* пустые дни — компактной строкой, чтобы неделя помещалась на экран */
+.day.empty .day-head { border-bottom: 0; padding-block: 10px; }
+.day.empty .day-head h2 { font-size: 19px; }
+.day.empty .free { display: none; }
+.day.empty .day-head::after { content: "свободно"; order: 1; margin-left: auto; font-size: 12.5px; color: var(--muted); }
+.day.empty .day-tools { order: 2; margin-left: 0 !important; }
+.day.empty.off { background: transparent; border-style: dashed; }
+.day.empty.off .day-head::after { content: ""; }
+.day.empty.off .day-head h2 { color: var(--muted); }
 
 .bk { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 16px; align-items: start; padding: 16px 14px 16px 20px; transition: background .25s; }
 @media (hover: hover) { .bk:hover { background: rgba(255,255,255,.025); } }
@@ -1042,7 +1051,7 @@ function renderWeek(list, blocks = [], waits = []) {
     const rows = [...items.map(b => ({ t: b.time, h: bookingRow(b, nowKey, nowMin) })), ...parts.map(b => ({ t: b.start, h: blockRow(b) }))].sort((a, b) => a.t.localeCompare(b.t));
     const future = key >= nowKey;
     html += `
-      <section class="day${key === nowKey ? ' today' : ''}${key < nowKey ? ' past' : ''}${full ? ' closed' : ''}" style="--i:${i}">
+      <section class="day${key === nowKey ? ' today' : ''}${key < nowKey ? ' past' : ''}${full ? ' closed' : ''}${!rows.length && !full && !waits.some(w => w.date === key) ? ' empty' + (off || !(weekHours[key]?.windows?.length ?? 1) ? ' off' : '') : ''}" style="--i:${i}">
         <div class="day-head">
           <h2>${wd}<span>${dm(d)}</span></h2>
           ${hoursChip(key, future)}
