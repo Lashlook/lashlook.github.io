@@ -284,6 +284,8 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .bk-gift { font-size: 13px; font-weight: 600; color: #FFC46B; }
 .bk-tech { font-size: 13px; color: var(--gold); overflow-wrap: anywhere; }
 .bk-tech.last { color: var(--muted); font-style: italic; }
+.bk-wish { font-size: 13px; color: var(--accent-2); overflow-wrap: anywhere; }
+.t-wish { margin: -4px 0 4px; padding: 10px 12px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-2); font-size: 13px; }
 .bk-doc { display: grid; gap: 8px; justify-items: start; padding: 10px 12px; border-radius: 12px; background: rgba(255,196,107,.1); border: 1px dashed rgba(255,196,107,.45); color: #FFC46B; font-size: 13px; font-weight: 600; }
 .linkish { justify-self: start; background: none; border: 0; padding: 0; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .bk-more { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -766,6 +768,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 <dialog id="dlgTech">
   <form class="modal" id="techForm" novalidate>
     <h3><span>чтобы повторить точь-в-точь</span><b id="tTitle" style="font-weight:500">Техника</b></h3>
+    <div class="t-wish" id="tWish" hidden></div>
     <div class="tech-last" id="tLast" hidden></div>
     <label for="tEffect">Эффект / процедура<input id="tEffect" list="tEffectL" maxlength="60" placeholder="Классика, 2D, мокрый эффект, лисий…"></label>
     <div><div class="chips-hint">Изгиб — быстрый выбор</div><div class="chips" id="tCurlC"></div></div>
@@ -998,6 +1001,7 @@ function bookingRow(b, nowKey, nowMin) {
         <div class="bk-phone">${esc(fmtPhone(b.phone))}</div>
         ${b.comment ? `<div class="bk-note">«${esc(b.comment)}»</div>` : ''}
         ${b.clientNote ? `<div class="bk-note client">📝 ${esc(b.clientNote)}</div>` : ''}
+        ${b.wish ? `<div class="bk-wish">✨ Хочет: ${esc(wishText(b.wish))}</div>` : ''}
         ${b.tech ? `<div class="bk-tech">🧵 ${esc(techText(b.tech))}</div>` : b.lastTech ? `<div class="bk-tech last">🧵 Прошлый раз (${dShort(b.lastTech.date)}): ${esc(b.lastTech.text)}</div>` : ''}
         ${quick ? `<div class="bk-quick">${quick}</div>` : ''}
         <div class="bk-more"><button class="sq" type="button" data-edit="${b.id}" title="Изменить запись: время, процедуру, данные" aria-label="Изменить запись">✏️<span>изменить</span></button><button class="sq" type="button" data-tech="${b.id}" title="Техника: изгиб, длина, толщина" aria-label="Техника">🧵<span>${b.tech ? 'техника' : 'техника +'}</span></button>${b.photo ? `<button class="sq hot" type="button" data-photo="${b.id}" title="Фото-референс от клиентки" aria-label="Фото-референс">📸<span>фото</span></button>` : ''}<button class="sq" type="button" data-client="${esc(b.phone)}" title="Карточка клиентки" aria-label="Карточка клиентки">👤<span>карточка</span></button></div>
@@ -1222,6 +1226,7 @@ $('blockForm').addEventListener('submit', async e => {
 });
 
 // ---------- Техника визита ----------
+const wishText = w => w ? [w.effect && `${w.effect.toLowerCase()} эффект`, w.curl && `изгиб ${w.curl}`, w.length && `длина ${w.length}`].filter(Boolean).join(' · ') : '';
 const techText = t => t ? [t.effect, t.curl && `изгиб ${t.curl}`, t.length && `${t.length} мм`.replace(' мм мм', ' мм'), t.thickness && `толщина ${t.thickness}`, t.glue && `клей ${t.glue}`, t.note].filter(Boolean).join(' · ') : '';
 const dlgT = $('dlgTech'); let techId = 0, techHints = null;
 const findBk = id => weekBookings.find(b => b.id === id) || (load.ahead || []).find(b => b.id === id) || histCache.find(b => b.id === id);
@@ -1246,7 +1251,10 @@ async function openTech(id) {
   const lt = b.lastTech;
   $('tLast').hidden = !lt; $('tCopy').hidden = !lt || !!b.tech;
   if (lt) $('tLast').innerHTML = `<b>Прошлый раз, ${dShort(lt.date)}</b>${esc(lt.text)}`;
-  fillTech(b.tech || {});
+  // клиентка сама выбрала детали при записи — подставляем их, если техника ещё не заполнена
+  const w = b.wish || {};
+  fillTech(b.tech || (b.wish ? { effect: w.effect || '', curl: w.curl || '', length: (w.length || '').replace(/\s*мм$/, '').replace('+', '') } : {}));
+  $('tWish').hidden = !b.wish; if (b.wish) $('tWish').textContent = `✨ Клиентка хочет: ${wishText(b.wish)}`;
   dlgT.showModal();
 }
 $('tCurlC').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) { $('tCurl').value = $('tCurl').value === c.dataset.v ? '' : c.dataset.v; markTechChips(); } });

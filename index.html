@@ -397,6 +397,26 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .extra b { display: block; font-size: 14px; }
 .extra small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
 .extra[aria-expanded="true"] { border-style: solid; border-color: var(--pink); background: var(--pink-soft); }
+/* ---------- Детали ресниц по желанию: эффект, изгиб, длина ---------- */
+.wish-btn, .wish { grid-column: 1 / -1; }
+.wish { display: grid; gap: 18px; padding: 18px 16px; border-radius: 18px; background: var(--surface); border: 1px solid rgba(255,46,136,.35); animation: rowIn .4s var(--ease); }
+.wish > p { margin: 0; color: var(--muted); font-size: 13px; }
+.wg { display: grid; gap: 10px; }
+.wg h4 { margin: 0; font: 500 18px/1.2 var(--display); display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.wg h4 small { font: 500 12px var(--body); color: var(--muted); }
+.wopts { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.wopt { display: grid; justify-items: center; gap: 4px; padding: 10px 6px 9px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); cursor: pointer; text-align: center; transition: .25s var(--ease); }
+.wopt b { font-size: 13px; } .wopt small { font-size: 11px; color: var(--muted); line-height: 1.25; }
+.wopt svg { width: 100%; max-width: 72px; height: 34px; overflow: visible; }
+.wopt svg path { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; transition: stroke .25s; }
+.wopt svg .lid { stroke: var(--ink); stroke-width: 2; }
+.wopt[aria-pressed="true"] { border-color: var(--pink); background: var(--pink-soft); box-shadow: 0 0 0 3px var(--pink-soft); }
+.wopt[aria-pressed="true"] svg path { stroke: var(--pink-2); }
+.wopt[aria-pressed="true"] svg .lid { stroke: var(--ink); }
+.wopt[aria-pressed="true"] svg .ls { stroke-dasharray: 30; stroke-dashoffset: 30; animation: tick .5s var(--ease) forwards; }
+.wopt.len { padding-block: 12px; } .wopt.len b { font: 600 15px var(--display); }
+.wish-clear { justify-self: start; background: none; border: 0; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
+.wish-clear:hover { color: var(--ink); }
 @media (max-width: 380px) { .extras { grid-template-columns: 1fr; } }
 .photo-prev { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); animation: rowIn .4s var(--ease) both; }
 .photo-prev img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; }
@@ -756,6 +776,8 @@ input::-webkit-date-and-time-value { text-align: left; }
         <div class="field"><textarea id="comment" name="comment" maxlength="500" placeholder=" "></textarea><label for="comment">Пожелания — необязательно</label></div>
         <div class="field" id="bdayField"><input id="bday" name="bday" inputmode="numeric" maxlength="5" autocomplete="bday" placeholder=" "><label for="bday">День рождения — ДД.ММ</label><div class="fmsg" style="color:var(--muted)">🎂 Необязательно — ко дню рождения подарим скидку</div></div>
         <div class="extras">
+          <button type="button" class="extra wish-btn" id="wishBtn" aria-expanded="false" aria-controls="wishBox" hidden><span class="ei">✨</span><span><b>Детали ресниц</b><small id="wishSum">эффект, изгиб, длина — если хотите выбрать сами</small></span></button>
+          <div class="wish" id="wishBox" hidden></div>
           <button type="button" class="extra" id="photoBtn" aria-expanded="false"><span class="ei">📸</span><span><b>Фото-референс</b><small>Покажите, какой эффект хотите</small></span></button>
           <button type="button" class="extra" id="giftBtn" aria-expanded="false"><span class="ei">🎁</span><span><b>Есть сертификат</b><small>Введите код подарка</small></span></button>
         </div>
@@ -1209,7 +1231,7 @@ function waText() {
   return `Здравствуйте! Хочу записаться в browlash.look 💗\n\n💅 ${s.name}${s.price ? ' — ' + s.price : ''}\n📅 ${ruDay}, ${state.time}–${end}\n👤 ${$('name').value.trim()}\n📞 ${phone.value}` +
     ($('comment').value.trim() ? `\n💬 ${$('comment').value.trim()}` : '') +
     (normCode($('gift').value) ? `\n🎁 Сертификат: ${$('gift').value.trim()}` : '') +
-    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
+    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + (hasLash() && wishText(state.wish) ? `\n✨ Ресницы: ${wishText(state.wish)}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
 }
 function sendWhatsApp() {
   const url = `https://wa.me/${waNum()}?text=${encodeURIComponent(waText())}`;
@@ -1264,6 +1286,7 @@ function eyeWink() {
   [$('barEye'), document.querySelector('.eye-blink')].forEach(el => { if (!el) return; el.classList.remove('wink'); void el.getBoundingClientRect(); el.classList.add('wink'); setTimeout(() => el.classList.remove('wink'), 450); });
 }
 function update() {
+  syncWish();
   const s = state.service;
   $('bar').classList.toggle('show', !!s);
   if (!s) { refreshPerks(); return; }
@@ -1366,6 +1389,49 @@ $('bday').addEventListener('input', e => {
 // сертификат
 $('giftBtn').onclick = () => { const f = $('giftField'), open = f.hidden; f.hidden = !open; $('giftBtn').setAttribute('aria-expanded', open); if (open) $('gift').focus(); else { $('gift').value = ''; update(); } };
 $('gift').addEventListener('input', () => { const c = normCode($('gift').value).slice(0, 8); $('gift').value = c.length > 4 ? c.slice(0, 4) + '-' + c.slice(4) : c; update(); });
+// ---------- Детали ресниц (по желанию): эффект, изгиб, длина — как у мастера в карточке «техника» ----------
+state.wish = { effect: '', curl: '', length: '' };
+const WISH = {
+  effect: [['Натуральный', 'как свои, только лучше', t => 7 + 3 * Math.sin(Math.PI * t)], ['Лисий', 'вытягивает к внешнему уголку', t => 4 + 10 * t ** 1.4],
+    ['Кукольный', 'открытый, округлый взгляд', t => 5 + 9 * Math.sin(Math.PI * t) ** 2], ['Беличий', 'акцент ближе к краю, приподнимает', t => 5 + 9 * Math.exp(-(((t - .74) / .17) ** 2))],
+    ['Мокрый', 'стрелочки, как после душа', (t, k) => k % 2 ? 6 : 12]],
+  curl: [['B', 'едва заметный', 'M8 40 Q11 22 21 9'], ['C', 'естественный', 'M8 40 Q8 18 27 8'], ['CC', 'чуть сильнее C', 'M8 40 Q6 15 30 9'], ['D', 'выразительный', 'M8 40 Q4 11 33 11'],
+    ['L', 'для нависшего века', 'M8 40 L8 22 Q9 11 29 7'], ['M', 'мягкий L', 'M8 40 L8 26 Q8 12 31 11']],
+  length: [['8–9 мм', 'аккуратно'], ['10–11 мм', 'естественно'], ['12–13 мм', 'выразительно'], ['14+ мм', 'эффектно']],
+};
+// глаз с ресницами нужной длины — чтобы эффект было видно, а не только прочитать
+function effectSvg(fn) {
+  const P0 = [6, 30], P1 = [40, 4], P2 = [74, 30], B = (t, i) => (1 - t) ** 2 * P0[i] + 2 * (1 - t) * t * P1[i] + t * t * P2[i], Dv = (t, i) => 2 * (1 - t) * (P1[i] - P0[i]) + 2 * t * (P2[i] - P1[i]);
+  let d = '';
+  for (let k = 0; k < 9; k++) { const t = .12 + .76 * k / 8, x = B(t, 0), y = B(t, 1), dx = Dv(t, 0), dy = Dv(t, 1), l = Math.hypot(dx, dy), nx = dy / l, ny = -dx / l, len = fn(t, k) * .9;
+    d += `M${x.toFixed(1)} ${y.toFixed(1)} L${(x + nx * len + (t - .5) * 4).toFixed(1)} ${(y + ny * len).toFixed(1)} `; }
+  return `<svg viewBox="0 -12 80 46" aria-hidden="true"><path class="ls" d="${d}"/><path class="lid" d="M6 30 Q40 4 74 30"/></svg>`;
+}
+const hasLash = () => state.sel.some(n => one(n)?.category === 'Наращивание');
+const wishText = w => [w.effect && `${w.effect.toLowerCase()} эффект`, w.curl && `изгиб ${w.curl}`, w.length && `длина ${w.length}`].filter(Boolean).join(' · ');
+function syncWish() {
+  const show = hasLash(), btn = $('wishBtn'); if (!btn) return;
+  btn.hidden = !show; if (!show) { $('wishBox').hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+  $('wishSum').textContent = wishText(state.wish) || 'эффект, изгиб, длина — если хотите выбрать сами';
+}
+function renderWish() {
+  const w = state.wish, box = $('wishBox');
+  const opt = (g, v, sub, art, cls = '') => `<button type="button" class="wopt${cls}" data-g="${g}" data-v="${esc(v)}" aria-pressed="${w[g] === v}">${art || ''}<b>${esc(v)}</b><small>${esc(sub)}</small></button>`;
+  box.innerHTML = `<p>Необязательно. Не знаете — оставьте пустым, мастер подберёт на месте по форме глаз.</p>
+    <div class="wg"><h4>Эффект</h4><div class="wopts">${WISH.effect.map(([v, s, f]) => opt('effect', v, s, effectSvg(f))).join('')}</div></div>
+    <div class="wg"><h4>Изгиб <small>чем дальше по списку — тем сильнее загиб</small></h4><div class="wopts">${WISH.curl.map(([v, s, d]) => opt('curl', v, s, `<svg viewBox="0 0 40 44" aria-hidden="true"><path class="lid" d="M2 40 H16"/><path class="ls" d="${d}"/></svg>`)).join('')}</div></div>
+    <div class="wg"><h4>Длина</h4><div class="wopts">${WISH.length.map(([v, s]) => opt('length', v, s, '', ' len')).join('')}</div></div>
+    ${wishText(w) ? '<button type="button" class="wish-clear" id="wishClear">Сбросить — пусть мастер подберёт</button>' : ''}`;
+  box.querySelectorAll('.wopt').forEach(b => b.onclick = () => { const g = b.dataset.g; w[g] = w[g] === b.dataset.v ? '' : b.dataset.v; renderWish(); syncWish(); wishChanged?.(); if (w[g]) eyeWink(); });
+  $('wishClear')?.addEventListener('click', () => { state.wish = { effect: '', curl: '', length: '' }; renderWish(); syncWish(); wishChanged?.(); });
+}
+function bindWish(onChange) {
+  wishChanged = onChange || null;
+  $('wishBtn').onclick = () => { const box = $('wishBox'), open = box.hidden; box.hidden = !open; $('wishBtn').setAttribute('aria-expanded', open); if (open) { renderWish(); box.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } };
+}
+let wishChanged = null;
+bindWish();
+
 // фото-референс: сжимаем на телефоне перед отправкой
 async function shrinkPhoto(file) {
   const url = URL.createObjectURL(file);
@@ -1398,7 +1464,7 @@ $('form').addEventListener('submit', async e => {
   if (state.sending) return;
   const btn = $('submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Отправляем'; state.sending = true;
   try {
-    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time,
+    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time, wish: hasLash() ? state.wish : null,
       birthday: $('bday').value, gift: $('gift').value, ref: state.ref };
     const { booking } = await api('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (state.photo) {
@@ -1512,6 +1578,7 @@ function ticketHtml(b) {
         ${b.discount_kind === 'birthday' ? `<div class="doc">🪪 Возьмите удостоверение или паспорт — скидка ко дню рождения по документу</div>` : ''}
         ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${!b.gift.amount ? ` · «${esc(b.gift.service)}» оплачена${b.gift.covers && b.price > b.gift.covers ? `, доплата ${money(b.price - b.gift.covers)}` : ''}` : ''}${b.gift.amount ? (b.status === 'came' ? ` · списано ${money(b.gift.charge)}` : ` · спишется ${money(b.gift.charge)}`) : ''}</span></div>
           ${b.gift.amount ? `<div class="row"><span class="k">${b.status === 'came' ? 'Осталось' : 'Останется'}</span><span class="v">${money(b.status === 'came' ? b.gift.balance : Math.max(0, b.gift.balance - b.gift.charge))}${b.price > b.gift.charge && b.status !== 'came' ? ` · доплата ${money(b.price - b.gift.charge)}` : ''}</span></div>` : ''}` : ''}
+        ${b.wish && wishText(b.wish) ? `<div class="row"><span class="k">Ресницы</span><span class="v" style="font-weight:500">${esc(wishText(b.wish))}</span></div>` : ''}
         ${b.comment ? `<div class="row"><span class="k">Пожелания</span><span class="v" style="font-weight:500">${esc(b.comment)}</span></div>` : ''}
         <div class="row"><span class="k">Адрес</span><span class="v">ул. Ульянова, 49</span></div>
       </div>`;
@@ -1659,18 +1726,22 @@ async function manage(token) {
       <p class="k" style="margin:4px 0 6px">Процедуры <span style="color:var(--muted);font-weight:400">— можно несколько</span></p>
       ${known ? '' : `<p class="m-old">Сейчас: ${esc(b.service)}</p>`}
       <div class="m-svcs" id="mSvc">${chips}</div><p class="m-sum" id="mSvcSum"></p>
+      <div class="extras" style="margin-top:14px"><button type="button" class="extra wish-btn" id="wishBtn" aria-expanded="false" aria-controls="wishBox" hidden><span class="ei">✨</span><span><b>Детали ресниц</b><small id="wishSum"></small></span></button><div class="wish" id="wishBox" hidden></div></div>
       <p class="k" style="margin:16px 0 6px">День и время <span style="color:var(--muted);font-weight:400">— выберите, если хотите перенести</span></p>
       <div class="days" id="mDays"></div><div id="mSlots"></div>
       <div class="field" style="margin-top:14px"><textarea id="mCom" maxlength="500" placeholder=" ">${esc(b.comment || '')}</textarea><label for="mCom">Пожелания — необязательно</label></div>
       <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Сохранить изменения</button><button class="btn ghost" type="button" id="mBack">Не менять</button></div>`;
     const sel = { service: b.service, date: null, time: null };
+    const wish0 = JSON.stringify({ effect: '', curl: '', length: '', ...(b.wish || {}) });
+    state.wish = JSON.parse(wish0); state.sel = picked.slice();
     const sumLine = () => { const v = findSvc(sel.service); $('mSvcSum').textContent = v ? `${dur(v.duration)}${v.price ? ' · ' + v.price : ''}` : ''; };
     const upd = () => {
-      const svcCh = partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP), com = $('mCom').value.trim() !== (b.comment || '').trim();
+      const svcCh = partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP) || JSON.stringify(state.wish) !== wish0, com = $('mCom').value.trim() !== (b.comment || '').trim();
       const go = $('mGo');
       if (sel.date && !sel.time) { go.disabled = true; go.textContent = 'Выберите время'; return; }
       go.disabled = !(svcCh || sel.time || com);
-      go.textContent = sel.time ? `${svcCh ? 'Сменить процедуру и перенести' : 'Перенести'} на ${fmtShort(sel.date)}, ${sel.time}` : svcCh ? 'Сменить процедуру' : 'Сохранить изменения';
+      const procCh = partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP);
+      go.textContent = sel.time ? `${procCh ? 'Сменить процедуру и перенести' : 'Перенести'} на ${fmtShort(sel.date)}, ${sel.time}` : procCh ? 'Сменить процедуру' : 'Сохранить изменения';
     };
     const daysBox = $('mDays'), today = new Date(); today.setHours(0, 0, 0, 0);
     let curDay = null;
@@ -1713,12 +1784,12 @@ async function manage(token) {
       if (on && picked.length === 1) { msg('Должна остаться хотя бы одна процедура'); return; }
       picked = on ? picked.filter(x => x !== n) : [...picked, n]; msg('');
       c.setAttribute('aria-pressed', !on);
-      sel.service = picked.join(SEP); sumLine(); upd(); loadSlots();
+      sel.service = picked.join(SEP); state.sel = picked.slice(); syncWish(); sumLine(); upd(); loadSlots();
     });
-    sumLine();
+    sumLine(); bindWish(() => upd()); syncWish();
     $('mCom').oninput = upd;
     $('mBack').onclick = () => { area.innerHTML = ''; msg(''); };
-    $('mGo').onclick = () => act('edit', { service: partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP) ? sel.service : b.service, comment: $('mCom').value, ...(sel.time ? { date: sel.date, time: sel.time } : {}) });
+    $('mGo').onclick = () => act('edit', { wish: hasLash() ? state.wish : null, service: partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP) ? sel.service : b.service, comment: $('mCom').value, ...(sel.time ? { date: sel.date, time: sel.time } : {}) });
     area.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   });
 }
