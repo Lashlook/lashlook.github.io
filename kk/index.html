@@ -519,6 +519,10 @@ details.care li::marker { color: var(--pink); }
 #gsBody .lead { margin: 0; font-size: 14px; color: var(--muted); }
 .gs-prev .cert { min-height: 190px; }
 .gs-prev .cert-amt { font-size: 38px; }
+.gs-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+.gs-mode .chip-p { border: 0; background: transparent; }
+.gs-mode .chip-p[aria-pressed="true"] { background: var(--pink); }
+#gsSumBox[hidden], #gsSvcBox[hidden] { display: none !important; }
 .gs-amts { display: flex; flex-wrap: wrap; gap: 8px; }
 .gs-or { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .gs-sel { width: 100%; padding: 15px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 15px; }
@@ -1667,11 +1671,14 @@ function gsRender(step) {
     const amts = [5000, 10000, 15000, 20000, 30000];
     body.innerHTML = `<h3 id="gsTitle"><span class="script">подарок</span>Подарочный сертификат</h3>
       ${certPreview()}
-      <div class="gs-or">Сумма</div>
+      <div class="gs-mode" role="tablist"><button type="button" class="chip-p" data-mode="sum" aria-pressed="${!gs.service}">💳 На сумму</button><button type="button" class="chip-p" data-mode="svc" aria-pressed="${!!gs.service}">💅 На процедуру</button></div>
+      <div id="gsSumBox"${gs.service ? ' hidden' : ''} style="display:grid;gap:10px">
       <div class="gs-amts">${amts.map(a => `<button type="button" class="chip-p" data-amt="${a}" aria-pressed="${!gs.service && gs.amount === a}">${money(a)}</button>`).join('')}</div>
       <div class="field"><input id="gsAmt" inputmode="numeric" placeholder=" " value="${!gs.service && !amts.includes(gs.amount) && gs.amount ? gs.amount : ''}"><label for="gsAmt">Своя сумма, ₸</label></div>
-      <div class="gs-or">или на процедуру</div>
-      <select class="gs-sel" id="gsSvc"><option value="">— на сумму —</option>${state.cfg.services.map(s => `<option value="${esc(s.name)}"${gs.service === s.name ? ' selected' : ''}>${esc(s.name)}${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('')}</select>
+      </div>
+      <div id="gsSvcBox"${gs.service ? '' : ' hidden'}>
+      <select class="gs-sel" id="gsSvc">${state.cfg.services.map(s => `<option value="${esc(s.name)}"${gs.service === s.name ? ' selected' : ''}>${esc(s.name)}${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('')}</select>
+      </div>
       <div class="field"><input id="gsTo" maxlength="60" placeholder=" " value="${esc(gs.to)}"><label for="gsTo">Кому — имя получательницы</label></div>
       <div class="field"><input id="gsFrom" maxlength="60" placeholder=" " value="${esc(gs.from)}"><label for="gsFrom">От кого</label></div>
       <div class="field"><textarea id="gsMsg" maxlength="300" placeholder=" ">${esc(gs.message)}</textarea><label for="gsMsg">Пожелание — необязательно</label></div>
@@ -1685,9 +1692,17 @@ function gsRender(step) {
       $('gsNext').textContent = `Дальше — ${money(gsPrice())}`;
       body.querySelectorAll('[data-amt]').forEach(x => x.setAttribute('aria-pressed', !gs.service && Number(x.dataset.amt) === gs.amount));
     };
-    body.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { gs.amount = Number(b.dataset.amt); gs.service = ''; $('gsSvc').value = ''; $('gsAmt').value = ''; upd(); });
-    $('gsAmt').oninput = () => { const v = parseInt($('gsAmt').value.replace(/\D/g, ''), 10) || 0; $('gsAmt').value = v ? v.toLocaleString(LOC) : ''; gs.amount = v; gs.service = ''; $('gsSvc').value = ''; upd(); };
+    body.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { gs.amount = Number(b.dataset.amt); gs.service = ''; $('gsAmt').value = ''; upd(); });
+    $('gsAmt').oninput = () => { const v = parseInt($('gsAmt').value.replace(/\D/g, ''), 10) || 0; $('gsAmt').value = v ? v.toLocaleString(LOC) : ''; gs.amount = v; gs.service = ''; upd(); };
     $('gsSvc').onchange = () => { gs.service = $('gsSvc').value; upd(); };
+    body.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
+      const svc = b.dataset.mode === 'svc';
+      body.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x === b));
+      $('gsSumBox').hidden = svc; $('gsSvcBox').hidden = !svc;
+      if (svc) { gs.service = $('gsSvc').value || state.cfg.services[0]?.name || ''; $('gsSvc').value = gs.service; $('gsAmt').value = ''; }
+      else { gs.service = ''; if (!gs.amount) gs.amount = 10000; }
+      upd();
+    });
     $('gsTo').oninput = () => { gs.to = $('gsTo').value.trim(); upd(); };
     $('gsFrom').oninput = () => { gs.from = $('gsFrom').value.trim(); upd(); };
     $('gsMsg').oninput = () => { gs.message = $('gsMsg').value.trim(); upd(); };
