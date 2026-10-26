@@ -471,6 +471,23 @@ details.care li::marker { color: var(--pink); }
   .rv-filter::-webkit-scrollbar { display: none; }
   .rv-filter .chip-p { flex: none; padding: 9px 14px; font-size: 13px; }
 }
+/* «С возвращением» */
+.me { position: relative; z-index: 3; display: grid; gap: 12px; margin-top: 14px; padding: 16px; border-radius: 20px;
+  background: radial-gradient(120% 140% at 100% 0%, rgba(255,46,136,.22), transparent 60%), rgba(20,18,22,.82); border: 1px solid rgba(255,46,136,.35);
+  backdrop-filter: blur(10px); box-shadow: 0 20px 44px -28px rgba(255,46,136,.8); animation: rowIn .7s .2s var(--ease) both; }
+.me-top { display: flex; align-items: center; gap: 12px; }
+.me-ava { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; flex: none; font: 500 20px/1 var(--display); color: #fff;
+  background: linear-gradient(135deg, var(--pink), #9B5CFF); box-shadow: 0 0 0 3px rgba(255,46,136,.18), 0 8px 20px -8px rgba(255,46,136,.9); }
+.me-hi { display: grid; min-width: 0; }
+.me-hi b { font: 500 19px/1.2 var(--display); }
+.me-hi span { font-size: 12.5px; color: var(--muted); }
+.me-x { margin-left: auto; align-self: start; background: none; border: 0; padding: 4px 0; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; white-space: nowrap; }
+.me-perks { display: flex; flex-wrap: wrap; gap: 6px; }
+.me-perks:empty { display: none; }
+.mp { padding: 6px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+.mp.hot { background: var(--pink-soft); border-color: rgba(255,46,136,.45); color: var(--pink-2); }
+.me-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.me-acts:empty { display: none; }
 .mine { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 16px; border-radius: 16px; text-decoration: none; font-size: 14px;
   background: rgba(28,25,30,.8); border: 1px solid rgba(255,46,136,.45); backdrop-filter: blur(10px); animation: rowIn .6s var(--ease) both; }
 .mine i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 10px var(--pink); flex: none; animation: live 1.6s ease-in-out infinite; }
@@ -1111,6 +1128,7 @@ $('form').addEventListener('submit', async e => {
       try { await uploadPhoto(booking.token, state.photo); booking.photo = true; } catch {}
     }
     try { localStorage.removeItem('bl_ref'); } catch {}
+    meSave({ name: body.name.trim(), phone: phone.value, bday: $('bday').value.length === 5 ? $('bday').value : (meGet()?.bday || ''), service: body.service, token: booking.token });
     showDone(booking, body.name);
   } catch (err) {
     if (err.status === 403) { state.perk = { blocked: true, key: perkKey() }; renderPerk(); btn.textContent = 'Написать в WhatsApp'; btn.disabled = false; $('msg').textContent = err.message; return; }
@@ -1131,6 +1149,60 @@ function icsLink(b) {
     'BEGIN:VALARM', 'TRIGGER:-PT3H', 'ACTION:DISPLAY', 'DESCRIPTION:Скоро запись в browlash.look', 'END:VALARM',
     'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
   return URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+}
+
+// ---------- «Я» на этом телефоне: имя, номер, прошлая процедура ----------
+const ME = 'bl_me';
+const meGet = () => { try { return JSON.parse(localStorage.getItem(ME) || 'null'); } catch { return null; } };
+const meSave = v => { try { localStorage.setItem(ME, JSON.stringify({ ...(meGet() || {}), ...v })); } catch {} };
+const meForget = () => { try { ['bl_me', 'bl_bookings', 'bl_ref'].forEach(k => localStorage.removeItem(k)); } catch {} };
+function setPhone(v) {
+  let d = String(v || '').replace(/\D/g, ''); if (d[0] === '8') d = '7' + d.slice(1); d = d.slice(0, 11);
+  if (d.length !== 11) return;
+  phone._n = 11;
+  phone.value = `+7 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9, 11)}`;
+}
+function fillMe(me) {
+  if (!$('name').value && me.name) $('name').value = me.name;
+  if (!phone.value.replace(/\D/g, '').length && me.phone) setPhone(me.phone);
+  if (!$('bday').value && me.bday) $('bday').value = me.bday;
+}
+async function greet(me, upcoming) {
+  const el = document.createElement('div'); el.className = 'me';
+  const first = esc(String(me.name || '').trim().split(' ')[0]);
+  const svc = state.cfg.services.find(s => s.name === me.service);
+  el.innerHTML = `<div class="me-top"><span class="me-ava">${first ? first[0] : '♡'}</span><div class="me-hi"><b>Қайта келуіңізбен${first ? ', ' + first : ''}!</b><span id="meInfo">Аты мен нөмірі формаға қойылды 💗</span></div>
+      <button type="button" class="me-x" id="meNot" title="Очистить данные на этом телефоне">Бұл мен емеспін</button></div>
+    <div class="me-perks" id="mePerks"></div>
+    <div class="me-acts">
+      ${upcoming ? `<a class="btn sm" href="?b=${encodeURIComponent(upcoming.token)}">Менің жазылуым: ${esc(fmtShort(upcoming.date))}, ${upcoming.time}</a>` : ''}
+      ${svc ? `<button type="button" class="btn ${upcoming ? 'ghost ' : ''}sm" id="meAgain">Қайталау: ${esc(svc.title || svc.name)}</button>` : ''}
+    </div>`;
+  document.querySelector('.topbar').after(el);
+  $('meNot').onclick = () => {
+    meForget(); el.remove();
+    ['name', 'bday', 'comment'].forEach(id => $(id).value = ''); phone.value = ''; phone._n = 0; $('bdayField').hidden = false;
+    state.perk = null; renderPerk(); update();
+  };
+  $('meAgain')?.addEventListener('click', () => {
+    state.cat = svc.category || 'Услуги'; state.service = svc; state.time = null;
+    renderTabs(); renderServices(false); loadSlots(); update(); loadAvailability();
+    $('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => document.querySelector('#days')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 700);
+  });
+  // бонусы — по секретной ссылке её последней записи
+  if (!me.token) return;
+  try {
+    const { booking: b } = await api('/api/b/' + encodeURIComponent(me.token));
+    const chips = [];
+    if (b.loyalty) {
+      const done = b.loyalty.visits % b.loyalty.every, left = b.loyalty.every - done;
+      chips.push(`<span class="mp">⭐ ${done} из ${b.loyalty.every}${left === 1 ? ' — следующий визит со скидкой ' + b.loyalty.pct + '%' : ''}</span>`);
+    }
+    if (b.ref?.bonus) chips.push(`<span class="mp hot">🎁 бонус −${b.ref.bonusPct}% за подругу</span>`);
+    if (b.ref) chips.push(`<a class="mp" href="?b=${encodeURIComponent(me.token)}#ref">👭 пригласить подругу</a>`);
+    $('mePerks').innerHTML = chips.join('');
+  } catch {}
 }
 
 // ---------- Мои записи (на этом устройстве) ----------
@@ -1182,7 +1254,7 @@ function refHtml(b) {
   const R = b.ref; if (!R) return '';
   const url = R.url || (location.origin + location.pathname + '?r=' + R.code);
   const text = `Записывайся к моему мастеру по ресницам и бровям 💗 По этой ссылке скидка ${R.friendPct}% на первый визит: ${url}`;
-  return `<div class="refbox">
+  return `<div class="refbox" id="ref">
       <h3>👭 Құрбыңды әкел</h3>
       <div>Подруге — <b>скидка ${R.friendPct}%</b> на первый визит, а тебе — <b>−${R.bonusPct}%</b> на следующую запись, когда она придёт.${R.bonus ? `<br>🎁 У тебя ${R.bonus > 1 ? R.bonus + ' бонуса' : 'есть бонус'} — скидка применится сама при следующей записи.` : ''}</div>
       <input readonly value="${esc(url)}" onclick="this.select()" aria-label="Ваша ссылка для подруги">
@@ -1256,6 +1328,7 @@ async function manage(token) {
     return;
   }
   if (b.status !== 'cancelled') mySave(b); else mySet(myGet().filter(x => x.token !== token));
+  if (meGet()?.phone) meSave({ token });
   const [stTxt, stCls] = STATUS[b.status] || [b.status, 'wait'];
   const active = !b.past && b.status !== 'cancelled';
   const late = active && new Date(`${b.date}T${b.time}`) - Date.now() < 2 * 3600000;
@@ -1547,8 +1620,9 @@ function goOffline() {
       }).catch(() => {});
     }
     // баннер «ваша запись»
-    const mine = myUpcoming()[0];
-    if (mine) {
+    const mine = myUpcoming()[0], me = meGet();
+    if (me?.phone) { fillMe(me); update(); greet(me, mine); }
+    else if (mine) {
       const a = document.createElement('a');
       a.className = 'mine'; a.href = '?b=' + mine.token;
       a.innerHTML = `<i></i><span>Сіздің жазылуыңыз: <b>${esc(fmtShort(mine.date))}, ${mine.time}</b></span><span class="go">Басқару →</span>`;
