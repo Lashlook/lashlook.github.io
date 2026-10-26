@@ -159,7 +159,7 @@ h1 .script { display: block; font: 400 clamp(52px, 14vw, 96px)/.9 var(--script);
 }
 
 /* ---------- Секции ---------- */
-section.block { padding-block: 56px 0; display: grid; gap: 18px; }
+section.block { padding-block: 56px 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
 .sec-head { display: grid; gap: 6px; }
 .sec-head .num { font: 400 30px/1 var(--script); color: var(--pink); }
 .sec-head h2 { margin: 0; font: 500 clamp(28px, 7vw, 38px)/1.1 var(--display); text-wrap: balance; }
@@ -191,6 +191,40 @@ section.block { padding-block: 56px 0; display: grid; gap: 18px; }
 .svc[aria-pressed="true"] .p { color: var(--pink-2); }
 .price.swap .svc { animation: rowIn .5s var(--ease) both; animation-delay: calc(var(--i) * 45ms); }
 @keyframes rowIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
+/* ---------- Несколько процедур: счётчик на вкладке, «Ваш визит» ---------- */
+.tab-n { display: inline-grid; place-items: center; min-width: 17px; height: 17px; margin-left: 6px; padding: 0 5px; border-radius: 9px; background: #fff; color: var(--pink); font: 700 10.5px/1 var(--body); font-style: normal; vertical-align: 1px; }
+.tab:not([aria-selected="true"]) .tab-n { background: var(--pink); color: #fff; }
+.tab-n.pop { animation: pop .45s var(--ease); }
+.picked { position: relative; display: grid; gap: 10px; padding: 16px 16px 14px; border-radius: 18px; border: 1px dashed rgba(255,46,136,.5); background: linear-gradient(180deg, rgba(255,46,136,.08), rgba(255,46,136,.02)); animation: rowIn .45s var(--ease); }
+.pk-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pk-head b { font: 500 20px/1.1 var(--display); }
+.pk-head > span { color: var(--muted); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.pk-sum { color: var(--ink); font-weight: 700; }
+.pk-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.pk { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 6px 6px 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid rgba(255,46,136,.35); font-size: 13px; font-weight: 600; }
+.pk > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pk button { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(255,255,255,.07); color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; transition: .2s; }
+.pk button:hover, .pk button:focus-visible { background: var(--pink); color: #fff; }
+.pk-hint { margin: 0; color: var(--muted); font-size: 12.5px; }
+.pk-note { margin: 0; color: var(--pink-2); font-size: 13px; font-weight: 600; min-height: 0; }
+.pk-note:empty { display: none; }
+.pk-note.show { animation: shake .4s; }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+/* галочка у процедуры прорисовывается, как штрих ресницы */
+.svc .radio { border-radius: 7px; }
+.svc.flick .radio svg path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: tick .42s var(--ease) .05s forwards; }
+@keyframes tick { to { stroke-dashoffset: 0; } }
+.svc.flick::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--pink), transparent); transform-origin: left; animation: sweep .6s var(--ease) forwards; pointer-events: none; }
+@keyframes sweep { from { transform: scaleX(0); opacity: 1; } 70% { opacity: 1; } to { transform: scaleX(1); opacity: 0; } }
+/* «Изменить запись»: процедуры чипами */
+.m-svcs { display: grid; gap: 12px; }
+.m-cat { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.m-cat > span { flex-basis: 100%; color: var(--muted); font-size: 12.5px; }
+.m-cat .chip-p { display: inline-flex; align-items: baseline; gap: 6px; padding: 9px 13px; font-size: 13px; }
+.m-cat .chip-p small { font-weight: 500; opacity: .7; font-size: 11.5px; }
+.m-sum { margin: 8px 0 0; color: var(--pink-2); font-weight: 600; font-size: 14px; }
+.m-sum:empty { display: none; }
+.m-old { margin: 0 0 6px; color: var(--muted); font-size: 13px; }
 
 /* ---------- Дни ---------- */
 .days { display: flex; gap: 8px; overflow-x: auto; padding: 4px 4px 10px; margin-inline: -4px; scroll-snap-type: x proximity; scrollbar-width: none; }
@@ -272,8 +306,8 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; transform: translateY(110%); transition: transform .5s var(--ease);
   padding: 0 max(12px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
 .bar.show { transform: none; }
-.bar-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: center;
-  padding: 12px 12px 12px 20px; border-radius: 24px; background: rgba(28, 25, 30, .86); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+.bar-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: center;
+  padding: 12px 12px 12px 14px; border-radius: 24px; background: rgba(28, 25, 30, .86); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
   border: 1px solid var(--line); box-shadow: 0 20px 60px -20px rgba(0,0,0,.9); }
 .sum { min-width: 0; }
 .sum b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -281,6 +315,34 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .sum .pr { color: var(--pink-2); font-weight: 600; }
 .bar .btn { padding: 14px 22px; }
 .msg { grid-column: 1 / -1; color: var(--err); font-size: 13px; }
+/* ---------- Живой глазок в нижней плашке: подмигивает на каждый выбор, распахивается, когда всё готово ---------- */
+.bar-eye { width: 44px; height: 30px; overflow: visible; flex: none; }
+.bar-eye path, .bar-eye circle { fill: none; stroke-linecap: round; }
+.be-lid { stroke: var(--ink); stroke-width: 2.4; }
+.be-low { stroke: var(--muted); stroke-width: 1.6; opacity: .7; }
+.be-iris { stroke: var(--pink); stroke-width: 2.2; }
+.be-pupil { fill: var(--pink) !important; stroke: none; }
+.be-lashes path { stroke: var(--ink); stroke-width: 1.8; transform-box: fill-box; transform-origin: 50% 100%; }
+.be-blink { transform-origin: 32px 26px; animation: blink 6s 4s infinite; }
+.be-look { transition: transform .5s var(--ease); }
+.bar-eye.wink .be-blink { animation: wink .42s var(--ease); }
+@keyframes wink { 45% { transform: scaleY(.08); } }
+.bar-eye.ready .be-lashes path { animation: flutter .9s var(--ease); }
+.bar-eye.ready .be-lashes path:nth-child(2n) { animation-delay: .06s; }
+@keyframes flutter { 30% { transform: rotate(-14deg) scaleY(1.25); } 60% { transform: rotate(8deg) scaleY(.95); } }
+.bar-eye.ready .be-iris { animation: irisGlow 1.2s var(--ease); }
+@keyframes irisGlow { 40% { stroke-width: 3.4; filter: drop-shadow(0 0 6px var(--pink)); } }
+/* кнопка «Записаться»: когда всё заполнено — один раз «вспыхивает» */
+#submit.ready { animation: readyPop .7s var(--ease); }
+#submit.ready::after { animation: shine 1s .1s 1, shine 4.5s 3s infinite; }
+@keyframes readyPop { 40% { transform: scale(1.06); box-shadow: 0 0 0 8px var(--pink-soft), 0 14px 34px -10px rgba(255,46,136,1); } }
+/* выбранное время: под ним рисуется стрелка, как подводка */
+.slot::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: 6px; height: 2px; border-radius: 2px; background: #fff; transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease) .05s; }
+.slot[aria-pressed="true"]::after { transform: scaleX(1); }
+/* глаз в шапке смотрит за пальцем/курсором */
+.eye .look.track { animation: none; transition: transform .35s var(--ease); }
+.eye-blink.wink { animation: wink .42s var(--ease); }
+@media (max-width: 360px) { .bar-eye { width: 34px; height: 24px; } }
 .msg:empty { display: none; }
 .btn .spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -467,7 +529,7 @@ details.care li::marker { color: var(--pink); }
 @keyframes bump { 40% { transform: scale(1.06); color: var(--pink-2); } }
 @media (max-width: 480px) {
   .extras { grid-template-columns: 1fr; }
-  .rv-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; width: 100%; margin-inline: -16px; padding-inline: 16px; }
+  .rv-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; width: auto; margin-inline: -16px; padding-inline: 16px; }
   .rv-filter::-webkit-scrollbar { display: none; }
   .rv-filter .chip-p { flex: none; padding: 9px 14px; font-size: 13px; }
 }
@@ -595,6 +657,7 @@ canvas#burst { position: fixed; inset: 0; pointer-events: none; z-index: 30; }
 @keyframes sk { to { background-position: -200% 0; } }
 
 @media (max-width: 420px) { .svc { padding: 14px 10px; gap: 0 10px; } .fact { font-size: 9.5px; letter-spacing: .05em; padding: 14px 6px; } }
+@media (max-width: 360px) { .fact { font-size: 8.5px; letter-spacing: 0; padding: 12px 4px; } }
 
 /* ---------- Мобильные исправления ---------- */
 html, body { overflow-x: hidden; }
@@ -669,9 +732,10 @@ input::-webkit-date-and-time-value { text-align: left; }
 
   <form id="form" novalidate>
     <section class="block reveal" id="book">
-      <div class="sec-head"><span class="num">01</span><h2>Выберите процедуру</h2><p>Цены из актуального прайса мастера</p></div>
+      <div class="sec-head"><span class="num">01</span><h2>Выберите процедуру</h2><p>Можно несколько за один визит — время и цена сложатся</p></div>
       <div class="tabs" id="tabs" role="tablist"><span class="tab-ind" id="tabInd"></span></div>
       <div class="price" id="services"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+      <div class="picked" id="picked" hidden aria-live="polite"></div>
     </section>
 
     <section class="block reveal">
@@ -809,6 +873,11 @@ input::-webkit-date-and-time-value { text-align: left; }
 
 <div class="bar" id="bar">
   <div class="bar-in">
+    <svg class="bar-eye" id="barEye" viewBox="0 0 64 44" aria-hidden="true"><g class="be-blink">
+      <path class="be-low" d="M6 28 Q32 44 58 28"/><g class="be-look"><circle class="be-iris" cx="32" cy="28" r="8.5"/><circle class="be-pupil" cx="32" cy="28" r="3.6"/></g>
+      <path class="be-lid" d="M6 28 Q32 6 58 28"/>
+      <g class="be-lashes"><path d="M12 22.5 Q9 17 6 16"/><path d="M19 18 Q17 12 15 10"/><path d="M27 15.6 Q26.5 9.5 25 7"/><path d="M37 15.6 Q37.5 9.5 39 7"/><path d="M45 18 Q47 12 49 10"/><path d="M52 22.5 Q55 17 58 16"/></g>
+    </g></svg>
     <div class="sum"><b id="sumMain">Выберите процедуру</b><span id="sumSub"></span></div>
     <button class="btn" id="submit" type="submit" form="form" disabled>Записаться</button>
     <div class="msg" id="msg" role="alert"></div>
@@ -822,6 +891,7 @@ const WA_DEFAULT = '+77075938677';
 const waNum = () => String(state.cfg?.whatsapp || WA_DEFAULT).replace(/\D/g, '');
 let API = '';
 const reduce = false; // эффекты всегда включены
+const NUM = 'ru' + '-RU'; // числа всегда с пробелами: 10 000 ₸ (и на казахской версии)
 
 const pad = n => String(n).padStart(2, '0');
 const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -882,18 +952,51 @@ async function api(path, opts) {
   return j;
 }
 
-// ---------- Услуги ----------
+// ---------- Услуги (можно несколько за один визит) ----------
+const SEP = ' + ', MAX_SVC = 4;
+const partsOf = name => String(name || '').split(SEP).map(x => x.trim()).filter(Boolean);
+const one = name => state.cfg.services.find(s => s.name === name);
+// одна услуга или «A + B» → общий объект: длительность и цена суммой
+function findSvc(name) {
+  const o = one(name); if (o) return o;
+  const ps = partsOf(name).map(one);
+  if (ps.length < 2 || ps.some(x => !x)) return null;
+  const total = ps.reduce((t, x) => t + svcPrice(x), 0);
+  return { name: ps.map(x => x.name).join(SEP), title: ps.map(x => x.title || x.name).join(SEP), duration: ps.reduce((t, x) => t + x.duration, 0),
+    price: total ? money(total) : '', category: ps[0].category || 'Услуги', parts: ps };
+}
+const selOf = svc => svc ? (svc.parts ? svc.parts.map(x => x.name) : [svc.name]) : [];
+state.sel = [];
+// выбрать набор процедур (из прайса, ссылки, сертификата, «повторить»)
+function setSel(names, opts = {}) {
+  state.sel = [...new Set(names)].filter(one).slice(0, MAX_SVC);
+  state.service = state.sel.length ? findSvc(state.sel.join(SEP)) : null;
+  state.time = null;
+  if (opts.tab && state.sel.length) state.cat = one(state.sel.at(-1)).category || 'Услуги';
+  if (opts.tab) renderTabs();
+  $('services').querySelectorAll('.svc').forEach(x => x.setAttribute('aria-pressed', state.sel.includes(x.dataset.name)));
+  markTabs(); renderPicked(opts.from); loadSlots(); update(); loadAvailability();
+}
 function cats() { return [...new Set(state.cfg.services.map(s => s.category || 'Услуги'))]; }
 function renderTabs() {
   const box = $('tabs'); box.querySelectorAll('.tab').forEach(t => t.remove());
   cats().forEach(c => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'tab'; b.setAttribute('role', 'tab'); b.textContent = c;
+    b.type = 'button'; b.className = 'tab'; b.setAttribute('role', 'tab'); b.dataset.cat = c;
+    b.innerHTML = `${esc(c)}<i class="tab-n" hidden></i>`;
     b.setAttribute('aria-selected', c === state.cat);
     b.onclick = () => { if (state.cat === c) return; state.cat = c; renderTabs(); renderServices(true); };
     box.append(b);
   });
+  markTabs();
   requestAnimationFrame(moveInd);
+}
+// на вкладке — сколько процедур из неё выбрано
+function markTabs() {
+  $('tabs').querySelectorAll('.tab').forEach(t => {
+    const n = state.sel.filter(x => (one(x)?.category || 'Услуги') === t.dataset.cat).length, i = t.querySelector('.tab-n');
+    if (String(n) !== i.textContent || i.hidden !== !n) { i.textContent = n; i.hidden = !n; if (n) { i.classList.remove('pop'); void i.offsetWidth; i.classList.add('pop'); } }
+  });
 }
 function moveInd() {
   const on = $('tabs')?.querySelector('[aria-selected="true"]'); if (!on) return;
@@ -908,20 +1011,40 @@ function renderServices(animate) {
   box.classList.toggle('swap', !!animate && !reduce);
   state.cfg.services.filter(s => (s.category || 'Услуги') === state.cat).forEach((s, i) => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'svc'; b.style.setProperty('--i', i);
+    b.type = 'button'; b.className = 'svc'; b.style.setProperty('--i', i); b.dataset.name = s.name;
     b.innerHTML = `<span class="radio">${CHECK}</span>
       <span class="line"><span class="t">${esc(s.title || s.name)}</span><span class="dots"></span></span>
       <span class="p">${esc(s.price || '')}</span>
       <span class="sub">${dur(s.duration)}${s.note ? ' · ' + esc(s.note) : ''}</span>`;
-    b.setAttribute('aria-pressed', state.service?.name === s.name);
+    b.setAttribute('aria-pressed', state.sel.includes(s.name));
     b.onclick = () => {
-      state.service = s; state.time = null;
-      box.querySelectorAll('.svc').forEach(x => x.setAttribute('aria-pressed', x === b));
-      loadSlots(); update(); loadAvailability();
+      const on = state.sel.includes(s.name);
+      if (!on && state.sel.length >= MAX_SVC) { pickedNote(`За один визит — до ${MAX_SVC} процедур`); return; }
+      if (!on) { b.classList.remove('flick'); void b.offsetWidth; b.classList.add('flick'); eyeWink(); }
+      setSel(on ? state.sel.filter(x => x !== s.name) : [...state.sel, s.name], { from: on ? null : b });
     };
     box.append(b);
   });
 }
+// «Ваш визит»: выбранные процедуры, общее время и цена
+function renderPicked(fromEl) {
+  const box = $('picked'), list = state.sel.map(one);
+  if (!list.length) { box.hidden = true; box.innerHTML = ''; return; }
+  const total = list.reduce((t, x) => t + svcPrice(x), 0), mins = list.reduce((t, x) => t + x.duration, 0);
+  const had = new Set([...box.querySelectorAll('.pk')].map(x => x.dataset.name));
+  box.hidden = false;
+  box.innerHTML = `<div class="pk-head"><b>${list.length > 1 ? 'Ваш визит' : 'Вы выбрали'}</b><span>${dur(mins)}${total ? ' · <span class="pk-sum">' + money(total) + '</span>' : ''}</span></div>
+    <div class="pk-list">${list.map(x => `<span class="pk${had.has(x.name) ? '' : ' new'}" data-name="${esc(x.name)}"><span>${esc(x.name)}</span><button type="button" aria-label="Убрать: ${esc(x.name)}">×</button></span>`).join('')}</div>
+    ${list.length < MAX_SVC ? `<p class="pk-hint">${list.length > 1 ? 'Процедуры пройдут подряд, одна за другой' : 'Можно добавить ещё процедуру — например, брови к ресницам'}</p>` : ''}<p class="pk-note" id="pkNote"></p>`;
+  box.querySelectorAll('.pk button').forEach(b => b.onclick = () => { const n = b.parentElement.dataset.name; setSel(state.sel.filter(x => x !== n)); });
+  // новая процедура «прилетает» из списка в «Ваш визит»
+  const nw = box.querySelector('.pk.new');
+  if (fromEl && nw && !reduce) {
+    const a = fromEl.querySelector('.t').getBoundingClientRect(), z = nw.getBoundingClientRect();
+    nw.animate([{ transform: `translate(${a.left - z.left}px, ${a.top - z.top}px) scale(.9)`, opacity: .2 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  }
+}
+function pickedNote(t) { const n = $('pkNote'); if (!n) return; n.textContent = t; n.classList.remove('show'); void n.offsetWidth; n.classList.add('show'); }
 
 // ---------- Дни ----------
 function renderDays() {
@@ -976,13 +1099,20 @@ function showNext(n) {
 }
 
 // ---------- Время ----------
+let slotSeq = 0;
 async function loadSlots(scroll) {
   const box = $('slots');
   if (!state.service || !state.date) return;
+  const seq = ++slotSeq; // быстро переключали дни — показываем только последний ответ
+  if (!inWindow(state.date)) {
+    box.innerHTML = `<div class="empty">Запись на ${esc(fmtShort(state.date))} ещё не открыта — мастер открывает запись на ${state.cfg.daysAhead} ${state.cfg.daysAhead === 1 ? 'день' : state.cfg.daysAhead < 5 ? 'дня' : 'дней'} вперёд.<br>Выберите ближайший день или <a href="https://wa.me/${waNum()}" target="_blank" rel="noopener" style="color:var(--pink-2)">напишите мастеру</a> — она запишет заранее.</div>`;
+    return;
+  }
   box.innerHTML = '<div class="skeleton"></div>';
   try {
     const slots = state.offline ? localSlots(state.date, state.service.duration)
       : (await api(`/api/slots?date=${state.date}&service=${encodeURIComponent(state.service.name)}`)).slots;
+    if (seq !== slotSeq) return;
     const free = slots.filter(s => s.free);
     if (!free.length) {
       box.innerHTML = `<div class="empty">На этот день всё занято 🥲<br>Выберите другой день или встаньте в лист ожидания — если кто-то отменит, мастер вам напишет.</div>`;
@@ -1000,7 +1130,7 @@ async function loadSlots(scroll) {
         const b = document.createElement('button');
         b.type = 'button'; b.className = 'slot'; b.textContent = s.time; b.style.setProperty('--i', n++);
         b.setAttribute('aria-pressed', state.time === s.time);
-        b.onclick = () => { state.time = s.time; box.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', x === b)); update(); };
+        b.onclick = () => { state.time = s.time; box.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', x === b)); eyeWink(); update(); };
         g.querySelector('.slots').append(b);
       });
       box.append(g);
@@ -1014,7 +1144,7 @@ async function loadSlots(scroll) {
       box.append(w);
     }
     if (scroll && innerWidth < 900) $('timeSec').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-  } catch { box.innerHTML = '<p class="empty">Не получилось загрузить время. Обновите страницу</p>'; }
+  } catch { if (seq === slotSeq) box.innerHTML = '<p class="empty">Не получилось загрузить время. Обновите страницу</p>'; }
 }
 
 function dayWindows(date) {
@@ -1028,6 +1158,8 @@ function localSlots(date, duration) {
     for (let m = toMin(w.start); m + duration <= toMin(w.end); m += step) if (!isToday || m > now + 30) out.push({ time: toHHMM(m), free: true });
   return out;
 }
+// день за пределами записи (прошёл или запись на него ещё не открыта)
+const inWindow = key => { const t = new Date(); t.setHours(0, 0, 0, 0); const last = new Date(t); last.setDate(last.getDate() + (state.cfg?.daysAhead || 21)); return key >= ymd(t) && key <= ymd(last); };
 const WD_SHORT = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
 function daysText(list) {
   // [1,2,3,0] → «пн–ср, вс»
@@ -1042,7 +1174,10 @@ function hoursText(c) {
   if (!c.week) { const off = c.daysOff || []; return off.length ? `${daysText([0, 1, 2, 3, 4, 5, 6].filter(d => !off.includes(d)))} · ${c.open}–${c.close}` : `ежедневно ${c.open}–${c.close}`; }
   const sig = [0, 1, 2, 3, 4, 5, 6].map(d => JSON.stringify(c.week[d] || []));
   if (new Set(sig).size === 1 && c.week[1]?.length === 1) return `ежедневно ${c.week[1][0].start}–${c.week[1][0].end}`;
-  return 'гибкий график — свободные окошки в записи выше';
+  // группируем дни с одинаковыми часами: «пн–чт 13:00–20:00 · вс 10:00–20:00»
+  const groups = new Map();
+  [1, 2, 3, 4, 5, 6, 0].forEach(d => { const ws = c.week[d] || []; if (!ws.length) return; const k = ws.map(w => `${w.start}–${w.end}`).join(', '); groups.set(k, [...(groups.get(k) || []), d]); });
+  return groups.size && groups.size <= 3 ? [...groups].map(([k, ds]) => `${daysText(ds)} ${k}`).join(' · ') : 'гибкий график — свободные окошки в записи выше';
 }
 
 // ---------- Лист ожидания ----------
@@ -1096,6 +1231,7 @@ phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7 '; }
 phone.addEventListener('blur', () => { if (phone.value.trim() === '+7') phone.value = ''; });
 phone.addEventListener('input', e => {
   let d = phone.value.replace(/\D/g, '');
+  if (d.length === 10 && !phone.value.trim().startsWith('+')) d = '7' + d; // вставили «777 123 45 67» без +7
   if (d[0] === '8') d = '7' + d.slice(1);
   if (d && d[0] !== '7') d = '7' + d;
   d = d.slice(0, 11);
@@ -1111,21 +1247,44 @@ $('name').addEventListener('input', update);
 document.addEventListener('focusin', e => { if (e.target.matches('input, textarea') && matchMedia('(pointer: coarse)').matches) $('bar').classList.add('kb'); });
 document.addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement?.matches('input, textarea')) $('bar').classList.remove('kb'); }, 50));
 
-function bumpPrice() { const el = $('sumSub').querySelector('.pr'); if (!el || el.textContent === bumpPrice.last) return; bumpPrice.last = el.textContent; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+// цена в плашке не прыгает, а «досчитывается» до новой суммы
+function bumpPrice() {
+  const el = $('sumSub').querySelector('.pr'); if (!el) return;
+  const txt = el.textContent, to = parseInt(txt.replace(/\D/g, ''), 10) || 0, from = bumpPrice.n;
+  if (txt === bumpPrice.last) return;
+  bumpPrice.last = txt; bumpPrice.n = to;
+  el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  if (from == null || from === to || reduce) return;
+  const t0 = performance.now(), D = 480;
+  (function f(t) { if (!el.isConnected || bumpPrice.n !== to) return; const k = Math.min(1, (t - t0) / D), e = 1 - (1 - k) ** 3;
+    el.textContent = money(Math.round((from + (to - from) * e) / 10) * 10); if (k < 1) requestAnimationFrame(f); else el.textContent = txt; })(t0);
+}
+// глазок подмигивает: в нижней плашке и в шапке (если её видно)
+function eyeWink() {
+  [$('barEye'), document.querySelector('.eye-blink')].forEach(el => { if (!el) return; el.classList.remove('wink'); void el.getBoundingClientRect(); el.classList.add('wink'); setTimeout(() => el.classList.remove('wink'), 450); });
+}
 function update() {
   const s = state.service;
   $('bar').classList.toggle('show', !!s);
   if (!s) { refreshPerks(); return; }
-  $('sumMain').textContent = s.name;
+  $('sumMain').textContent = s.parts ? `${s.parts.length} ${s.parts.length < 5 ? 'процедуры' : 'процедур'} · ${dur(s.duration)}` : s.name;
   $('sumSub').innerHTML = sumHtml(); bumpPrice();
-  const ok = state.date && state.time && $('name').value.trim() && phone.value.replace(/\D/g, '').length === 11;
-  $('submit').disabled = !ok;
+  const ok = !!(state.date && state.time && $('name').value.trim() && phone.value.replace(/\D/g, '').length === 11);
+  if (!state.sending) $('submit').disabled = !ok;
+  // всё заполнено — глазок распахивается и смотрит на кнопку, кнопка вспыхивает (один раз)
+  if (ok && !update.ok && !state.sending) {
+    const eye = $('barEye'), btn = $('submit');
+    [eye, btn].forEach(x => { x.classList.remove('ready'); void x.getBoundingClientRect(); x.classList.add('ready'); });
+    setTimeout(() => { eye.classList.remove('ready'); btn.classList.remove('ready'); }, 1300);
+  }
+  $('barEye').querySelector('.be-look').style.transform = ok ? 'translateX(5px)' : state.time ? 'translateX(2px)' : '';
+  update.ok = ok;
   $('msg').textContent = '';
   refreshPerks();
 }
 
 // ---------- Скидки, бонусы, сертификат: подсказка, пока заполняют форму ----------
-const money = n => Number(n || 0).toLocaleString('ru-RU') + ' ₸';
+const money = n => Number(n || 0).toLocaleString(NUM) + ' ₸';
 const perkKey = () => JSON.stringify([phone.value.replace(/\D/g, ''), state.service?.name, state.date, $('bday').value, normCode($('gift').value), state.ref]);
 const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const perkFor = () => state.perk && state.perk.key === perkKey() && state.perk.pct && state.perk.base ? state.perk : null;
@@ -1164,7 +1323,8 @@ function renderPerk() {
   else if (p.gift?.error) { gm.textContent = (p.gift.mismatch ? '⚠ ' : '') + p.gift.error; gm.className = 'fmsg bad'; }
   else if (p.gift) {
     const g = p.gift, cost = perkFor()?.price ?? svcPrice(state.service);
-    gm.textContent = !g.amount ? `✓ Сертификат ${g.code} на «${g.service}» — процедура уже оплачена 💗`
+    const rest = !g.amount && state.service ? Math.max(0, svcPrice(state.service) - svcPrice(one(g.service))) : 0;
+    gm.textContent = !g.amount ? `✓ Сертификат ${g.code} на «${g.service}» — эта процедура уже оплачена 💗${rest ? ` Остальное — ${money(rest)} на месте` : ''}`
       : `✓ Сертификат ${g.code}: на нём ${money(g.balance)}${g.balance < g.amount ? ' (из ' + money(g.amount) + ')' : ''}` +
         (cost ? (cost > g.balance ? ` — спишется всё, доплата ${money(cost - g.balance)} на месте` : ` — спишется ${money(cost)}, останется ${money(g.balance - cost)} на следующий раз`) : '');
     gm.className = 'fmsg ok';
@@ -1174,10 +1334,10 @@ function renderPerk() {
   const gs = p.gift && !p.gift.error ? p.gift.service : p.gift?.mismatch ? p.gift.service : '';
   if (gs && state.giftAuto !== p.gift.code) {
     state.giftAuto = p.gift.code;
-    const svc = state.cfg.services.find(x => x.name === gs);
-    if (svc && state.service?.name !== svc.name) {
-      state.cat = svc.category || 'Услуги'; state.service = svc; state.time = null;
-      renderTabs(); renderServices(false); loadSlots(); update(); loadAvailability();
+    const svc = one(gs);
+    if (svc && !state.sel.includes(svc.name)) {
+      state.cat = svc.category || 'Услуги'; renderTabs(); renderServices(false);
+      setSel([...state.sel, svc.name].slice(-MAX_SVC));
       setTimeout(() => $('book').scrollIntoView({ behavior: 'smooth', block: 'start' }), 250);
     }
   }
@@ -1189,7 +1349,7 @@ function sumHtml() {
   const when = `<span class="when">${state.date ? fmtShort(state.date) + (state.time ? `, ${state.time}–${toHHMM(toMin(state.time) + s.duration)}` : ' · выберите время') : 'выберите день'}</span>`;
   const pk = perkFor(), g = state.perk && state.perk.key === perkKey() && state.perk.gift && !state.perk.gift.error ? state.perk.gift : null;
   const base = svcPrice(s), cost = pk ? pk.price : base;
-  if (g && g.service) return `<s>${money(base)}</s> <span class="pr">0 ₸</span> по сертификату${when}`;
+  if (g && g.service) { const rest = Math.max(0, base - svcPrice(one(g.service))); return `<s>${money(base)}</s> <span class="pr">${money(rest)}</span> ${rest ? 'доплата' : 'по сертификату'}${when}`; }
   if (g && g.amount && cost) {
     const pay = Math.max(0, cost - g.balance);
     return `<s>${money(cost)}</s> <span class="pr">${money(pay)}</span> ${pay ? 'доплата' : 'по сертификату'}${when}`;
@@ -1235,7 +1395,8 @@ async function uploadPhoto(token, data) {
 $('form').addEventListener('submit', async e => {
   e.preventDefault();
   if (state.offline || state.blocked) return sendWhatsApp();
-  const btn = $('submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Отправляем';
+  if (state.sending) return;
+  const btn = $('submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Отправляем'; state.sending = true;
   try {
     const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time,
       birthday: $('bday').value, gift: $('gift').value, ref: state.ref };
@@ -1248,25 +1409,15 @@ $('form').addEventListener('submit', async e => {
     meSave({ name: body.name.trim(), phone: phone.value, bday: $('bday').value.length === 5 ? $('bday').value : (meGet()?.bday || ''), service: body.service, token: booking.token });
     showDone(booking, body.name);
   } catch (err) {
+    state.sending = false;
     if (err.status === 403) { state.perk = { blocked: true, key: perkKey() }; renderPerk(); btn.textContent = 'Написать в WhatsApp'; btn.disabled = false; $('msg').textContent = err.message; return; }
     if (err.field === 'gift') { $('giftMsg').textContent = err.message; $('giftMsg').className = 'fmsg bad'; }
     if (err.status === 409) { state.time = null; loadSlots(); }
     if (err instanceof TypeError) { goOffline(); btn.textContent = 'Отправить в WhatsApp'; update(); $('msg').textContent = 'Сервер записи недоступен — отправьте заявку мастеру в WhatsApp, это займёт секунду'; return; }
     btn.textContent = 'Записаться'; update();
     $('msg').textContent = err.message;
-  }
+  } finally { state.sending = false; }
 });
-
-function icsLink(b) {
-  const dt = (d, t) => d.replace(/-/g, '') + 'T' + t.replace(':', '') + '00';
-  const end = toHHMM(toMin(b.time) + b.duration);
-  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//browlash.look//RU', 'BEGIN:VEVENT',
-    `UID:${Date.now()}@browlash.look`, `DTSTART:${dt(b.date, b.time)}`, `DTEND:${dt(b.date, end)}`,
-    `SUMMARY:browlash.look — ${b.service}`, 'LOCATION:Петропавловск\\, ул. Ульянова\\, 49',
-    'BEGIN:VALARM', 'TRIGGER:-PT3H', 'ACTION:DISPLAY', 'DESCRIPTION:Скоро запись в browlash.look', 'END:VALARM',
-    'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-  return URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
-}
 
 // ---------- «Я» на этом телефоне: имя, номер, прошлая процедура ----------
 const ME = 'bl_me';
@@ -1296,7 +1447,7 @@ function fillMe(me) {
 async function greet(me, upcoming) {
   const el = document.createElement('div'); el.className = 'me';
   const first = esc(String(me.name || '').trim().split(' ')[0]);
-  const svc = state.cfg.services.find(s => s.name === me.service);
+  const svc = findSvc(me.service);
   el.innerHTML = `<div class="me-top"><span class="me-ava">${first ? first[0] : '♡'}</span><div class="me-hi"><b>С возвращением${first ? ', ' + first : ''}!</b><span id="meInfo">Имя и номер уже подставлены в форму 💗</span></div>
       <button type="button" class="me-x" id="meNot" title="Очистить данные на этом телефоне">Это не я</button></div>
     <div class="me-perks" id="mePerks"></div>
@@ -1311,8 +1462,7 @@ async function greet(me, upcoming) {
     state.perk = null; renderPerk(); update();
   };
   $('meAgain')?.addEventListener('click', () => {
-    state.cat = svc.category || 'Услуги'; state.service = svc; state.time = null;
-    renderTabs(); renderServices(false); loadSlots(); update(); loadAvailability();
+    state.cat = svc.category || 'Услуги'; renderTabs(); renderServices(false); setSel(selOf(svc));
     $('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => document.querySelector('#days')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 700);
   });
@@ -1352,7 +1502,7 @@ document.addEventListener('click', async e => {
 
 function ticketHtml(b) {
   const end = toHHMM(toMin(b.time) + b.duration);
-  const price = b.price ? b.price.toLocaleString('ru-RU') + ' ₸' : (state.cfg?.services.find(s => s.name === b.service)?.price || '');
+  const price = b.price ? b.price.toLocaleString(NUM) + ' ₸' : (findSvc(b.service)?.price || '');
   return `<div class="ticket">
         <div><div class="k">Когда</div><div class="big">${esc(fmtDay(b.date))}</div><div style="font:500 20px var(--display);color:var(--pink-2)">${b.time} – ${end}</div></div>
         <hr>
@@ -1360,8 +1510,9 @@ function ticketHtml(b) {
         ${price ? `<div class="row"><span class="k">Стоимость</span><span class="v">${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(price)}${b.discount ? ` <span class="disc">−${b.discount}%</span>` : ''}</span></div>` : ''}
         ${b.discount && b.discount_why ? `<div class="row"><span class="k">Скидка</span><span class="v">${esc(b.discount_why.replace(' (по документу)', ''))}</span></div>` : ''}
         ${b.discount_kind === 'birthday' ? `<div class="doc">🪪 Возьмите удостоверение или паспорт — скидка ко дню рождения по документу</div>` : ''}
-        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${!b.gift.amount ? ' · процедура оплачена' : ''}${b.gift.amount ? (b.status === 'came' ? ` · списано ${money(b.gift.charge)}` : ` · спишется ${money(b.gift.charge)}`) : ''}</span></div>
+        ${b.gift ? `<div class="row"><span class="k">Сертификат</span><span class="v">🎁 ${esc(b.gift.code)}${!b.gift.amount ? ` · «${esc(b.gift.service)}» оплачена${b.gift.covers && b.price > b.gift.covers ? `, доплата ${money(b.price - b.gift.covers)}` : ''}` : ''}${b.gift.amount ? (b.status === 'came' ? ` · списано ${money(b.gift.charge)}` : ` · спишется ${money(b.gift.charge)}`) : ''}</span></div>
           ${b.gift.amount ? `<div class="row"><span class="k">${b.status === 'came' ? 'Осталось' : 'Останется'}</span><span class="v">${money(b.status === 'came' ? b.gift.balance : Math.max(0, b.gift.balance - b.gift.charge))}${b.price > b.gift.charge && b.status !== 'came' ? ` · доплата ${money(b.price - b.gift.charge)}` : ''}</span></div>` : ''}` : ''}
+        ${b.comment ? `<div class="row"><span class="k">Пожелания</span><span class="v" style="font-weight:500">${esc(b.comment)}</span></div>` : ''}
         <div class="row"><span class="k">Адрес</span><span class="v">ул. Ульянова, 49</span></div>
       </div>`;
 }
@@ -1397,15 +1548,18 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-shar
 function showDone(b, name) {
   $('bar').classList.remove('show'); $('bar').hidden = true;
   mySave(b);
-  const svc = state.cfg.services.find(s => s.name === b.service);
+  const lash = partsOf(b.service).find(n => one(n)?.category === 'Наращивание'); // в визите было наращивание — через 3 недели коррекция
   const link = manageHref(b.token);
   let next = '';
-  if ((svc?.category || '') === 'Наращивание') {
-    const d = new Date(b.date + 'T00:00'); d.setDate(d.getDate() + 21);
+  const nd = new Date(b.date + 'T00:00'); nd.setDate(nd.getDate() + 21);
+  if (lash && !inWindow(ymd(nd))) {
+    next = `<div class="notice soft"><div class="ic">✨</div><div><b>Через 3–4 недели понадобится коррекция.</b> Мастер напомнит вам в WhatsApp, когда откроется запись на это время.</div></div>`;
+  } else if (lash) {
+    const d = nd;
     next = `<div class="notice soft">
         <div class="ic">✨</div>
         <div><b>Через 3–4 недели понадобится коррекция.</b> Займите удобное время заранее — потом окошки быстро разбирают.
-        <div class="cta-row" style="margin-top:10px"><a class="btn sm" href="?svc=${encodeURIComponent(b.service)}&d=${ymd(d)}">Запланировать следующий визит</a></div></div>
+        <div class="cta-row" style="margin-top:10px"><a class="btn sm" href="?svc=${encodeURIComponent(lash)}&d=${ymd(d)}">Запланировать следующий визит</a></div></div>
       </div>`;
   }
   $('app').innerHTML = `
@@ -1498,19 +1652,21 @@ async function manage(token) {
   });
   if (!late) $('mMove').addEventListener('click', () => {
     const area = $('mArea');
-    const svcs = state.cfg.services, known = svcs.some(s => s.name === b.service);
-    const opt = s => `<option value="${esc(s.name)}"${s.name === b.service ? ' selected' : ''}>${esc(s.name)} · ${s.duration} мин${s.price ? ' · ' + esc(s.price) : ''}</option>`;
+    const svcs = state.cfg.services, known = !!findSvc(b.service);
+    let picked = known ? partsOf(b.service) : [];
+    const chips = cats().map(c => `<div class="m-cat"><span>${esc(c)}</span>${svcs.filter(s => (s.category || 'Услуги') === c).map(s => `<button type="button" class="chip-p" data-svc="${esc(s.name)}" aria-pressed="${picked.includes(s.name)}">${esc(s.title || s.name)}<small>${s.price ? esc(s.price) : dur(s.duration)}</small></button>`).join('')}</div>`).join('');
     area.innerHTML = `<div class="sec-head" style="margin-top:8px"><h2 style="font-size:24px">Изменить запись</h2></div>
-      <label class="k" for="mSvc" style="display:block;margin:4px 0 6px">Процедура</label>
-      <select class="gs-sel" id="mSvc">${known ? '' : `<option value="${esc(b.service)}" selected>${esc(b.service)}</option>`}${svcs.map(opt).join('')}</select>
+      <p class="k" style="margin:4px 0 6px">Процедуры <span style="color:var(--muted);font-weight:400">— можно несколько</span></p>
+      ${known ? '' : `<p class="m-old">Сейчас: ${esc(b.service)}</p>`}
+      <div class="m-svcs" id="mSvc">${chips}</div><p class="m-sum" id="mSvcSum"></p>
       <p class="k" style="margin:16px 0 6px">День и время <span style="color:var(--muted);font-weight:400">— выберите, если хотите перенести</span></p>
       <div class="days" id="mDays"></div><div id="mSlots"></div>
       <div class="field" style="margin-top:14px"><textarea id="mCom" maxlength="500" placeholder=" ">${esc(b.comment || '')}</textarea><label for="mCom">Пожелания — необязательно</label></div>
       <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Сохранить изменения</button><button class="btn ghost" type="button" id="mBack">Не менять</button></div>`;
     const sel = { service: b.service, date: null, time: null };
-    const durOf = n => svcs.find(s => s.name === n)?.duration || b.duration;
+    const sumLine = () => { const v = findSvc(sel.service); $('mSvcSum').textContent = v ? `${dur(v.duration)}${v.price ? ' · ' + v.price : ''}` : ''; };
     const upd = () => {
-      const svcCh = sel.service !== b.service, com = $('mCom').value.trim() !== (b.comment || '').trim();
+      const svcCh = partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP), com = $('mCom').value.trim() !== (b.comment || '').trim();
       const go = $('mGo');
       if (sel.date && !sel.time) { go.disabled = true; go.textContent = 'Выберите время'; return; }
       go.disabled = !(svcCh || sel.time || com);
@@ -1550,10 +1706,19 @@ async function manage(token) {
       };
       daysBox.append(btn);
     }
-    $('mSvc').onchange = () => { sel.service = $('mSvc').value; upd(); loadSlots(); };
+    $('mSvc').addEventListener('click', e => {
+      const c = e.target.closest('[data-svc]'); if (!c) return;
+      const n = c.dataset.svc, on = picked.includes(n);
+      if (!on && picked.length >= MAX_SVC) { msg(`За один визит — до ${MAX_SVC} процедур`); return; }
+      if (on && picked.length === 1) { msg('Должна остаться хотя бы одна процедура'); return; }
+      picked = on ? picked.filter(x => x !== n) : [...picked, n]; msg('');
+      c.setAttribute('aria-pressed', !on);
+      sel.service = picked.join(SEP); sumLine(); upd(); loadSlots();
+    });
+    sumLine();
     $('mCom').oninput = upd;
     $('mBack').onclick = () => { area.innerHTML = ''; msg(''); };
-    $('mGo').onclick = () => act('edit', { service: sel.service, comment: $('mCom').value, ...(sel.time ? { date: sel.date, time: sel.time } : {}) });
+    $('mGo').onclick = () => act('edit', { service: partsOf(sel.service).sort().join(SEP) !== partsOf(b.service).sort().join(SEP) ? sel.service : b.service, comment: $('mCom').value, ...(sel.time ? { date: sel.date, time: sel.time } : {}) });
     area.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   });
 }
@@ -1765,7 +1930,7 @@ function gsRender(step) {
       body.querySelectorAll('[data-amt]').forEach(x => x.setAttribute('aria-pressed', !gs.service && Number(x.dataset.amt) === gs.amount));
     };
     body.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { gs.amount = Number(b.dataset.amt); gs.service = ''; $('gsAmt').value = ''; upd(); });
-    $('gsAmt').oninput = () => { const v = parseInt($('gsAmt').value.replace(/\D/g, ''), 10) || 0; $('gsAmt').value = v ? v.toLocaleString('ru-RU') : ''; gs.amount = v; gs.service = ''; upd(); };
+    $('gsAmt').oninput = () => { const v = parseInt($('gsAmt').value.replace(/\D/g, ''), 10) || 0; $('gsAmt').value = v ? v.toLocaleString(NUM) : ''; gs.amount = v; gs.service = ''; upd(); };
     $('gsSvc').onchange = () => { gs.service = $('gsSvc').value; upd(); };
     body.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
       const svc = b.dataset.mode === 'svc';
@@ -1820,9 +1985,9 @@ function gsRender(step) {
       <ol class="pay-steps">
         <li><div>Переведите <b>${money(o.price)}</b> на Kaspi по номеру:
           <div class="kaspi"><span><span class="kl">Kaspi</span><br><span class="kn">${esc(numFmt || rest || 'номер уточнит мастер')}</span>${num && rest ? `<br><small style="color:var(--muted)">получатель: ${esc(rest)}</small>` : ''}</span>${num ? `<button type="button" class="mini-btn" data-copy="${esc(nd.length === 11 ? '+' + nd : num)}">Скопировать</button>` : ''}</div></div></li>
-        <li><div><b>Сделайте скриншот</b> экрана с успешным переводом.</div></li>
-        <li id="rcStep"><div><b>Прикрепите скриншот сюда</b> — так мастер сразу увидит оплату:
-          <label class="rc-drop" id="rcDrop" style="margin-top:10px"><input type="file" id="rcIn" accept="image/*" hidden><span class="big">🧾</span><b>Прикрепить скриншот перевода</b><small>из галереи телефона</small></label>
+        <li><div><b>Сделайте скриншот</b> экрана с успешным переводом — или сохраните чек в PDF («Поделиться» → «Сохранить в файлы»).</div></li>
+        <li id="rcStep"><div><b>Прикрепите чек сюда</b> — так мастер сразу увидит оплату:
+          <label class="rc-drop" id="rcDrop" style="margin-top:10px"><input type="file" id="rcIn" accept="image/*,application/pdf,.pdf" hidden><span class="big">🧾</span><b>Прикрепить чек перевода</b><small>скриншот из галереи или PDF-чек из Kaspi</small></label>
           <div class="gs-err" id="gsErr"></div></div></li>
       </ol>
       <p class="lead">✨ После проверки мастер пришлёт <b style="color:var(--ink)">красивую ссылку-сертификат</b> вам в WhatsApp — останется переслать её тому, кому дарите. Обычно это занимает пару часов.</p>
@@ -1831,12 +1996,14 @@ function gsRender(step) {
       const f = $('rcIn').files[0]; if (!f) return;
       const drop = $('rcDrop');
       try {
-        const data = await shrinkPhoto(f);
-        drop.innerHTML = `<img src="${data}" alt="Скриншот перевода"><small><span class="spin" style="border-color:rgba(255,255,255,.3);border-top-color:#fff;display:inline-block;width:14px;height:14px;vertical-align:-2px"></span> отправляем мастеру…</small>`;
+        const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+        if (isPdf && f.size > 4 * 1024 * 1024) throw new Error('PDF слишком большой (до 4 МБ) — пришлите скриншот перевода');
+        const data = isPdf ? await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).replace(/^data:[^;]*;/, 'data:application/pdf;')); r.onerror = bad; r.readAsDataURL(f); }) : await shrinkPhoto(f);
+        drop.innerHTML = `${isPdf ? `<span class="big">📄</span><b>${esc(f.name)}</b>` : `<img src="${data}" alt="Скриншот перевода">`}<small><span class="spin" style="border-color:rgba(255,255,255,.3);border-top-color:#fff;display:inline-block;width:14px;height:14px;vertical-align:-2px"></span> отправляем мастеру…</small>`;
         const r = await api(`/api/gift-orders/${encodeURIComponent(gs.token)}/receipt`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
         gs.order = r.order; gsRender(4); if (!reduce) burst();
       } catch (err) {
-        drop.innerHTML = '<input type="file" id="rcIn" accept="image/*" hidden><span class="big">🧾</span><b>Прикрепить скриншот перевода</b><small>попробуйте ещё раз</small>';
+        drop.innerHTML = '<input type="file" id="rcIn" accept="image/*,application/pdf,.pdf" hidden><span class="big">🧾</span><b>Прикрепить чек перевода</b><small>скриншот или PDF — попробуйте ещё раз</small>';
         $('gsErr').textContent = err instanceof TypeError ? 'Нет связи — попробуйте ещё раз или отправьте скрин мастеру в WhatsApp' : err.message;
         $('rcIn').onchange = rcHandler;
       }
@@ -1913,6 +2080,19 @@ function burst() {
 }
 
 
+// ---------- Глаз в шапке смотрит туда, где палец или курсор ----------
+(function eyeFollow() {
+  const look = document.querySelector('.eye .look'), svg = document.querySelector('.eye'); if (!look || !svg || reduce) return;
+  let idle = 0, raf = 0, px = 0, py = 0;
+  const go = (x, y) => { px = x; py = y; if (raf) return; raf = requestAnimationFrame(() => { raf = 0;
+    const r = svg.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+    const cx = r.left + r.width * .5, cy = r.top + r.height * .56, dx = px - cx, dy = py - cy, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 260);
+    look.classList.add('track'); look.style.transform = `translate(${(dx / d * 11 * k).toFixed(1)}px, ${(dy / d * 5 * k).toFixed(1)}px)`;
+    clearTimeout(idle); idle = setTimeout(() => { look.style.transform = ''; setTimeout(() => look.classList.remove('track'), 400); }, 2600); }); };
+  addEventListener('pointermove', e => go(e.clientX, e.clientY), { passive: true });
+  addEventListener('pointerdown', e => go(e.clientX, e.clientY), { passive: true });
+})();
+
 // ---------- Фото: лёгкий параллакс ----------
 (function look() {
   const media = $('lookMedia'); if (!media || reduce) return;
@@ -1952,15 +2132,20 @@ function goOffline() {
     if (params.get('go')) { goSave([...goGet().filter(t => t !== params.get('go')), params.get('go')]); setTimeout(() => openOrder(params.get('go')), 300); }
     else orderBanner();
     if (state.cfg.master) $('masterName').textContent = state.cfg.master;
-    const off = state.cfg.daysOff || [];
+    // номер WhatsApp из настроек (мастер могла его поменять в админке)
+    const wa = waNum();
+    if (wa.length === 11) document.querySelectorAll('a[href^="https://wa.me/77075938677"]').forEach(a => {
+      a.href = 'https://wa.me/' + wa;
+      if (/^WhatsApp: \+7/.test(a.textContent)) a.textContent = `WhatsApp: +7 ${wa.slice(1, 4)} ${wa.slice(4, 7)}-${wa.slice(7, 9)}-${wa.slice(9)}`;
+    });
     $('hours').textContent = hoursText(state.cfg);
     state.cat = cats()[0];
     // предзаполнение: ?svc=...&d=...
-    const pre = state.cfg.services.find(s => s.name === params.get('svc'));
-    if (pre) { state.cat = pre.category || 'Услуги'; state.service = pre; }
-    renderTabs(); renderServices(false);
+    const pre = findSvc(params.get('svc'));
+    if (pre) { state.cat = pre.category || 'Услуги'; state.sel = selOf(pre); state.service = pre; }
+    renderTabs(); renderServices(false); renderPicked();
     const d = params.get('d');
-    if (pre && d && /^\d{4}-\d{2}-\d{2}$/.test(d)) state.date = d;
+    if (pre && d && /^\d{4}-\d{2}-\d{2}$/.test(d)) state.date = inWindow(d) ? d : null;
     renderDays(); loadAvailability();
     if (pre) { loadSlots(); update(); setTimeout(() => $(state.date ? 'timeSec' : 'book').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }), 400); }
     // сертификат по ссылке ?gift=КОД
@@ -1996,9 +2181,9 @@ function goOffline() {
     if (state.cfg?.services?.length) {
       goOffline();
       state.cat = cats()[0];
-      const pre = state.cfg.services.find(s => s.name === params.get('svc'));
-      if (pre) { state.cat = pre.category || 'Услуги'; state.service = pre; }
-      renderTabs(); renderServices(false); renderDays();
+      const pre = findSvc(params.get('svc'));
+      if (pre) { state.cat = pre.category || 'Услуги'; state.sel = selOf(pre); state.service = pre; }
+      renderTabs(); renderServices(false); renderPicked(); renderDays();
       if (pre) { update(); }
       return;
     }

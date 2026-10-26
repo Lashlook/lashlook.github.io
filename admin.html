@@ -189,6 +189,17 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); cursor: pointer; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; transition: .2s; }
 @media (hover: hover) { .chip:hover { border-color: var(--accent); } }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 6px 18px -8px rgba(255,46,136,1); }
+/* выбор процедур в окне записи */
+.svc-pick { display: grid; gap: 8px; }
+.svc-pick .lbl { display: grid; gap: 2px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.svc-pick .lbl small { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 12px; opacity: .8; }
+.svc-chips { display: grid; gap: 10px; max-height: 260px; overflow-y: auto; padding: 2px 2px 4px; overscroll-behavior: contain; }
+.svc-grp { display: flex; flex-wrap: wrap; gap: 6px; }
+.svc-grp > span { flex-basis: 100%; font-size: 11.5px; color: var(--muted); }
+.svc-grp .chip { display: inline-grid; gap: 1px; text-align: left; font-size: 13px; line-height: 1.25; padding: 7px 12px; border-radius: 14px; max-width: 100%; }
+.svc-grp .chip small { font-weight: 500; opacity: .7; font-size: 11px; white-space: nowrap; }
+.svc-grp .chip.old { border-style: dashed; }
+.svc-tot { font-size: 13.5px; font-weight: 600; color: var(--accent-2); min-height: 18px; }
 .chips-hint { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .modal-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; }
 .modal-foot .err { margin-right: auto; flex: 1 1 100%; }
@@ -296,6 +307,9 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .tech-last b { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #FFC46B; }
 .ph-box { border-radius: 18px; overflow: hidden; background: #000; min-height: 200px; display: grid; place-items: center; }
 .ph-box img { width: 100%; max-height: 65vh; object-fit: contain; display: block; }
+.ph-box iframe { width: 100%; height: 65vh; border: 0; background: #fff; display: block; }
+.ph-pdf { display: grid; justify-items: center; gap: 6px; padding: 40px 16px; text-align: center; font-size: 40px; }
+.ph-pdf b { font-size: 16px; } .ph-pdf span { font-size: 13px; color: var(--muted); }
 .cl-perks { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
 .cl-perks .cp { display: grid; gap: 2px; padding: 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); min-width: 0; }
 .cl-perks .cp span { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
@@ -339,8 +353,8 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .panel h3 small { display: block; font: 500 12.5px/1.5 var(--body); color: var(--muted); }
 .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
-.hbars { display: grid; gap: 12px; }
-.hbar { display: grid; gap: 6px; }
+.hbars { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.hbar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; }
 .hbar .l { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; }
 .hbar .l span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hbar .l b { font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -683,7 +697,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <label for="aName">Имя<input id="aName" maxlength="80" required></label>
       <label for="aPhone">Телефон<input id="aPhone" type="tel" inputmode="tel" placeholder="+7 (7__) ___-__-__" required></label>
     </div>
-    <label for="aService">Услуга<select id="aService"></select></label>
+    <div class="svc-pick" role="group" aria-labelledby="aSvcLbl"><span class="lbl" id="aSvcLbl">Процедуры<small>можно несколько — время и цена сложатся</small></span><input type="hidden" id="aService"><div class="svc-chips" id="aSvcChips"></div><div class="svc-tot" id="aSvcTot"></div></div>
     <div class="row2">
       <label for="aDate">День<input id="aDate" type="date" required></label>
       <label for="aTime">Время<input id="aTime" type="time" step="900" required></label>
@@ -778,8 +792,8 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 <!-- Фото-референс -->
 <dialog id="dlgPhoto">
   <div class="modal">
-    <h3><span>референс от клиентки</span><b id="phTitle" style="font-weight:500">Фото</b></h3>
-    <div class="ph-box"><img id="phImg" alt="Фото-референс"></div>
+    <h3><span id="phKind">референс от клиентки</span><b id="phTitle" style="font-weight:500">Фото</b></h3>
+    <div class="ph-box"><img id="phImg" alt="Фото-референс"><iframe id="phPdf" title="Чек в PDF" hidden></iframe><div id="phPdfNote" class="ph-pdf" hidden>📄<b>Чек в PDF</b><span>Нажмите «Открыть целиком», чтобы посмотреть</span></div></div>
     <div class="modal-foot">
       <a class="btn ghost" id="phOpen" target="_blank" rel="noopener">Открыть целиком</a>
       <button class="btn shine" type="button" data-close>Закрыть</button>
@@ -1107,12 +1121,35 @@ $('aPhone').addEventListener('input', phoneMask);
 
 const dlg = $('dlg');
 let editing = null; // запись, которую сейчас меняем (null — новая запись)
-function fillServices(extra) {
+// процедуры чипами: можно выбрать несколько — в записи они хранятся как «A + B»
+const SEP = ' + ', MAX_SVC = 4;
+const partsOf = n => String(n || '').split(SEP).map(x => x.trim()).filter(Boolean);
+let aPicked = [];
+function fillServices(current) {
+  const known = n => cfg.services.some(s => s.name === n);
+  aPicked = current ? (known(current) ? [current] : partsOf(current).every(known) ? partsOf(current) : [current]) : [];
   const groups = [...new Set(cfg.services.map(s => s.category || 'Услуги'))];
-  $('aService').innerHTML = (extra && !cfg.services.some(s => s.name === extra) ? `<option value="${esc(extra)}">${esc(extra)} (нет в прайсе)</option>` : '') +
-    groups.map(g => `<optgroup label="${esc(g)}">` + cfg.services.filter(s => (s.category || 'Услуги') === g)
-    .map(s => `<option value="${esc(s.name)}">${esc(s.name)} · ${s.duration} мин${s.price ? ' · ' + esc(s.price) : ''}</option>`).join('') + '</optgroup>').join('');
+  $('aSvcChips').innerHTML = (aPicked.some(n => !known(n)) ? `<div class="svc-grp"><span>Сейчас в записи (нет в прайсе)</span><button type="button" class="chip old" data-svc="${esc(aPicked[0])}" aria-pressed="true">${esc(aPicked[0])}</button></div>` : '') +
+    groups.map(g => `<div class="svc-grp"><span>${esc(g)}</span>` + cfg.services.filter(s => (s.category || 'Услуги') === g)
+    .map(s => `<button type="button" class="chip" data-svc="${esc(s.name)}" aria-pressed="${aPicked.includes(s.name)}">${esc(s.name)}<small>${s.duration} мин${s.price ? ' · ' + esc(s.price) : ''}</small></button>`).join('') + '</div>').join('');
+  syncSvc();
 }
+function syncSvc() {
+  $('aService').value = aPicked.join(SEP);
+  const list = aPicked.map(n => cfg.services.find(s => s.name === n)).filter(Boolean);
+  const mins = list.reduce((t, x) => t + x.duration, 0), sum = list.reduce((t, x) => t + (parseInt(String(x.price || '').replace(/\D/g, ''), 10) || 0), 0);
+  const hm = m => [Math.floor(m / 60) && `${Math.floor(m / 60)} ч`, m % 60 && `${m % 60} мин`].filter(Boolean).join(' ');
+  $('aSvcTot').textContent = list.length > 1 ? `${list.length} процедуры подряд · ${hm(mins)}${sum ? ' · ' + money(sum) : ''}` : list.length ? `${hm(mins)}${sum ? ' · ' + money(sum) : ''}` : 'Выберите процедуру';
+}
+$('aSvcChips').addEventListener('click', e => {
+  const c = e.target.closest('[data-svc]'); if (!c) return;
+  const n = c.dataset.svc, on = aPicked.includes(n);
+  if (c.classList.contains('old')) { aPicked = []; c.parentElement.remove(); }
+  else if (on) aPicked = aPicked.filter(x => x !== n);
+  else { if (aPicked.length >= MAX_SVC) return toast(`За один визит — до ${MAX_SVC} процедур`, 'bad'); aPicked = [...aPicked.filter(x => cfg.services.some(s => s.name === x)), n]; $('aSvcChips').querySelector('.chip.old')?.parentElement.remove(); }
+  $('aSvcChips').querySelectorAll('[data-svc]').forEach(x => x.setAttribute('aria-pressed', aPicked.includes(x.dataset.svc)));
+  syncSvc(); loadChips();
+});
 function openAdd(date) {
   editing = null;
   $('addForm').reset(); $('addErr').textContent = ''; $('force').hidden = true; $('force').textContent = 'Добавить всё равно';
@@ -1128,7 +1165,7 @@ function openEdit(id) {
   $('addForm').reset(); $('addErr').textContent = ''; $('force').hidden = true; $('force').textContent = 'Сохранить всё равно';
   $('dlgTitle').innerHTML = '<span>изменить</span>' + esc(b.name); $('aExtra').hidden = true;
   fillServices(b.service);
-  $('aName').value = b.name; $('aPhone').value = fmtPhone(b.phone); $('aService').value = b.service;
+  $('aName').value = b.name; $('aPhone').value = fmtPhone(b.phone);
   $('aDate').value = b.date; $('aTime').value = b.time; $('aComment').value = b.comment || '';
   dlg.showModal(); loadChips();
 }
@@ -1149,7 +1186,6 @@ async function loadChips() {
   } catch {}
 }
 $('aDate').addEventListener('change', loadChips);
-$('aService').addEventListener('change', loadChips);
 $('aTime').addEventListener('input', () => $('chips').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.textContent === $('aTime').value)));
 async function save(force) {
   $('addErr').textContent = '';
@@ -1232,6 +1268,7 @@ const dlgP = $('dlgPhoto');
 async function openPhoto(id) {
   const b = findBk(id);
   $('phTitle').textContent = b ? `${b.name} · ${dShort(b.date)} ${b.time}` : 'Фото';
+  $('phKind').textContent = 'референс от клиентки'; $('phImg').hidden = false; $('phPdf').hidden = true; $('phPdfNote').hidden = true;
   $('phImg').removeAttribute('src');
   dlgP.showModal();
   try {
@@ -1280,13 +1317,18 @@ $('orders').addEventListener('click', async e => {
   } catch (err) { toast(err.message, 'bad'); }
 });
 async function openReceipt(id) {
-  $('phTitle').textContent = 'Чек по заявке №' + id; $('phImg').removeAttribute('src'); dlgP.showModal();
+  $('phTitle').textContent = 'Чек по заявке №' + id; $('phKind').textContent = 'оплата сертификата'; $('phImg').removeAttribute('src');
+  $('phImg').hidden = false; $('phPdf').hidden = true; $('phPdf').removeAttribute('src'); $('phPdfNote').hidden = true; dlgP.showModal();
   try {
     await apiReady;
     let r = await fetch(API + `/api/admin/gift-orders/${id}/receipt`, { headers: { Authorization: 'Bearer ' + token } }).catch(() => null);
     if ((!r || DEAD.includes(r.status)) && await refreshApi()) r = await fetch(API + `/api/admin/gift-orders/${id}/receipt`, { headers: { Authorization: 'Bearer ' + token } });
     if (!r?.ok) throw new Error();
-    const url = URL.createObjectURL(await r.blob()); $('phImg').src = url; $('phOpen').href = url;
+    const blob = await r.blob(), url = URL.createObjectURL(blob); $('phOpen').href = url;
+    if (blob.type === 'application/pdf') { // PDF-чек: на компьютере показываем прямо тут, на телефоне — кнопкой «Открыть целиком»
+      $('phImg').hidden = true;
+      if (matchMedia('(pointer: fine)').matches) { $('phPdf').src = url; $('phPdf').hidden = false; } else $('phPdfNote').hidden = false;
+    } else $('phImg').src = url;
   } catch { dlgP.close(); toast('Не получилось загрузить чек', 'bad'); }
 }
 
@@ -1355,7 +1397,7 @@ async function loadClients(anim) {
     box.innerHTML = clients.map((c, i) => `
       <button class="cl" type="button" data-phone="${esc(c.phone)}" style="--i:${Math.min(i, 20)}">
         <div class="cl-top"><span class="ava">${esc(c.name.trim()[0] || '?')}</span><div style="min-width:0"><div class="cl-name">${esc(c.name)}</div><div class="cl-phone">${esc(fmtPhone(c.phone))}</div></div></div>
-        <div class="cl-nums"><div><b>${c.visits}</b><span>${plural(c.visits, ['визит', 'визита', 'визитов'])}</span></div><div><b>${(c.spent / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 1 })}к</b><span>₸ всего</span></div><div><b>${c.upcoming}</b><span>впереди</span></div></div>
+        <div class="cl-nums"><div><b>${c.visits}</b><span>${plural(c.visits, ['визит', 'визита', 'визитов'])}</span></div><div><b>${c.spent ? (c.spent / 1000).toLocaleString('ru-RU', { maximumFractionDigits: 1 }) + 'к' : '0'}</b><span>₸ всего</span></div><div><b>${c.upcoming}</b><span>впереди</span></div></div>
         <div class="cl-foot">${c.last ? `Последний визит ${dShort(c.last)}` : 'Ещё не была'}${c.noshows ? `<span class="warn">⚠ не пришла ${c.noshows}×</span>` : ''}${c.blocked ? '<span class="warn">⛔ через WhatsApp</span>' : ''}${c.cancels ? `<span class="pill muted">отмен: ${c.cancels}</span>` : ''}</div>
         ${c.birthday || c.invited || c.bonus ? `<div class="cl-foot">${c.birthday ? `<span class="tag bd">🎂 ${esc(c.birthday)}${c.bdaySoon ? ' — скоро!' : ''}</span>` : ''}${c.invited ? `<span class="tag">👭 привела ${c.invited}</span>` : ''}${c.bonus ? `<span class="tag disc">🎁 бонус ×${c.bonus}</span>` : ''}</div>` : ''}
         ${c.note ? `<div class="cl-note">📝 ${esc(c.note)}</div>` : ''}
@@ -1369,7 +1411,8 @@ const dlgC = $('dlgClient'); let curPhone = '', histCache = [];
 $('cBday').addEventListener('input', e => { let d = $('cBday').value.replace(/\D/g, '').slice(0, 4); $('cBday').value = d.length > 2 ? d.slice(0, 2) + '.' + d.slice(2) : d; });
 async function openClient(phone) {
   curPhone = phone;
-  const info = await api('/api/admin/clients/' + encodeURIComponent(phone));
+  let info;
+  try { info = await api('/api/admin/clients/' + encodeURIComponent(phone)); } catch (err) { return toast(err.message, 'bad'); }
   const { history, note } = info;
   histCache = history;
   $('cBday').value = info.birthday || '';
