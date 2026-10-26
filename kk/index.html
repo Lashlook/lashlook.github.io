@@ -395,7 +395,7 @@ details.care li::marker { color: var(--pink); }
 .cert-to .script { font: 400 30px/1 var(--script); color: var(--pink); margin-left: 4px; }
 .cert-msg { margin: 6px 0 0; font: italic 500 15px/1.35 var(--display); color: #f2dbe6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .cert-foot { display: flex; justify-content: space-between; align-items: end; gap: 10px; position: relative; font-size: 12px; color: var(--muted); }
-.cert-code { font: 700 15px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .12em; color: var(--ink); padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+.cert-code { white-space: nowrap; flex: none; font: 700 15px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .12em; color: var(--ink); padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
 .cert-eye { position: absolute; right: -30px; top: 38%; width: 170px; opacity: .13; pointer-events: none; }
 .cert-mid { padding-block: 14px; }
 .cert-to .k { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
@@ -408,6 +408,41 @@ details.care li::marker { color: var(--pink); }
 .stamp { position: absolute; z-index: 5; top: 46%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg); border: 3px solid var(--err); color: var(--err); padding: 8px 18px; border-radius: 14px;
   font: 800 18px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; background: rgba(10,9,11,.7); box-shadow: 0 0 30px rgba(255,138,128,.35); }
 @media (max-width: 380px) { .cert-in { padding: 16px; } .cert-msg { -webkit-line-clamp: 1; } .cert-eye { width: 110px; } }
+/* отзывы */
+.rv-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.rv-score { display: flex; align-items: baseline; gap: 8px; }
+.rv-score b { font: 500 34px/1 var(--display); }
+.rv-score > span:last-child { color: var(--muted); font-size: 14px; }
+.rv-hearts { display: inline-flex; gap: 2px; margin-right: 4px; align-self: center; }
+.rv-hearts i { font-style: normal; color: var(--pink); font-size: 15px; text-shadow: 0 0 10px rgba(255,46,136,.7); animation: beat 2.4s calc(var(--k, 0) * .15s) ease-in-out infinite; }
+.rv-hearts i:nth-child(2) { --k: 1 } .rv-hearts i:nth-child(3) { --k: 2 } .rv-hearts i:nth-child(4) { --k: 3 } .rv-hearts i:nth-child(5) { --k: 4 }
+@keyframes beat { 0%, 60%, 100% { transform: scale(1); } 30% { transform: scale(1.3); } }
+.rv-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+.reviews { display: grid; gap: 14px; margin-inline: calc(50% - 50vw); -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.rv-row { display: flex; align-items: flex-start; gap: 14px; overflow-x: auto; scrollbar-width: none; padding: 6px 16px 22px; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.rv-row::-webkit-scrollbar { display: none; }
+.rv { position: relative; flex: none; width: min(300px, 78vw); padding: 16px 18px 18px; border-radius: 22px 22px 22px 8px; font-size: 14.5px; line-height: 1.55; color: var(--ink);
+  background: linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.02)), var(--surface); border: 1px solid var(--line);
+  box-shadow: 0 18px 40px -28px rgba(0,0,0,.9); transition: transform .4s var(--ease), border-color .4s, box-shadow .4s; }
+.rv.s-wa { border-radius: 22px 22px 8px 22px; }
+.rv p { margin: 0; overflow-wrap: anywhere; }
+.rv-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.rv-src { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; flex: none; }
+.rv-src svg { width: 13px; height: 13px; }
+.rv-src.src-ig { background: radial-gradient(circle at 30% 110%, #FFD86B 0 22%, #FF5A5F 45%, #D3349E 65%, #7B3FE4 95%); }
+.rv-src.src-wa { background: #25D366; }
+.rv-tag { margin-left: auto; padding: 3px 9px; border-radius: 999px; background: var(--pink-soft); color: var(--pink-2); letter-spacing: .04em; }
+.rv-like { position: absolute; left: 16px; bottom: -13px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px;
+  background: var(--surface-2); border: 1px solid var(--line); box-shadow: 0 6px 14px -6px rgba(0,0,0,.8); transform: scale(0); }
+.rv.s-wa .rv-like { left: auto; right: 16px; }
+.reviews.in .rv-like, .reviews .rv.seen .rv-like { animation: likePop .6s calc(var(--n, 0) * 60ms + .3s) cubic-bezier(.3, 1.6, .5, 1) forwards; }
+@keyframes likePop { to { transform: scale(1); } }
+.rv.s-photo { padding: 8px 8px 16px; }
+.rv.s-photo img { display: block; width: 100%; border-radius: 16px; aspect-ratio: 900 / 487; object-fit: cover; margin-bottom: 12px; }
+.rv.s-photo p, .rv.s-photo .rv-meta { padding-inline: 10px; }
+.rv.hide { display: none; }
+.rv-hint { margin: 2px 0 0; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+@media (hover: hover) { .rv:hover { transform: translateY(-4px) rotate(-.4deg); border-color: rgba(255,46,136,.5); box-shadow: 0 24px 50px -26px rgba(255,46,136,.6); } }
 .mine { position: relative; z-index: 3; display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 12px 16px; border-radius: 16px; text-decoration: none; font-size: 14px;
   background: rgba(28,25,30,.8); border: 1px solid rgba(255,46,136,.45); backdrop-filter: blur(10px); animation: rowIn .6s var(--ease) both; }
 .mine i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 10px var(--pink); flex: none; animation: live 1.6s ease-in-out infinite; }
@@ -541,6 +576,16 @@ input::-webkit-date-and-time-value { text-align: left; }
       </div>
     </section>
   </form>
+
+  <section class="block reveal" id="reviews">
+    <div class="sec-head"><span class="num">пікірлер</span><h2>Клиенттер не жазады</h2><p>WhatsApp пен Instagram-дағы нақты хабарламалар — ламинация мен ұзартудан кейін</p></div>
+    <div class="rv-top">
+      <div class="rv-score"><span class="rv-hearts" aria-hidden="true"><i>❤</i><i>❤</i><i>❤</i><i>❤</i><i>❤</i></span><b id="rvCount">17</b><span>отзывов</span></div>
+      <div class="rv-filter" id="rvFilter" role="tablist"></div>
+    </div>
+    <div class="reviews" id="rvBox" aria-label="Отзывы клиенток"></div>
+    <p class="rv-hint">Парақтаңыз немесе тоқтату үшін басыңыз</p>
+  </section>
 
   
   <section class="block reveal seo-price" id="price" aria-labelledby="priceTitle">
@@ -1241,6 +1286,75 @@ async function giftPage(code) {
   wrap.addEventListener('pointerleave', () => card.style.transform = '');
   if (!st && !reduce) setTimeout(burst, 500);
 }
+
+// ---------- Отзывы: две ленты, плывут навстречу друг другу, листаются пальцем ----------
+const REVIEWS = [
+  ['ig', 'Ламинирование', 'Делала у вас ламинирование ресниц в прошлом месяце, всё держится идеально 😍 Думала, мои ресницы короткие, а на самом деле вон какие длинные. Обязательно приду к вам ещё, как только мои реснички снова выпрямятся'],
+  ['wa', 'Ламинирование', 'Делала у вас вчера лами ресничек, на сегодняшний день всё супер классно, эффект супер! Давно не видела на себе такой натуральный, а самое главное — красивый эффект. Спасибо ещё раз ❤️'],
+  ['ig', 'Наращивание', 'Я очень рада результату! Я делала до этого — у меня ресницы выпадали сразу через день, а тут они держатся просто потрясающе, не выпала ни одна ресничка. Спасибооо ❤️☺️'],
+  ['ig', 'Ламинирование', 'Здравствуйте! Ресницы вообще супер! Они ещё распушились, и эффект виден ещё сильнее — даже без туши выглядят огонь, многие подумали, что я сделала наращивание) В июле хотела бы к вам снова перед отдыхом 🫶'],
+  ['ig', 'Наращивание', 'Здравствуйте) Да, всё удобно, ничего не мешает, результат мне очень понравился, буду теперь к вам записываться ☺️ Долго не могла себе найти мастера, чтоб результат устраивал, а тут всё нравится и получилось именно как и хотела)'],
+  ['photo', 'Наращивание', 'Ресницы очень нравятся, пока всё хорошо держится 🥰😊'],
+  ['ig', 'Ламинирование', 'Через месяцок приду к тебе, результат вообще 🔥 Я их тушью в 1 слой подкрашу — так ресницы у меня до бровей становятся 😂 Спасибо тебе за такие реснички 🫶'],
+  ['wa', 'Ламинирование', 'Здравствуйте, ресницы очень хорошо поднялись, выглядят изумительно! Вы всё очень аккуратненько делали, поэтому ничего не болит, покраснений не было. Спасибо большое!! 🫶'],
+  ['ig', 'Наращивание', 'Здравствуйте! Держатся отлично, пока ни одна ресничка не выпала. Очень довольна результатом, спасибо большое. В следующий раз буду делать длиннее)'],
+  ['ig', 'Ламинирование', 'Здравствуйте! Извините, пожалуйста, что так долго не отвечала( Ламинирование ресниц мне очень понравилось, результат отлично держится, и я полностью довольна. Всё было сделано аккуратно и качественно. Спасибо большое! 🫶'],
+  ['ig', 'Наращивание', 'Здравствуйте, ресницы шикарные, в носке нигде не колют и не мешаются 😍'],
+  ['ig', 'Ламинирование', 'Вика, оставь мне окошко на следующей неделе — жду, когда мне уже скинут ЗП, чтобы прийти к тебе снова за шикарными ресничками 🙈'],
+  ['ig', 'Наращивание', 'Добрый вечер! Всё хорошо, я бы сказала — отлично! В носке очень комфортно и красиво 😍'],
+  ['wa', 'Ламинирование', 'Здравствуйте, Виктория! У меня ещё хороший эффект, подкрашиваю, и всё прекрасно. Как выпрямятся, я сразу к вам 👍'],
+  ['ig', 'Наращивание', 'Добрый день! Кстати, да — вообще хорошо. Ещё ни одной не потеряла даже 😘❤️'],
+  ['ig', 'Ламинирование', 'Здравствуйте, мне очень нравится 😍 На все 100 🔥 Приду ещё 🔥🔥🔥'],
+  ['ig', 'Наращивание', 'Здравствуйте, ресницы хорошие, в носке отличные, ничего не колет, не мешает.'],
+];
+const SRC_ICON = {
+  ig: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg>',
+  wa: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>',
+};
+function rvCard([src, tag, text], n) {
+  const photo = src === 'photo', s = photo ? 'ig' : src;
+  return `<article class="rv s-${src}" data-tag="${esc(tag)}" style="--n:${n % 8}">
+    ${photo ? '<picture><source srcset="/rv-1.webp" type="image/webp"><img src="/rv-1.jpg" alt="Наращивание ресниц — фото клиентки" loading="lazy" decoding="async" width="900" height="487"></picture>' : ''}
+    <div class="rv-meta"><span class="rv-src src-${s}">${SRC_ICON[s]}</span>${s === 'wa' ? 'WhatsApp' : 'Instagram'}<span class="rv-tag">${esc(tag)}</span></div>
+    <p>${esc(text)}</p><span class="rv-like">❤️</span></article>`;
+}
+(function reviews() {
+  const box = $('rvBox'); if (!box) return;
+  const rows = [REVIEWS.filter((_, i) => i % 2 === 0), REVIEWS.filter((_, i) => i % 2 === 1)];
+  // каждую ленту дублируем — так она бесконечная
+  box.innerHTML = rows.map((r, k) => `<div class="rv-row" data-dir="${k ? -1 : 1}">${[...r, ...r].map(rvCard).join('')}</div>`).join('');
+  $('rvCount').textContent = REVIEWS.length;
+  const cats = [['all', 'Барлығы'], ['Ламинирование', 'Ламинация'], ['Наращивание', 'Ұзарту']];
+  $('rvFilter').innerHTML = cats.map(([k, t]) => `<button type="button" class="chip-p" data-rv="${k}" aria-pressed="${k === 'all'}">${t}</button>`).join('');
+  $('rvFilter').addEventListener('click', e => {
+    const b = e.target.closest('[data-rv]'); if (!b) return;
+    $('rvFilter').querySelectorAll('[data-rv]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    box.querySelectorAll('.rv').forEach(c => c.classList.toggle('hide', b.dataset.rv !== 'all' && c.dataset.tag !== b.dataset.rv));
+    box.querySelectorAll('.rv-row').forEach(r => { r._x = r.dataset.dir === '1' ? 0 : r.scrollWidth / 2; r.scrollLeft = r._x; });
+  });
+  const ioR = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { box.classList.toggle('in', e.isIntersecting || box.classList.contains('in')); vis = e.isIntersecting; }), { threshold: .15 }) : null;
+  let vis = !ioR; ioR?.observe(box);
+  const list = [...box.querySelectorAll('.rv-row')];
+  list.forEach(r => {
+    r._x = r.dataset.dir === '1' ? 0 : r.scrollWidth / 2; r.scrollLeft = r._x; r._hold = 0;
+    const hold = () => { r._hold = performance.now() + 3500; };
+    ['pointerdown', 'touchstart', 'wheel'].forEach(ev => r.addEventListener(ev, hold, { passive: true }));
+    r.addEventListener('mouseenter', () => r._hover = true); r.addEventListener('mouseleave', () => r._hover = false);
+    r.addEventListener('scroll', () => { if (performance.now() < r._hold) r._x = r.scrollLeft; }, { passive: true });
+  });
+  let last = performance.now();
+  (function tick(t) {
+    const dt = Math.min(50, t - last); last = t;
+    if (vis && !document.hidden) list.forEach(r => {
+      const half = r.scrollWidth / 2; if (!half) return;
+      if (t < r._hold || r._hover) { if (r.scrollLeft >= half) { r.scrollLeft -= half; r._x = r.scrollLeft; } else if (r.scrollLeft <= 0) { r.scrollLeft += half; r._x = r.scrollLeft; } return; }
+      r._x += Number(r.dataset.dir) * dt * .028;
+      if (r._x >= half) r._x -= half; if (r._x < 0) r._x += half;
+      r.scrollLeft = r._x;
+    });
+    requestAnimationFrame(tick);
+  })(last);
+})();
 
 // ---------- Салют из розовых «ресничек» ----------
 function burst() {
