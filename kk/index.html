@@ -758,8 +758,20 @@ const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.
 document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
 setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')), 4000); // страховка
 
+// после перезапуска компьютера у сервера новый адрес — берём свежий из config.json и повторяем
+async function refreshApi() {
+  if (!location.hostname.endsWith('github.io')) return false;
+  try {
+    const n = (await fetch((location.pathname.includes('/kk/') ? '../' : '') + 'config.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.json())).api || '';
+    if (n && n !== API) { API = n; return true; }
+  } catch {}
+  return false;
+}
+const DEAD = [502, 503, 504, 520, 521, 522, 523, 524, 530];
 async function api(path, opts) {
-  const r = await fetch(API + path, opts);
+  let r;
+  try { r = await fetch(API + path, opts); if (DEAD.includes(r.status) && await refreshApi()) r = await fetch(API + path, opts); }
+  catch (e) { if (await refreshApi()) r = await fetch(API + path, opts); else throw e; }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { status: r.status, field: j.field });
   return j;
@@ -1156,6 +1168,15 @@ const ME = 'bl_me';
 const meGet = () => { try { return JSON.parse(localStorage.getItem(ME) || 'null'); } catch { return null; } };
 const meSave = v => { try { localStorage.setItem(ME, JSON.stringify({ ...(meGet() || {}), ...v })); } catch {} };
 const meForget = () => { try { ['bl_me', 'bl_bookings', 'bl_ref'].forEach(k => localStorage.removeItem(k)); } catch {} };
+// открыла личную ссылку (?me=… или ?b=…) — запоминаем её в этом браузере
+async function rememberMe(meToken) {
+  try {
+    const r = await api('/api/me/' + encodeURIComponent(meToken));
+    meSave({ name: r.name, phone: r.phone, bday: r.bday || meGet()?.bday || '', service: r.service || meGet()?.service || '', token: r.token || meGet()?.token || '' });
+    if (r.upcoming) mySave(r.upcoming);
+    return r;
+  } catch { return null; }
+}
 function setPhone(v) {
   let d = String(v || '').replace(/\D/g, ''); if (d[0] === '8') d = '7' + d.slice(1); d = d.slice(0, 11);
   if (d.length !== 11) return;
@@ -1176,7 +1197,7 @@ async function greet(me, upcoming) {
     <div class="me-perks" id="mePerks"></div>
     <div class="me-acts">
       ${upcoming ? `<a class="btn sm" href="?b=${encodeURIComponent(upcoming.token)}">Менің жазылуым: ${esc(fmtShort(upcoming.date))}, ${upcoming.time}</a>` : ''}
-      ${svc ? `<button type="button" class="btn ${upcoming ? 'ghost ' : ''}sm" id="meAgain">Қайталау: ${esc(svc.title || svc.name)}</button>` : ''}
+      ${svc ? `<button type="button" class="btn ${upcoming ? 'ghost ' : ''}sm" id="meAgain">Қайталау: ${esc(svc.name)}</button>` : ''}
     </div>`;
   document.querySelector('.topbar').after(el);
   $('meNot').onclick = () => {
@@ -1197,7 +1218,7 @@ async function greet(me, upcoming) {
     const chips = [];
     if (b.loyalty) {
       const done = b.loyalty.visits % b.loyalty.every, left = b.loyalty.every - done;
-      chips.push(`<span class="mp">⭐ ${done} из ${b.loyalty.every}${left === 1 ? ' — следующий визит со скидкой ' + b.loyalty.pct + '%' : ''}</span>`);
+      chips.push(`<span class="mp">⭐ визитов: ${done} из ${b.loyalty.every}${left === 1 ? ' — следующий визит со скидкой ' + b.loyalty.pct + '%' : ''}</span>`);
     }
     if (b.ref?.bonus) chips.push(`<span class="mp hot">🎁 бонус −${b.ref.bonusPct}% за подругу</span>`);
     if (b.ref) chips.push(`<a class="mp" href="?b=${encodeURIComponent(me.token)}#ref">👭 пригласить подругу</a>`);
@@ -1328,7 +1349,7 @@ async function manage(token) {
     return;
   }
   if (b.status !== 'cancelled') mySave(b); else mySet(myGet().filter(x => x.token !== token));
-  if (meGet()?.phone) meSave({ token });
+  if (b.me) rememberMe(b.me).then(() => meSave({ token })); else if (meGet()?.phone) meSave({ token });
   const [stTxt, stCls] = STATUS[b.status] || [b.status, 'wait'];
   const active = !b.past && b.status !== 'cancelled';
   const late = active && new Date(`${b.date}T${b.time}`) - Date.now() < 2 * 3600000;
@@ -1590,6 +1611,11 @@ function goOffline() {
       API = c.api;
     }
     state.cfg = await api('/api/config');
+    if (params.get('me')) {
+      await rememberMe(params.get('me'));
+      params.delete('me');
+      history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '') + location.hash);
+    }
     if (params.get('b')) return manage(params.get('b'));
     if (params.get('g')) return giftPage(params.get('g'));
     if (state.cfg.master) $('masterName').textContent = state.cfg.master;

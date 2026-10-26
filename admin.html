@@ -193,6 +193,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .modal-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; }
 .modal-foot .err { margin-right: auto; flex: 1 1 100%; }
 
+.toast.bad { background: #3a1416 !important; color: #FFB4AB !important; border: 1px solid rgba(255,138,128,.5); box-shadow: 0 16px 40px -16px rgba(229,72,77,.8) !important; max-width: min(92vw, 420px); }
 .toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: inline-flex; align-items: center; gap: 10px;
   background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 600; box-shadow: 0 16px 40px -12px rgba(255,46,136,1);
   transform: translateX(-50%); animation: toastIn .45s var(--ease); }
@@ -278,6 +279,17 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .bk-more .sq span { font-size: 11.5px; font-weight: 600; }
 .bk-more .sq.hot { border-color: rgba(255,46,136,.55); background: var(--accent-soft); color: var(--accent-2); }
 @media (hover: hover) { .bk-more .sq:hover { border-color: var(--accent); color: var(--ink); } }
+.mc-top { position: relative; }
+.mc-del { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; border: 1px solid transparent; background: none; color: var(--muted); cursor: pointer; transition: .2s; opacity: .6; }
+.mc-del svg { width: 14px; height: 14px; }
+.mc-del:hover, .mc-del:focus-visible { opacity: 1; border-color: var(--line); color: var(--err); }
+@media (hover: none) { .mc-del { opacity: .85; } }
+.msg-card.gone, .gift.gone { animation: gone .35s var(--ease) forwards; }
+@keyframes gone { to { opacity: 0; transform: translateX(30px) scale(.96); } }
+.del-link { justify-self: start; background: none; border: 0; padding: 6px 0; color: var(--err); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; opacity: .85; }
+.cl-perks .mini { white-space: normal; text-align: left; }
+.btn.danger-ghost { background: transparent; color: var(--err); border: 1px solid rgba(255,138,128,.4); box-shadow: none; margin-right: auto; }
+.btn.danger-ghost::after { display: none; }
 .mini.hot { border-color: rgba(255,46,136,.55); background: var(--accent-soft); color: var(--accent-2); }
 .tech-last { padding: 12px 14px; border-radius: 14px; background: rgba(255,196,107,.08); border: 1px dashed rgba(255,196,107,.4); font-size: 14px; color: var(--ink); display: grid; gap: 2px; }
 .tech-last b { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #FFC46B; }
@@ -569,6 +581,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
       <div class="feed-head">
         <p>Всё, что бот пишет в общую группу в Telegram: новые записи, напоминания, кому попросить отзыв, кого позвать на коррекцию.</p>
         <button class="btn ghost" type="button" id="notifBtn" hidden>🔔 Включить уведомления</button>
+        <button class="btn ghost" type="button" id="feedClear">🧹 Очистить ленту</button>
       </div>
       <div class="feed" id="feed"></div>
     </div>
@@ -774,6 +787,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
     <div class="block-hint" id="cBlockHint"></div>
     <label for="cNote">Заметки мастера — аллергии, особенности<textarea id="cNote" rows="3" maxlength="1000" placeholder="Например: чувствительные глаза, не любит длинные"></textarea></label>
     <div><div class="chips-hint" style="margin-bottom:8px">История визитов</div><div class="hist" id="cHist"></div></div>
+    <button class="del-link" type="button" id="cDel">Удалить клиентку</button>
     <div class="modal-foot">
       <a class="btn ghost" id="cWa" target="_blank" rel="noopener">WhatsApp</a>
       <button class="btn ghost" type="button" data-close>Закрыть</button>
@@ -815,7 +829,11 @@ const ICON = {
   wa: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>',
 };
 
-function toast(t) { const el = $('toast'); $('toastT').textContent = t; el.hidden = true; void el.offsetWidth; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 2400); }
+function toast(t, kind) {
+  const el = $('toast'); $('toastT').textContent = t; el.classList.toggle('bad', kind === 'bad');
+  el.querySelector('path').setAttribute('d', kind === 'bad' ? 'M12 7v6M12 17h.01' : 'M5 12.5l4.5 4.5L19 7.5');
+  el.hidden = true; void el.offsetWidth; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, kind === 'bad' ? 4500 : 2400);
+}
 
 // На GitHub Pages адрес сервера берём из config.json (его обновляет сервер при запуске)
 let API = '';
@@ -823,9 +841,20 @@ const apiReady = (async () => {
   if (!location.hostname.endsWith('github.io')) return;
   try { API = (await fetch('config.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.json())).api || ''; } catch {}
 })();
+// после перезапуска компьютера у сервера новый адрес — берём свежий из config.json и повторяем
+async function refreshApi() {
+  if (!location.hostname.endsWith('github.io')) return false;
+  try { const n = (await fetch('config.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.json())).api || ''; if (n && n !== API) { API = n; return true; } } catch {}
+  return false;
+}
+const DEAD = [502, 503, 504, 520, 521, 522, 523, 524, 530];
 async function api(url, opts = {}) {
   await apiReady;
-  const r = await fetch(API + url, { ...opts, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } });
+  const go = () => fetch(API + url, { ...opts, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } });
+  let r;
+  try { r = await go(); if (DEAD.includes(r.status) && await refreshApi()) r = await go(); }
+  catch { if (await refreshApi()) { try { r = await go(); } catch {} } }
+  if (!r || DEAD.includes(r.status)) throw new TypeError('Нет связи с сервером. Если компьютер только что перезапускали — подождите минуту и повторите');
   const j = await r.json().catch(() => ({}));
   if (r.status === 401 && !url.includes('login')) { logout(); throw new Error('Войдите заново'); }
   if (!r.ok) throw Object.assign(new Error(j.error || 'Ошибка'), { data: j, status: r.status });
@@ -1023,21 +1052,21 @@ $('days').addEventListener('click', async e => {
   if (t.dataset.tech) return openTech(Number(t.dataset.tech));
   if (t.dataset.nodisc) {
     if (t.dataset.sure !== '1') { t.dataset.sure = '1'; const was = t.textContent; t.textContent = 'Точно убрать? Нажмите ещё раз'; setTimeout(() => { t.dataset.sure = ''; t.textContent = was; }, 3000); return; }
-    try { const r = await api(`/api/admin/bookings/${t.dataset.nodisc}/discount`, { method: 'POST', body: JSON.stringify({ pct: 0 }) }); toast('Скидка убрана · цена ' + money(r.price)); load.sig = ''; load(); } catch (err) { toast(err.message); }
+    try { const r = await api(`/api/admin/bookings/${t.dataset.nodisc}/discount`, { method: 'POST', body: JSON.stringify({ pct: 0 }) }); toast('Скидка убрана · цена ' + money(r.price)); load.sig = ''; load(); } catch (err) { toast(err.message, 'bad'); }
     return;
   }
   if (t.dataset.photo) return openPhoto(Number(t.dataset.photo));
   if (t.dataset.client) return openClient(t.dataset.client);
   if (t.dataset.hours) return openHours(t.dataset.hours);
-  if (t.dataset.wdone) { await api('/api/admin/waitlist/' + t.dataset.wdone, { method: 'DELETE' }).catch(() => {}); toast('Убрано из листа ожидания'); load.sig = ''; load(); return; }
+  if (t.dataset.wdone) { try { await api('/api/admin/waitlist/' + t.dataset.wdone, { method: 'DELETE' }); toast('Убрано из листа ожидания'); } catch (err) { toast(err.message, 'bad'); } load.sig = ''; load(); return; }
   if (t.dataset.break) return openBlock(t.dataset.break);
   if (t.dataset.closeDay) {
-    try { await api('/api/admin/blocks', { method: 'POST', body: JSON.stringify({ date: t.dataset.closeDay, allDay: true }) }); toast('День закрыт для записи'); load.sig = ''; load(); } catch (err) { toast(err.message); }
+    try { await api('/api/admin/blocks', { method: 'POST', body: JSON.stringify({ date: t.dataset.closeDay, allDay: true }) }); toast('День закрыт для записи'); load.sig = ''; load(); } catch (err) { toast(err.message, 'bad'); }
     return;
   }
-  if (t.dataset.unblock) { await api('/api/admin/blocks/' + t.dataset.unblock, { method: 'DELETE' }).catch(() => {}); toast('Время снова открыто'); load.sig = ''; load(); return; }
+  if (t.dataset.unblock) { try { await api('/api/admin/blocks/' + t.dataset.unblock, { method: 'DELETE' }); toast('Время снова открыто'); } catch (err) { toast(err.message, 'bad'); } load.sig = ''; load(); return; }
   if (t.dataset.st) {
-    try { await api(`/api/admin/bookings/${t.dataset.id}/status`, { method: 'POST', body: JSON.stringify({ status: t.dataset.st }) }); toast('Статус: ' + ST[t.dataset.st]); load.sig = ''; load(); } catch (err) { toast(err.message); }
+    try { await api(`/api/admin/bookings/${t.dataset.id}/status`, { method: 'POST', body: JSON.stringify({ status: t.dataset.st }) }); toast('Статус: ' + ST[t.dataset.st]); load.sig = ''; load(); } catch (err) { toast(err.message, 'bad'); }
     return;
   }
   if (t.dataset.del) {
@@ -1047,7 +1076,7 @@ $('days').addEventListener('click', async e => {
     act.innerHTML = `<div class="del-confirm"><button class="btn danger" type="button" data-yes="${id}">Удалить</button><button class="btn ghost" type="button" data-no>Нет</button></div>`;
     return;
   }
-  if (t.dataset.yes) { await api('/api/admin/bookings/' + t.dataset.yes, { method: 'DELETE' }).catch(() => {}); pendingDel = null; toast('Запись удалена'); load.sig = ''; load(); return; }
+  if (t.dataset.yes) { try { await api('/api/admin/bookings/' + t.dataset.yes, { method: 'DELETE' }); pendingDel = null; toast('Запись удалена'); } catch (err) { pendingDel = null; toast(err.message, 'bad'); } load.sig = ''; load(); return; }
   if ('no' in t.dataset) { const act = t.closest('.bk-act'); act.innerHTML = act.dataset.html; pendingDel = null; }
 });
 
@@ -1166,11 +1195,12 @@ async function openPhoto(id) {
   dlgP.showModal();
   try {
     await apiReady;
-    const r = await fetch(API + '/api/admin/photo/' + id, { headers: { Authorization: 'Bearer ' + token } });
+    let r = await fetch(API + '/api/admin/photo/' + id, { headers: { Authorization: 'Bearer ' + token } }).catch(() => null);
+    if ((!r || DEAD.includes(r.status)) && await refreshApi()) r = await fetch(API + '/api/admin/photo/' + id, { headers: { Authorization: 'Bearer ' + token } });
     if (!r.ok) throw new Error();
     const url = URL.createObjectURL(await r.blob());
     $('phImg').src = url; $('phOpen').href = url;
-  } catch { dlgP.close(); toast('Не получилось загрузить фото'); }
+  } catch { dlgP.close(); toast('Не получилось загрузить фото', 'bad'); }
 }
 
 // ---------- Подарочные сертификаты ----------
@@ -1195,6 +1225,7 @@ async function loadGifts() {
         <div class="bk-quick">
           ${g.url ? `<a class="mini" href="${esc(g.url)}" target="_blank" rel="noopener">Открыть</a><button class="mini" type="button" data-gcopy="${esc(g.url)}">Скопировать ссылку</button><a class="mini" href="https://wa.me/?text=${encodeURIComponent('Подарочный сертификат browlash.look 💗 ' + g.url)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
           ${g.status === 'active' ? `<button class="mini ok" type="button" data-gst="used" data-code="${g.code}">Погасить</button><button class="mini bad" type="button" data-gst="void" data-code="${g.code}">Отменить</button>` : g.status !== 'expired' ? `<button class="mini" type="button" data-gst="active" data-code="${g.code}">Вернуть</button>` : ''}
+          <button class="mini bad" type="button" data-gdel="${g.code}" title="Удалить сертификат совсем">🗑 Удалить</button>
         </div></article>`;
     }).join('') : '<div class="empty-big">Здесь появятся проданные сертификаты.<br>Отличный подарок на 8 Марта, Новый год и дни рождения 💗</div>';
   } catch {}
@@ -1214,10 +1245,15 @@ $('gCreate').onclick = async () => {
 };
 $('v-gifts').addEventListener('click', async e => {
   const t = e.target.closest('button'); if (!t) return;
-  if (t.dataset.gcopy) { try { await navigator.clipboard.writeText(t.dataset.gcopy); toast('Ссылка скопирована'); } catch { toast('Не получилось скопировать'); } }
+  if (t.dataset.gdel) {
+    if (t.dataset.sure !== '1') { t.dataset.sure = '1'; t.textContent = 'Удалить навсегда?'; setTimeout(() => { t.dataset.sure = ''; t.textContent = '🗑 Удалить'; }, 3000); return; }
+    try { await api('/api/admin/gifts/' + t.dataset.gdel, { method: 'DELETE' }); const c = t.closest('.gift'); c.classList.add('gone'); toast('Сертификат удалён'); setTimeout(loadGifts, 350); } catch (err) { toast(err.message, 'bad'); }
+    return;
+  }
+  if (t.dataset.gcopy) { try { await navigator.clipboard.writeText(t.dataset.gcopy); toast('Ссылка скопирована'); } catch { toast('Не получилось скопировать', 'bad'); } }
   if (t.dataset.gst) {
     if (t.dataset.gst === 'void' && t.dataset.sure !== '1') { t.dataset.sure = '1'; t.textContent = 'Точно отменить?'; setTimeout(() => { t.dataset.sure = ''; t.textContent = 'Отменить'; }, 3000); return; }
-    await api('/api/admin/gifts/' + t.dataset.code, { method: 'POST', body: JSON.stringify({ status: t.dataset.gst }) }).catch(err => toast(err.message));
+    await api('/api/admin/gifts/' + t.dataset.code, { method: 'POST', body: JSON.stringify({ status: t.dataset.gst }) }).catch(err => toast(err.message, 'bad'));
     loadGifts();
   }
 });
@@ -1257,7 +1293,9 @@ async function openClient(phone) {
     <div class="cp"><span>👭 Привела подруг</span><b>${info.invited.length}</b><small>${info.invited.map(x => esc(x.name.split(' ')[0]) + (x.came ? ' ✓' : '')).join(', ') || 'пока никого'}</small></div>
     <div class="cp"><span>🎁 Бонус за подругу</span><b>${info.bonus ? '×' + info.bonus : '—'}</b><small>${info.bonus ? `−${info.bonusPct}% спишется при записи` : 'появится, когда подруга придёт'}</small></div>
     ${info.referredBy ? `<div class="cp"><span>💗 Пришла по совету</span><b style="font-size:16px">${esc(info.referredBy.name || fmtPhone(info.referredBy.phone))}</b></div>` : ''}
-    ${info.refUrl ? `<button class="mini" type="button" id="cRef" data-url="${esc(info.refUrl)}" style="grid-column:1/-1;justify-self:start">🔗 Скопировать её ссылку «приведи подругу»</button>` : ''}`;
+    ${info.meUrl ? `<button class="mini" type="button" id="cMe" style="grid-column:1/-1;justify-self:start">🔑 Её личная ссылка — сайт её узнает</button>` : ''}
+    ${info.refUrl ? `<button class="mini" type="button" id="cRef" data-url="${esc(info.refUrl)}" style="grid-column:1/-1;justify-self:start">🔗 Её ссылка «приведи подругу»</button>` : ''}`;
+  $('cMe')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.meUrl); toast('Личная ссылка скопирована'); } catch { toast(info.meUrl); } });
   $('cRef')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.refUrl); toast('Ссылка скопирована'); } catch { toast(info.refUrl); } });
   const name = history[0]?.name || '';
   $('cAva').textContent = name.trim()[0] || '?'; $('cName').textContent = name; $('cPhone').textContent = fmtPhone(phone);
@@ -1267,7 +1305,7 @@ async function openClient(phone) {
   $('cNote').value = note;
   $('cHist').innerHTML = history.map(b => `<div><span class="d">${dShort(b.date)} ${b.time}</span><span>${esc(b.service)}${b.discount ? ` <span class="tag disc">−${b.discount}%</span>` : ''}${b.tech ? `<small class="h-tech">🧵 ${esc(techText(b.tech))}</small>` : ''}</span><span class="st ${b.status}">${ST[b.status]}</span>
     <span class="h-act"><button class="mini" type="button" data-tech="${b.id}">🧵</button>${b.photo ? `<button class="mini hot" type="button" data-photo="${b.id}">📸</button>` : ''}</span></div>`).join('') || '<div>Пока пусто</div>';
-  $('cWa').href = `https://wa.me/${phone.replace(/\D/g, '')}`;
+  $('cWa').href = `https://wa.me/${phone.replace(/\D/g, '')}` + (info.meUrl ? '?text=' + encodeURIComponent(`Здравствуйте, ${(name.trim().split(' ')[0]) || ''}! Это browlash.look 💗\n\nВаша личная страничка — запись и бонусы: ${info.meUrl}`) : '');
   dlgC.showModal();
 }
 $('cHist').addEventListener('click', e => {
@@ -1275,11 +1313,24 @@ $('cHist').addEventListener('click', e => {
   if (t.dataset.tech) openTech(Number(t.dataset.tech));
   if (t.dataset.photo) openPhoto(Number(t.dataset.photo));
 });
+$('cDel').onclick = async () => {
+  const b = $('cDel');
+  if (b.dataset.sure !== '1') {
+    const up = histCache.filter(x => ['new', 'confirmed'].includes(x.status) && new Date(`${x.date}T${x.time}`) > new Date()).length;
+    b.dataset.sure = '1'; b.textContent = up ? `Удалить вместе с ${up} предстоящ. записью? Ещё раз` : 'Удалить навсегда? Нажмите ещё раз';
+    setTimeout(() => { b.dataset.sure = ''; b.textContent = 'Удалить клиентку'; }, 4000); return;
+  }
+  b.dataset.sure = ''; b.textContent = 'Удалить клиентку';
+  try {
+    const r = await api('/api/admin/clients/' + encodeURIComponent(curPhone), { method: 'DELETE' });
+    dlgC.close(); toast(`Клиентка удалена${r.removed ? ` (записей: ${r.removed})` : ''}`); loadClients(true); load.sig = ''; load();
+  } catch (err) { toast(err.message, 'bad'); }
+};
 $('cSave').onclick = async () => {
   try {
     await api('/api/admin/clients/' + encodeURIComponent(curPhone), { method: 'POST', body: JSON.stringify({ note: $('cNote').value, birthday: $('cBday').value, blocked: $('cBlock').value }) });
     dlgC.close(); toast('Сохранено'); loadClients(false); load.sig = ''; load();
-  } catch (err) { toast(err.message); }
+  } catch (err) { toast(err.message, 'bad'); }
 };
 
 // ---------- Статистика ----------
@@ -1518,7 +1569,7 @@ async function loadFeed(seen) {
       box.innerHTML = items.length ? items.map((m, i) => {
         const btns = (m.markup?.inline_keyboard || []).flat();
         return `<article class="msg-card${m.id > feedLast ? ' fresh' : ''}" style="--i:${Math.min(i, 12)}">
-          <div class="mc-top"><span class="mc-ic">${FEED_ICON(m.text)}</span><span class="mc-time">${feedTime(m.ts)}</span></div>
+          <div class="mc-top"><span class="mc-ic">${FEED_ICON(m.text)}</span><span class="mc-time">${feedTime(m.ts)}</span><button class="mc-del" type="button" data-fdel="${m.id}" title="Убрать из ленты" aria-label="Убрать из ленты">${ICON.x}</button></div>
           <div class="mc-text">${m.text.replace(/\n/g, '<br>')}</div>
           ${btns.length ? `<div class="mc-btns">${btns.map(b => b.url
             ? `<a class="mini" href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.text)}</a>`
@@ -1535,10 +1586,23 @@ async function loadFeed(seen) {
   } catch { return []; }
 }
 $('feed').addEventListener('click', async e => {
+  const d = e.target.closest('[data-fdel]');
+  if (d) {
+    const card = d.closest('.msg-card');
+    try { await api('/api/admin/feed/' + d.dataset.fdel, { method: 'DELETE' }); card.classList.add('gone'); setTimeout(() => { card.remove(); loadFeed.sig = ''; }, 350); }
+    catch (err) { toast(err.message, 'bad'); }
+    return;
+  }
   const b = e.target.closest('[data-cb]'); if (!b) return;
   try { const r = await api('/api/admin/feed/action', { method: 'POST', body: JSON.stringify({ data: b.dataset.cb }) }); toast('Статус: ' + ST[r.status]); loadFeed(); }
-  catch (err) { toast(err.message); }
+  catch (err) { toast(err.message, 'bad'); }
 });
+$('feedClear').onclick = async () => {
+  const b = $('feedClear');
+  if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Точно очистить всё? Нажмите ещё раз'; setTimeout(() => { b.dataset.sure = ''; b.textContent = '🧹 Очистить ленту'; }, 3500); return; }
+  b.dataset.sure = ''; b.textContent = '🧹 Очистить ленту';
+  try { await api('/api/admin/feed/all', { method: 'DELETE' }); loadFeed.sig = ''; await loadFeed(true); toast('Лента очищена'); } catch (err) { toast(err.message, 'bad'); }
+};
 // фоновая проверка ленты + системное уведомление
 let lastNotified = Number(store.get('feedNotified') || 0);
 async function pollFeed() {
@@ -1574,7 +1638,7 @@ async function loadSettings() {
       .forEach(([id, k]) => $(id).value = P[k] ?? '');
     $('careEd').innerHTML = Object.entries(setCfg.aftercare || {}).map(([k, v]) => `<label>${esc(k)}<textarea class="care-t" data-cat="${esc(k)}" rows="6" maxlength="2000">${esc(v)}</textarea></label>`).join('') || '<p style="margin:0;color:var(--muted)">Добавьте услуги — для каждого раздела появится памятка</p>';
     $('setErr').textContent = '';
-  } catch (err) { toast(err.message); }
+  } catch (err) { toast(err.message, 'bad'); }
 }
 let weekState = {};
 const DAYFULL = { 1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница', 6: 'Суббота', 0: 'Воскресенье' };
