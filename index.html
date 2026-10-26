@@ -437,9 +437,9 @@ details.care li::marker { color: var(--pink); }
 .rv.s-wa .rv-like { left: auto; right: 16px; }
 .reviews.in .rv-like, .reviews .rv.seen .rv-like { animation: likePop .6s calc(var(--n, 0) * 60ms + .3s) cubic-bezier(.3, 1.6, .5, 1) forwards; }
 @keyframes likePop { to { transform: scale(1); } }
-.rv.s-photo { padding: 8px 8px 16px; }
-.rv.s-photo img { display: block; width: 100%; border-radius: 16px; aspect-ratio: 900 / 487; object-fit: cover; margin-bottom: 12px; }
-.rv.s-photo p, .rv.s-photo .rv-meta { padding-inline: 10px; }
+.rv-pic { position: relative; display: block; height: 118px; margin: 2px 0 12px; border-radius: 14px; overflow: hidden; }
+.rv-pic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; filter: saturate(.8) brightness(.92); }
+.rv-pic::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); background: linear-gradient(180deg, transparent 55%, rgba(10,9,11,.45)); }
 .rv.hide { display: none; }
 .rv-hint { margin: 2px 0 0; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
 @media (hover: hover) { .rv:hover { transform: translateY(-4px) rotate(-.4deg); border-color: rgba(255,46,136,.5); box-shadow: 0 24px 50px -26px rgba(255,46,136,.6); } }
@@ -1333,8 +1333,8 @@ const SRC_ICON = {
 function rvCard([src, tag, text], n) {
   const photo = src === 'photo', s = photo ? 'ig' : src;
   return `<article class="rv s-${src}" data-tag="${esc(tag)}" style="--n:${n % 8}">
-    ${photo ? '<picture><source srcset="/rv-1.webp" type="image/webp"><img src="/rv-1.jpg" alt="Наращивание ресниц — фото клиентки" loading="lazy" decoding="async" width="900" height="487"></picture>' : ''}
     <div class="rv-meta"><span class="rv-src src-${s}">${SRC_ICON[s]}</span>${s === 'wa' ? 'WhatsApp' : 'Instagram'}<span class="rv-tag">${esc(tag)}</span></div>
+    ${photo ? '<span class="rv-pic"><picture><source srcset="/rv-1.webp" type="image/webp"><img src="/rv-1.jpg" alt="Наращивание ресниц — фото клиентки" loading="lazy" decoding="async"></picture></span>' : ''}
     <p>${esc(text)}</p><span class="rv-like">❤️</span></article>`;
 }
 (function reviews() {
