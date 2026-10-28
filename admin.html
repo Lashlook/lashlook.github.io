@@ -861,6 +861,28 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 
 <script>
 const $ = id => document.getElementById(id);
+// Телефон с английским языком показывает время как «01:00 PM» и обрезает его в узких полях.
+// На таких телефонах меняем поля времени на простые с маской ЧЧ:ММ (24 часа), на остальных остаётся родной выбор времени.
+const H12 = (() => { try { const o = new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).resolvedOptions(); return o.hourCycle ? /h1[12]/.test(o.hourCycle) : !!o.hour12; } catch { return false; } })();
+function timeMask(inp) {
+  if (!H12 || inp.dataset.mask) return;
+  inp.dataset.mask = '1'; const v = inp.value;
+  inp.type = 'text'; inp.inputMode = 'numeric'; inp.autocomplete = 'off'; inp.maxLength = 5; inp.placeholder = 'ЧЧ:ММ';
+  inp.pattern = '([01]\\d|2[0-3]):[0-5]\\d'; inp.value = v;
+  const ok = () => /^([01]\d|2[0-3]):[0-5]\d$/.test(inp.value);
+  // пока время не введено целиком, остальной код его не видит — чтобы не пересчитывать окошки от «1» или «13:»
+  inp.addEventListener('input', e => { const d = inp.value.replace(/\D/g, '').slice(0, 4); inp.value = d.length > 2 ? d.slice(0, 2) + ':' + d.slice(2) : d; if (!ok() && !e.synthetic) e.stopImmediatePropagation(); });
+  inp.addEventListener('blur', () => {
+    const d = inp.value.replace(/\D/g, ''); if (!d) return;
+    let h, m; if (d.length <= 2) { h = +d; m = 0; } else if (d.length === 3) { h = +d[0]; m = +d.slice(1); } else { h = +d.slice(0, 2); m = +d.slice(2, 4); }
+    if (h > 23 || m > 59) return; const nv = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    if (nv !== inp.value) { inp.value = nv; const ev = new Event('input', { bubbles: true }); ev.synthetic = true; inp.dispatchEvent(ev); }
+  }, true);
+}
+if (H12) {
+  document.querySelectorAll('input[type="time"]').forEach(timeMask);
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => n.nodeType === 1 && (n.matches?.('input[type="time"]') ? [n] : n.querySelectorAll?.('input[type="time"]') || []).forEach(timeMask)))).observe(document.body, { childList: true, subtree: true });
+}
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } },
                 set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
 let token = store.get('lashlookToken') || '';
@@ -1139,7 +1161,7 @@ $('days').addEventListener('click', async e => {
     act.innerHTML = `<div class="del-confirm"><button class="btn danger" type="button" data-yes="${id}">Удалить</button><button class="btn ghost" type="button" data-no>Нет</button></div>`;
     return;
   }
-  if (t.dataset.yes) { try { await api('/api/admin/bookings/' + t.dataset.yes, { method: 'DELETE' }); pendingDel = null; toast('Запись удалена'); } catch (err) { pendingDel = null; toast(err.message, 'bad'); } load.sig = ''; load(); return; }
+  if (t.dataset.yes) { try { const r = await api('/api/admin/bookings/' + t.dataset.yes, { method: 'DELETE' }); pendingDel = null; toast(r.pushed ? 'Запись удалена — клиентке ушло уведомление об отмене 🔔' : 'Запись удалена'); } catch (err) { pendingDel = null; toast(err.message, 'bad'); } load.sig = ''; load(); return; }
   if ('no' in t.dataset) { const act = t.closest('.bk-act'); act.innerHTML = act.dataset.html; pendingDel = null; }
 });
 
