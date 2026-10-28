@@ -1,6 +1,6 @@
 // Служебный файл приложения browlash.look: работает и для сайта клиенток, и для журнала мастера.
 // Кэширует оболочку (чтобы приложение открывалось даже при плохой связи) и показывает пуш-уведомления.
-const CACHE = 'browlash-v2';
+const CACHE = 'browlash-v3';
 const SHELL = ['./', './index.html', './admin.html', './manifest.webmanifest', './admin.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => c.add(u).catch(() => {}))))); self.skipWaiting(); });
 self.addEventListener('activate', e => e.waitUntil(
@@ -8,7 +8,7 @@ self.addEventListener('activate', e => e.waitUntil(
 ));
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.endsWith('config.json')) return;
+  if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.endsWith('config.json') || url.pathname.startsWith('/api/')) return; // данные записи и админки не кэшируем
   // сначала сеть, без связи — кэш; страницы с параметрами (?b=, ?me=) берут общую оболочку
   e.respondWith(fetch(e.request).then(r => {
     if (r.ok && !url.search) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }

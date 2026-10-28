@@ -395,6 +395,16 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
   .top-right .ig { padding: 9px; width: 40px; height: 40px; justify-content: center; }
   .top-right .ig span { display: none; }
   .top-right .lang a { padding: 7px 9px; font-size: 11.5px; }
+  .top-right .app-btn { width: 40px; height: 40px; padding: 0; font-size: 16px; display: grid; place-items: center; }
+  .top-right .app-btn[hidden] { display: none; }
+  .top-right .app-btn span { display: none; }
+}
+@media (max-width: 360px) {
+  .logo { font-size: 16px; }
+  .top-right { gap: 5px; }
+  .top-right .ig, .top-right .app-btn { width: 36px; height: 36px; padding: 0; }
+  .top-right .lang { padding: 3px; gap: 2px; }
+  .top-right .lang a { padding: 6px 7px; font-size: 11px; }
 }
 
 /* ---------- Лист ожидания / WhatsApp ---------- */
@@ -754,9 +764,8 @@ input::-webkit-date-and-time-value { text-align: left; }
 
 .topbar { padding-top: max(18px, env(safe-area-inset-top, 0px)); }
 /* приложение и уведомления */
-.app-btn { font: 600 12px/1 Montserrat, sans-serif; color: var(--ink); background: var(--pink-soft); border: 1px solid rgba(255,46,136,.35); border-radius: 999px; padding: 8px 12px; cursor: pointer; margin-right: 8px; white-space: nowrap; transition: background .2s, transform .2s; }
+.app-btn { font: 600 12px/1 Montserrat, sans-serif; color: var(--ink); background: var(--pink-soft); border: 1px solid rgba(255,46,136,.35); border-radius: 999px; padding: 8px 12px; cursor: pointer; white-space: nowrap; flex: none; transition: background .2s, transform .2s; }
 .app-btn:hover { background: rgba(255,46,136,.22); } .app-btn:active { transform: scale(.96); }
-@media (max-width: 380px) { .app-btn span { display: none; } }
 .pushbox { position: relative; overflow: hidden; }
 .pushbox .bell { display: inline-block; transform-origin: 50% 10%; animation: ring 2.6s ease-in-out 1s infinite; }
 @keyframes ring { 0%, 70%, 100% { transform: rotate(0); } 74% { transform: rotate(14deg); } 78% { transform: rotate(-12deg); } 82% { transform: rotate(8deg); } 86% { transform: rotate(-5deg); } 90% { transform: rotate(2deg); } }
@@ -1682,7 +1691,7 @@ function update() {
 }
 
 // ---------- Скидки, бонусы, сертификат: подсказка, пока заполняют форму ----------
-const money = n => Number(n || 0).toLocaleString(NUM) + ' ₸';
+const money = n => Number(n || 0).toLocaleString(NUM) + '\u00a0₸';
 const perkKey = () => JSON.stringify([phone.value.replace(/\D/g, ''), state.service?.name, state.date, $('bday').value, normCode($('gift').value), state.ref]);
 const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const perkFor = () => state.perk && state.perk.key === perkKey() && state.perk.pct && state.perk.base ? state.perk : null;
@@ -1946,7 +1955,7 @@ document.addEventListener('click', async e => {
 
 function ticketHtml(b) {
   const end = toHHMM(toMin(b.time) + b.duration);
-  const price = b.price ? b.price.toLocaleString(NUM) + ' ₸' : (findSvc(b.service)?.price || '');
+  const price = b.price ? b.price.toLocaleString(NUM) + '\u00a0₸' : (findSvc(b.service)?.price || '');
   return `<div class="ticket">
         <div><div class="k">Қашан</div><div class="big">${esc(fmtDay(b.date))}</div><div style="font:500 20px var(--display);color:var(--pink-2)">${b.time} – ${end}</div></div>
         <hr>
