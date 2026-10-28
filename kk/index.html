@@ -29,6 +29,11 @@
 <meta name="twitter:image" content="https://lashlook.github.io/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A090B'/%3E%3Cpath d='M8 36 Q32 12 56 36' fill='none' stroke='%23F7F2F5' stroke-width='3.5' stroke-linecap='round'/%3E%3Cpath d='M8 36 Q32 56 56 36' fill='none' stroke='%23A99EA6' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='36' r='8' fill='%23FF2E88'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="browlash">
 <link rel="preload" as="image" href="/look.webp" type="image/webp" fetchpriority="high">
 <meta property="og:title" content="Петропавлда кірпік ұзарту — browlash.look">
 <meta property="og:description" content="Сен үшін сөйлейтін кірпіктер 💗 Кірпік ұзарту, ламинация, қастар. Петропавл, Ульянов к-сі, 49. Онлайн жазылу.">
@@ -447,6 +452,7 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .wopt[aria-pressed="true"] { border-color: var(--pink); background: var(--pink-soft); box-shadow: 0 0 0 3px var(--pink-soft); }
 .wopt[aria-pressed="true"] svg path { stroke: var(--pink-2); }
 .wopt[aria-pressed="true"] svg .lid { stroke: var(--ink); }
+.wopt svg .keep { stroke-dasharray: none !important; animation: none !important; }
 .wopt[aria-pressed="true"] svg .ls { stroke-dasharray: 30; stroke-dashoffset: 30; animation: tick .5s var(--ease) forwards; }
 .wopt.len { padding-block: 12px; } .wopt.len b { font: 600 15px var(--display); }
 .wish-clear { justify-self: start; background: none; border: 0; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; }
@@ -747,6 +753,26 @@ input::-webkit-date-and-time-value { text-align: left; }
 .atmo .blob, .atmo .grain { will-change: transform; transform: translateZ(0); backface-visibility: hidden; }
 
 .topbar { padding-top: max(18px, env(safe-area-inset-top, 0px)); }
+/* приложение и уведомления */
+.app-btn { font: 600 12px/1 Montserrat, sans-serif; color: var(--ink); background: var(--pink-soft); border: 1px solid rgba(255,46,136,.35); border-radius: 999px; padding: 8px 12px; cursor: pointer; margin-right: 8px; white-space: nowrap; transition: background .2s, transform .2s; }
+.app-btn:hover { background: rgba(255,46,136,.22); } .app-btn:active { transform: scale(.96); }
+@media (max-width: 380px) { .app-btn span { display: none; } }
+.pushbox { position: relative; overflow: hidden; }
+.pushbox .bell { display: inline-block; transform-origin: 50% 10%; animation: ring 2.6s ease-in-out 1s infinite; }
+@keyframes ring { 0%, 70%, 100% { transform: rotate(0); } 74% { transform: rotate(14deg); } 78% { transform: rotate(-12deg); } 82% { transform: rotate(8deg); } 86% { transform: rotate(-5deg); } 90% { transform: rotate(2deg); } }
+@media (prefers-reduced-motion: reduce) { .pushbox .bell { animation: none; } }
+.pushbox .cta-row { margin-top: 10px; }
+.pushbox.on { border-color: rgba(80,200,140,.35); }
+.pushbox .muted { color: var(--muted); font-size: 13px; }
+.ios-bg { position: fixed; inset: 0; z-index: 90; background: rgba(5,4,6,.72); backdrop-filter: blur(6px); display: flex; align-items: flex-end; justify-content: center; animation: fadeIn .25s ease; }
+.ios-sheet { width: min(480px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 0 0; padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px)); animation: sheetUp .35s cubic-bezier(.2,.9,.3,1.2); }
+.ios-sheet h3 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 22px; margin: 0 0 6px; }
+.ios-sheet ol { padding-left: 0; list-style: none; margin: 14px 0 18px; counter-reset: st; }
+.ios-sheet li { counter-increment: st; display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px dashed rgba(255,255,255,.08); }
+.ios-sheet li::before { content: counter(st); flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,46,136,.16); color: #FF5FA2; font-weight: 700; font-size: 13px; }
+.ios-sheet .ios-ic { display: inline-block; vertical-align: -4px; }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .svc:active, .day:active, .slot:active { transform: scale(.97); }
 .btn:active { transform: scale(.97); }
 .bar.kb { transform: translateY(120%) !important; }
@@ -770,7 +796,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 <div class="wrap" id="app">
   <header class="topbar">
     <a class="logo" href="#top" aria-label="browlash.look">browlash<i>.</i>look</a>
-    <div class="top-right"><div class="lang" aria-label="Язык / Тіл"><a href="../" hreflang="ru">РУС</a><a href="./" hreflang="kk" aria-current="true">ҚАЗ</a></div><a class="ig" href="https://www.instagram.com/browlash.look/" target="_blank" rel="noopener" aria-label="Instagram browlash.look">
+    <div class="top-right"><button type="button" class="app-btn" id="appBtn" hidden data-install>📲 <span>Приложение</span></button><div class="lang" aria-label="Язык / Тіл"><a href="../" hreflang="ru">РУС</a><a href="./" hreflang="kk" aria-current="true">ҚАЗ</a></div><a class="ig" href="https://www.instagram.com/browlash.look/" target="_blank" rel="noopener" aria-label="Instagram browlash.look">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>Instagram</span></a></div>
   </header>
 
@@ -988,6 +1014,26 @@ input::-webkit-date-and-time-value { text-align: left; }
 
   // ---------- Точные фразы ----------
   const D = {
+    // приложение и пуш-напоминания
+    'Напомнить о записи?': 'Жазылу туралы еске салайық па?',
+    'Пришлём уведомление накануне и за 2 часа до визита — и сразу, если мастер подтвердит или перенесёт время.': 'Келуден бір күн және 2 сағат бұрын хабарландыру жібереміз — ал шебер уақытты растаса не ауыстырса, бірден хабарлаймыз.',
+    'Да, напомнить': 'Иә, еске салу', 'Не нужно': 'Қажет емес', 'Напоминания включены': 'Еске салу қосулы',
+    '— накануне и за 2 часа до визита.': '— келуден бір күн және 2 сағат бұрын.', 'Выключить': 'Өшіру',
+    'Хотите напоминания о записи?': 'Жазылу туралы еске салу керек пе?',
+    'На iPhone уведомления приходят, когда сайт добавлен на экран «Домой». Это 10 секунд — потом откройте browlash с иконки и включите напоминания.': 'iPhone-да хабарландырулар сайт «Басты экранға» қосылғанда ғана келеді. Бұл 10 секунд — содан кейін browlash-ты белгішеден ашып, еске салуды қосыңыз.',
+    '📲 Как добавить': '📲 Қалай қосу керек', 'Уведомления запрещены': 'Хабарландыруларға тыйым салынған',
+    'Чтобы получать напоминания, разрешите уведомления для этого сайта в настройках браузера.': 'Еске салуларды алу үшін браузер баптауларында осы сайтқа хабарландыруларға рұқсат беріңіз.',
+    'Не получилось включить уведомления': 'Хабарландыруларды қосу мүмкін болмады', 'Нет связи с мастером — попробуйте чуть позже.': 'Шебермен байланыс жоқ — сәл кейінірек көріңіз.',
+    'Попробуйте ещё раз или обновите страницу.': 'Қайталап көріңіз немесе бетті жаңартыңыз.', 'Ещё раз': 'Тағы бір рет', 'Включаем…': 'Қосылуда…',
+    '📲 browlash на экране «Домой»': '📲 browlash «Басты экранда»',
+    'Одно касание — и запись, время и адрес под рукой, как в обычном приложении.': 'Бір рет басыңыз — жазылу, уақыт пен мекенжай кәдімгі қосымшадағыдай қол астында.',
+    'Добавьте browlash на экран «Домой», откройте с иконки — и включите напоминания о записи.': 'browlash-ты «Басты экранға» қосып, белгішеден ашыңыз — және жазылу туралы еске салуды қосыңыз.',
+    'Нажмите': 'Басыңыз:', '«Поделиться»': '«Бөлісу»', 'внизу экрана Safari': '— Safari экранының төменгі жағында', 'Выберите': 'Таңдаңыз:',
+    '«На экран „Домой“»': '«Басты экранға»', '«Добавить»': '«Қосу»', '— и открывайте browlash с иконки': '— және browlash-ты белгішеден ашыңыз',
+    'Понятно': 'Түсінікті', 'Установить приложение': 'Қосымшаны орнату', 'Установите browlash как приложение': 'browlash-ты қосымша ретінде орнатыңыз',
+    '— запись, адрес и напоминания будут под рукой.': '— жазылу, мекенжай мен еске салулар әрдайым қол астында.',
+    '— иконка на экране, открывается в одно касание, запись и напоминания под рукой.': '— экранда белгіше, бір басумен ашылады, жазылу мен еске салулар қол астында.',
+    'Установить': 'Орнату', 'Как установить': 'Қалай орнату', 'Приложение': 'Қосымша',
     // общее
     'Сервер недоступен': 'Сервер қолжетімсіз', 'Ошибка': 'Қате', 'Закрыть': 'Жабу', 'или': 'немесе', 'Скопировать': 'Көшіру',
     'Скопировано ✓': 'Көшірілді ✓', 'Выделено — скопируйте': 'Белгіленді — көшіріңіз', 'Записаться': 'Жазылу', 'Записаться снова': 'Қайта жазылу',
@@ -1083,6 +1129,9 @@ input::-webkit-date-and-time-value { text-align: left; }
     'акцент ближе к краю, приподнимает': 'шетіне жақын екпін, көтеріп тұрады', 'стрелочки, как после душа': 'душтан кейінгідей сәулешелер',
     'едва заметный': 'әрең байқалады', 'естественный': 'табиғи', 'чуть сильнее C': 'C-дан сәл күштірек', 'выразительный': 'мәнерлі', 'для нависшего века': 'салбыраған қабаққа', 'мягкий L': 'жұмсақ L',
     'аккуратно': 'ұқыпты', 'естественно': 'табиғи', 'выразительно': 'мәнерлі', 'эффектно': 'әсерлі',
+    'L, LC, LB, LJ — для нависшего века': 'L, LC, LB, LJ — салбыраған қабаққа', 'Цвет': 'Түсі', 'Чёрные': 'Қара', 'Коричневые': 'Қоңыр', 'Бургунди': 'Бургунди', 'Белые': 'Ақ', 'яркий акцент, для фотосессий': 'жарқын акцент, фотосессияларға',
+    'классика, ярче взгляд': 'классика, көзқарас жарқынырақ', 'мягче, для светлых': 'жұмсағырақ, ақшыл адамдарға', 'винный оттенок': 'шарап реңкі',
+    'нависшее веко, сильный загиб': 'салбыраған қабақ, қатты иілім', 'нависшее веко, мягче L': 'салбыраған қабақ, L-ден жұмсақ', 'нависшее веко, натурально': 'салбыраған қабақ, табиғи', 'нависшее веко, едва заметно': 'салбыраған қабақ, әрең байқалады',
     'Сбросить — пусть мастер подберёт': 'Тазарту — шебер өзі таңдасын', 'Ресницы': 'Кірпік',
     // цифры под шапкой, карточка «Ваш визит»
     'наращивание — от': 'ұзарту бағасы — бастап', 'отзывов клиенток': 'клиент пікірі', 'онлайн-запись': 'онлайн жазылу', 'Фильтр отзывов': 'Пікірлер сүзгісі',
@@ -1136,10 +1185,10 @@ input::-webkit-date-and-time-value { text-align: left; }
   const visits = n => `${n} келу`;
   // «лисий эффект · изгиб D · длина 10–11 мм»
   const EFF = { натуральный: 'табиғи', лисий: 'түлкі', кукольный: 'қуыршақ', беличий: 'тиін', мокрый: 'дымқыл' };
-  const wishPart = p => p.replace(/^(\S+) эффект$/, (m, e) => EFF[e] ? `${EFF[e]} эффектісі` : m).replace(/^изгиб /, 'иілім ').replace(/^длина /, 'ұзындығы ');
+  const wishPart = p => p.replace(/^(\S+) эффект$/, (m, e) => EFF[e] ? `${EFF[e]} эффектісі` : m).replace(/^изгиб /, 'иілім ').replace(/^длина /, 'ұзындығы ').replace(/^цвет: (\S+)$/, (m, c) => `түсі: ${({ чёрные: 'қара', белые: 'ақ', коричневые: 'қоңыр', бургунди: 'бургунди' })[c] || c}`);
   // ---------- Фразы с числами и именами ----------
   const R = [
-    [/^(?:\S+ эффект|изгиб \S+|длина .+?)(?: · (?:\S+ эффект|изгиб \S+|длина .+?))*$/, t => t.split(' · ').map(wishPart).join(' · ')],
+    [/^(?:\S+ эффект|изгиб \S+|длина .+?|цвет: \S+)(?: · (?:\S+ эффект|изгиб \S+|длина .+?|цвет: \S+))*$/, t => t.split(' · ').map(wishPart).join(' · ')],
     [/^✨ (Хочет|Ресницы): (.+)$/, (_, __, w) => `✨ ${w.split(' · ').map(wishPart).join(' · ')}`],
     [/^Работа (\d+) из (\d+) — открыть крупно$/, (_, a, b) => `${b} жұмыстың ${a}-сі — үлкейтіп ашу`],
     [/^Работа мастера browlash\.look — ресницы и брови, фото (\d+)$/, (_, n) => `browlash.look шеберінің жұмысы — кірпік пен қас, ${n}-фото`],
@@ -1716,13 +1765,15 @@ $('bday').addEventListener('input', e => {
 $('giftBtn').onclick = () => { const f = $('giftField'), open = f.hidden; f.hidden = !open; $('giftBtn').setAttribute('aria-expanded', open); if (open) $('gift').focus(); else { $('gift').value = ''; update(); } };
 $('gift').addEventListener('input', () => { const c = normCode($('gift').value).slice(0, 8); $('gift').value = c.length > 4 ? c.slice(0, 4) + '-' + c.slice(4) : c; update(); });
 // ---------- Детали ресниц (по желанию): эффект, изгиб, длина — как у мастера в карточке «техника» ----------
-state.wish = { effect: '', curl: '', length: '' };
+state.wish = { effect: '', curl: '', length: '', color: '' };
 const WISH = {
   effect: [['Натуральный', 'как свои, только лучше', t => 7 + 3 * Math.sin(Math.PI * t)], ['Лисий', 'вытягивает к внешнему уголку', t => 4 + 10 * t ** 1.4],
     ['Кукольный', 'открытый, округлый взгляд', t => 5 + 9 * Math.sin(Math.PI * t) ** 2], ['Беличий', 'акцент ближе к краю, приподнимает', t => 5 + 9 * Math.exp(-(((t - .74) / .17) ** 2))],
     ['Мокрый', 'стрелочки, как после душа', (t, k) => k % 2 ? 6 : 12]],
   curl: [['B', 'едва заметный', 'M8 40 Q11 22 21 9'], ['C', 'естественный', 'M8 40 Q8 18 27 8'], ['CC', 'чуть сильнее C', 'M8 40 Q6 15 30 9'], ['D', 'выразительный', 'M8 40 Q4 11 33 11'],
-    ['L', 'для нависшего века', 'M8 40 L8 22 Q9 11 29 7'], ['M', 'мягкий L', 'M8 40 L8 26 Q8 12 31 11']],
+    ['L', 'нависшее веко, сильный загиб', 'M8 40 L8 22 Q9 11 29 7'], ['LC', 'нависшее веко, мягче L', 'M8 40 L8 24 Q8 13 27 9'], ['LB', 'нависшее веко, натурально', 'M8 40 L8 25 Q9 15 24 9'],
+    ['LJ', 'нависшее веко, едва заметно', 'M8 40 L8 26 Q9 17 20 9'], ['M', 'мягкий L', 'M8 40 L8 26 Q8 12 31 11']],
+  color: [['Чёрные', 'классика, ярче взгляд', '#141014'], ['Коричневые', 'мягче, для светлых', '#6b4226'], ['Бургунди', 'винный оттенок', '#8a1f45'], ['Белые', 'яркий акцент, для фотосессий', '#ffffff']],
   length: [['8–9 мм', 'аккуратно'], ['10–11 мм', 'естественно'], ['12–13 мм', 'выразительно'], ['14+ мм', 'эффектно']],
 };
 // глаз с ресницами нужной длины — чтобы эффект было видно, а не только прочитать
@@ -1734,7 +1785,7 @@ function effectSvg(fn) {
   return `<svg viewBox="0 -12 80 46" aria-hidden="true"><path class="ls" d="${d}"/><path class="lid" d="M6 30 Q40 4 74 30"/></svg>`;
 }
 const hasLash = () => state.sel.some(n => one(n)?.category === 'Наращивание');
-const wishText = w => [w.effect && `${w.effect.toLowerCase()} эффект`, w.curl && `изгиб ${w.curl}`, w.length && `длина ${w.length}`].filter(Boolean).join(' · ');
+const wishText = w => [w.effect && `${w.effect.toLowerCase()} эффект`, w.curl && `изгиб ${w.curl}`, w.length && `длина ${w.length}`, w.color && `цвет: ${w.color.toLowerCase()}`].filter(Boolean).join(' · ');
 function syncWish() {
   const show = hasLash(), btn = $('wishBtn'); if (!btn) return;
   btn.hidden = !show; if (!show) { $('wishBox').hidden = true; btn.setAttribute('aria-expanded', 'false'); }
@@ -1745,11 +1796,12 @@ function renderWish() {
   const opt = (g, v, sub, art, cls = '') => `<button type="button" class="wopt${cls}" data-g="${g}" data-v="${esc(v)}" aria-pressed="${w[g] === v}">${art || ''}<b>${esc(v)}</b><small>${esc(sub)}</small></button>`;
   box.innerHTML = `<p>Необязательно. Не знаете — оставьте пустым, мастер подберёт на месте по форме глаз.</p>
     <div class="wg"><h4>Эффект</h4><div class="wopts">${WISH.effect.map(([v, s, f]) => opt('effect', v, s, effectSvg(f))).join('')}</div></div>
-    <div class="wg"><h4>Изгиб <small>чем дальше по списку — тем сильнее загиб</small></h4><div class="wopts">${WISH.curl.map(([v, s, d]) => opt('curl', v, s, `<svg viewBox="0 0 40 44" aria-hidden="true"><path class="lid" d="M2 40 H16"/><path class="ls" d="${d}"/></svg>`)).join('')}</div></div>
+    <div class="wg"><h4>Изгиб <small>L, LC, LB, LJ — для нависшего века</small></h4><div class="wopts">${WISH.curl.map(([v, s, d]) => opt('curl', v, s, `<svg viewBox="0 0 40 44" aria-hidden="true"><path class="lid" d="M2 40 H16"/><path class="ls" d="${d}"/></svg>`)).join('')}</div></div>
     <div class="wg"><h4>Длина</h4><div class="wopts">${WISH.length.map(([v, s]) => opt('length', v, s, '', ' len')).join('')}</div></div>
+    <div class="wg"><h4>Цвет</h4><div class="wopts">${WISH.color.map(([v, s, c]) => opt('color', v, s, `<svg viewBox="0 -12 80 46" aria-hidden="true"><ellipse cx="40" cy="22" rx="38" ry="15" fill="#e9cdb9"/>${effectSvg(t => 7 + 4 * Math.sin(Math.PI * t)).replace('<svg viewBox="0 -12 80 46" aria-hidden="true">', '').replace('</svg>', '').replace('class="ls"', `class="ls keep" style="stroke:${c};stroke-width:2.2"`).replace('class="lid"', `class="lid keep" style="stroke:#3a2a2e"`)}</svg>`)).join('')}</div></div>
     ${wishText(w) ? '<button type="button" class="wish-clear" id="wishClear">Сбросить — пусть мастер подберёт</button>' : ''}`;
   box.querySelectorAll('.wopt').forEach(b => b.onclick = () => { const g = b.dataset.g; w[g] = w[g] === b.dataset.v ? '' : b.dataset.v; renderWish(); syncWish(); wishChanged?.(); if (w[g]) eyeWink(); });
-  $('wishClear')?.addEventListener('click', () => { state.wish = { effect: '', curl: '', length: '' }; renderWish(); syncWish(); wishChanged?.(); });
+  $('wishClear')?.addEventListener('click', () => { state.wish = { effect: '', curl: '', length: '', color: '' }; renderWish(); syncWish(); wishChanged?.(); });
 }
 function bindWish(onChange) {
   wishChanged = onChange || null;
@@ -1966,6 +2018,7 @@ function showDone(b, name) {
         <div><b>Жазылуды растаңыз</b> — төмендегі сілтеме арқылы немесе шеберге WhatsApp-та жауап беріп, процедурадан <b>2 сағат бұрын</b>.
         Сонда шебер сіздің міндетті түрде келетініңізді біледі және уақытыңызды басқа клиентке бермейді.</div>
       </div>
+      ${pushHtml(true)}
       <div class="linkbox">
         <span class="k">Жазылу сілтемесі — растау, өзгерту немесе болдырмау</span>
         <input readonly value="${esc(link)}" onclick="this.select()">
@@ -1986,6 +2039,108 @@ function showDone(b, name) {
     </section>`;
   scrollTo({ top: 0, behavior: 'auto' });
   if (!reduce) burst();
+  personalStart(b.token);
+  initPush(b.token);
+  const ap = document.createElement('div'); ap.innerHTML = appHtml(); $('app').querySelector('.done > .cta-row:last-child')?.before(...ap.childNodes);
+}
+
+// ---------- Приложение на экране «Домой» и пуш-напоминания ----------
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isApp = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const pushOk = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+let installEvt = null;
+const swReady = 'serviceWorker' in navigator && window.isSecureContext
+  ? navigator.serviceWorker.register('/sw.js').then(() => navigator.serviceWorker.ready).catch(() => null) : Promise.resolve(null);
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; showInstall(); });
+addEventListener('appinstalled', () => { installEvt = null; document.querySelectorAll('[data-install]').forEach(x => x.hidden = true); });
+const canInstall = () => !isApp && (!!installEvt || isIOS);
+function showInstall() { if (canInstall()) document.querySelectorAll('[data-install]').forEach(x => x.hidden = false); }
+function iosSheet(why) {
+  const share = '<svg class="ios-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4BA3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+  const plus = '<svg class="ios-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  const bg = document.createElement('div'); bg.className = 'ios-bg';
+  bg.innerHTML = `<div class="ios-sheet" role="dialog" aria-modal="true" aria-label="Установить приложение">
+    <h3>📲 browlash на экране «Домой»</h3>
+    <p class="lead" style="font-size:14px">${why || 'Одно касание — и запись, время и адрес под рукой, как в обычном приложении.'}</p>
+    <ol>
+      <li><span>Нажмите ${share} <b>«Поделиться»</b> внизу экрана Safari</span></li>
+      <li><span>Выберите ${plus} <b>«На экран „Домой“»</b></span></li>
+      <li><span>Нажмите <b>«Добавить»</b> — и открывайте browlash с иконки</span></li>
+    </ol>
+    <button type="button" class="btn" style="width:100%" data-close>Понятно</button></div>`;
+  bg.addEventListener('click', e => { if (e.target === bg || e.target.closest('[data-close]')) bg.remove(); });
+  document.body.append(bg); bg.querySelector('[data-close]').focus();
+}
+async function install() {
+  if (installEvt) { installEvt.prompt(); const r = await installEvt.userChoice.catch(() => ({})); if (r.outcome === 'accepted') installEvt = null; return; }
+  if (isIOS) iosSheet();
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-install]')) install(); });
+// на iPhone приложение с экрана «Домой» открывает ту страницу, с которой его добавили, и хранит данные отдельно от Safari —
+// поэтому на личных страницах убираем общий манифест: иконка откроет именно эту запись
+function personalStart(token) {
+  if (!token) return;
+  const u = new URL(location.href); u.search = '?b=' + encodeURIComponent(token); u.hash = '';
+  history.replaceState(null, '', u);
+  if (isIOS) document.querySelector('link[rel="manifest"]')?.remove();
+}
+const b64ToBytes = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); const r = atob(s + '='.repeat((4 - s.length % 4) % 4)); return Uint8Array.from(r, c => c.charCodeAt(0)); };
+const PUSH_NO = 'bl_push_no';
+function pushHtml(full) {
+  if (!pushOk && !(isIOS && !isApp)) return '';
+  try { if (!full && localStorage.getItem(PUSH_NO)) return ''; } catch {}
+  return `<div class="notice pushbox" id="pushBox" hidden></div>`;
+}
+async function initPush(token) {
+  const box = document.getElementById('pushBox'); if (!box) return;
+  const render = (html, on) => { box.innerHTML = html; box.classList.toggle('on', !!on); box.hidden = false; };
+  const ask = () => render(`<div class="ic"><span class="bell">🔔</span></div><div><b>Напомнить о записи?</b>
+      <div class="muted">Пришлём уведомление накануне и за 2 часа до визита — и сразу, если мастер подтвердит или перенесёт время.</div>
+      <div class="cta-row"><button type="button" class="btn sm" data-push="on">Да, напомнить</button><button type="button" class="btn sm ghost" data-push="no">Не нужно</button></div></div>`);
+  const on = () => render(`<div class="ic">🔔</div><div><b>Напоминания включены</b> <span class="muted">— накануне и за 2 часа до визита.</span>
+      <div class="cta-row"><button type="button" class="btn sm ghost" data-push="off">Выключить</button></div></div>`, true);
+  if (!pushOk) { // iPhone в Safari: пуши приходят только в приложение с экрана «Домой»
+    render(`<div class="ic"><span class="bell">🔔</span></div><div><b>Хотите напоминания о записи?</b>
+      <div class="muted">На iPhone уведомления приходят, когда сайт добавлен на экран «Домой». Это 10 секунд — потом откройте browlash с иконки и включите напоминания.</div>
+      <div class="cta-row"><button type="button" class="btn sm" data-ios>📲 Как добавить</button><button type="button" class="btn sm ghost" data-push="no">Не нужно</button></div></div>`);
+  }
+  const reg = await swReady;
+  if (pushOk && !reg) { box.hidden = true; return; }
+  const send = sub => api('/api/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ b: token, sub: sub.toJSON(), test: !sub.__old }) });
+  if (pushOk) {
+    const cur = await reg.pushManager.getSubscription().catch(() => null);
+    if (cur && Notification.permission === 'granted') { on(); cur.__old = true; send(cur).catch(() => {}); } // привязываем это устройство и к новой записи
+    else if (Notification.permission === 'denied') render(`<div class="ic">🔕</div><div><b>Уведомления запрещены</b><div class="muted">Чтобы получать напоминания, разрешите уведомления для этого сайта в настройках браузера.</div></div>`);
+    else ask();
+  }
+  box.onclick = async e => {
+    if (e.target.closest('[data-ios]')) return iosSheet('Добавьте browlash на экран «Домой», откройте с иконки — и включите напоминания о записи.');
+    const act = e.target.closest('[data-push]')?.dataset.push; if (!act) return;
+    if (act === 'no') { try { localStorage.setItem(PUSH_NO, '1'); } catch {} box.hidden = true; return; }
+    if (act === 'off') {
+      const sub = await reg.pushManager.getSubscription().catch(() => null);
+      if (sub) { api('/api/push/unsubscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {}); await sub.unsubscribe().catch(() => {}); }
+      return ask();
+    }
+    const btn = e.target.closest('button'); btn.disabled = true; btn.textContent = 'Включаем…';
+    try {
+      if (await Notification.requestPermission() !== 'granted') { try { localStorage.setItem(PUSH_NO, '1'); } catch {} return initPush(token); }
+      const { key } = await api('/api/push/key');
+      const opts = { userVisibleOnly: true, applicationServerKey: b64ToBytes(key) };
+      let sub = await reg.pushManager.subscribe(opts).catch(async () => { // ключ сменился — переподписываемся
+        const old = await reg.pushManager.getSubscription(); if (old) await old.unsubscribe(); return reg.pushManager.subscribe(opts); });
+      await send(sub);
+      try { localStorage.removeItem(PUSH_NO); } catch {}
+      on();
+    } catch (err) {
+      render(`<div class="ic">😔</div><div><b>Не получилось включить уведомления</b><div class="muted">${err instanceof TypeError ? 'Нет связи с мастером — попробуйте чуть позже.' : 'Попробуйте ещё раз или обновите страницу.'}</div>
+        <div class="cta-row"><button type="button" class="btn sm" data-push="on">Ещё раз</button></div></div>`);
+    }
+  };
+}
+function appHtml() {
+  if (!canInstall()) return '<div class="notice soft" data-install hidden><div class="ic">📲</div><div><b>Установите browlash как приложение</b> — запись, адрес и напоминания будут под рукой.<div class="cta-row" style="margin-top:10px"><button type="button" class="btn sm ghost">Установить</button></div></div></div>';
+  return `<div class="notice soft" data-install><div class="ic">📲</div><div><b>Установите browlash как приложение</b> — иконка на экране, открывается в одно касание, запись и напоминания под рукой.<div class="cta-row" style="margin-top:10px"><button type="button" class="btn sm ghost">${isIOS ? 'Как установить' : 'Установить'}</button></div></div></div>`;
 }
 
 // ---------- Управление записью (?b=ссылка) ----------
@@ -2015,15 +2170,18 @@ async function manage(token) {
           ${late ? `<a class="btn ghost" href="https://wa.me/${waNum()}?text=${encodeURIComponent(`Здравствуйте! У меня запись ${fmtDay(b.date).toLowerCase()} в ${b.time} — `)}" target="_blank" rel="noopener">Опаздываю / не смогу — написать мастеру</a>` : `<button class="btn ghost" type="button" id="mMove">Жазылуды өзгерту</button>
           <button class="btn ghost" type="button" id="mCancel">Отменить</button>`}
         </div>
-        <div id="mArea"></div>` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
+        <div id="mArea"></div>${pushHtml()}` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
       ${active ? `<div class="cta-row"><a class="btn ghost sm" href="${API}/api/b/${encodeURIComponent(token)}/ics">Күнтізбеге қосу</a><a class="btn ghost sm" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">2ГИС маршруты</a></div>
         <div class="extras" style="grid-template-columns:1fr"><button type="button" class="extra" id="mPhoto"${b.photo ? ' aria-expanded="true"' : ''}><span class="ei">📸</span><span><b>${b.photo ? 'Референс прикреплён — заменить' : 'Прикрепить фото-референс'}</b><small>Покажите мастеру, какой эффект хотите</small></span></button></div>
         <input type="file" id="mPhotoIn" accept="image/*" hidden>` : ''}
       <div class="msg" id="mMsg" style="color:var(--err)"></div>
       ${careHtml(b, b.past && b.status === 'came')}
       ${b.status !== 'cancelled' ? loyaltyHtml(b) : ''}
-      ${refHtml(b)}`;
+      ${refHtml(b)}
+      ${b.status !== 'cancelled' && !isApp ? appHtml() : ''}`;
+  if (b.status !== 'cancelled') personalStart(token);
   if (!active) return;
+  initPush(token);
   $('mPhoto').onclick = () => $('mPhotoIn').click();
   $('mPhotoIn').onchange = async () => {
     const f = $('mPhotoIn').files[0]; if (!f) return;
@@ -2058,7 +2216,7 @@ async function manage(token) {
       <div class="field" style="margin-top:14px"><textarea id="mCom" maxlength="500" placeholder=" ">${esc(b.comment || '')}</textarea><label for="mCom">Тілектер — міндетті емес</label></div>
       <div class="cta-row" style="margin-top:14px"><button class="btn" type="button" id="mGo" disabled>Өзгерістерді сақтау</button><button class="btn ghost" type="button" id="mBack">Өзгертпеу</button></div>`;
     const sel = { service: b.service, date: null, time: null };
-    const wish0 = JSON.stringify({ effect: '', curl: '', length: '', ...(b.wish || {}) });
+    const wish0 = JSON.stringify({ effect: '', curl: '', length: '', color: '', ...(b.wish || {}) });
     state.wish = JSON.parse(wish0); state.sel = picked.slice();
     const sumLine = () => { const v = findSvc(sel.service); $('mSvcSum').textContent = v ? `${dur(v.duration)}${v.price ? ' · ' + v.price : ''}` : ''; };
     const upd = () => {
@@ -2593,6 +2751,7 @@ function goOffline() {
         document.querySelector('.topbar').after(el);
       }).catch(() => {});
     }
+    showInstall();
     // баннер «ваша запись»
     const mine = myUpcoming()[0], me = meGet();
     if (me?.phone) { fillMe(me); update(); greet(me, mine); }

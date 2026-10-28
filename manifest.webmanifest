@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "browlash.look — ресницы и брови",
+  "short_name": "browlash",
+  "description": "Онлайн-запись к мастеру Виктории: ресницы и брови, Петропавловск",
+  "start_url": "/?app=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A090B",
+  "theme_color": "#0A090B",
+  "lang": "ru",
+  "categories": ["beauty", "lifestyle"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Записаться", "url": "/?app=1#book", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

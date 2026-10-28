@@ -302,6 +302,13 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .spam-list label span { min-width: 0; }
 .spam-list label small { color: var(--muted); }
 .spam-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip .cdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; box-shadow: 0 0 0 1.5px rgba(255,255,255,.35); }
+.cl-edit { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.cl-name-in, .cl-phone-in { width: 100%; border: 1px solid transparent !important; background: transparent !important; padding: 2px 8px !important; margin-left: -8px; border-radius: 10px; min-height: 0 !important; }
+.cl-name-in { font: 500 26px/1.2 var(--display) !important; color: var(--ink); }
+.cl-phone-in { font-size: 14px !important; color: var(--muted); }
+.cl-name-in:hover, .cl-phone-in:hover { border-color: var(--line) !important; }
+.cl-name-in:focus, .cl-phone-in:focus { border-color: var(--accent) !important; background: var(--surface-2) !important; outline: none; color: var(--ink); }
 .bk-wish { font-size: 13px; color: var(--accent-2); overflow-wrap: anywhere; }
 .t-wish { margin: -4px 0 4px; padding: 10px 12px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-2); font-size: 13px; }
 .bk-doc { display: grid; gap: 8px; justify-items: start; padding: 10px 12px; border-radius: 12px; background: rgba(255,196,107,.1); border: 1px dashed rgba(255,196,107,.45); color: #FFC46B; font-size: 13px; font-weight: 600; }
@@ -790,6 +797,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
     <div class="t-wish" id="tWish" hidden></div>
     <div class="tech-last" id="tLast" hidden></div>
     <label for="tEffect">Эффект / процедура<input id="tEffect" list="tEffectL" maxlength="60" placeholder="Классика, 2D, мокрый эффект, лисий…"></label>
+    <div><div class="chips-hint">Цвет ресниц</div><div class="chips" id="tColorC"></div><input type="hidden" id="tColor"></div>
     <div><div class="chips-hint">Изгиб — быстрый выбор</div><div class="chips" id="tCurlC"></div></div>
     <div class="row2">
       <label for="tCurl">Изгиб<input id="tCurl" list="tCurlL" maxlength="60" placeholder="D"></label>
@@ -826,7 +834,8 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 <!-- Карточка клиентки -->
 <dialog id="dlgClient">
   <div class="modal">
-    <div class="cl-top"><span class="ava" id="cAva"></span><div style="min-width:0"><h3 id="cName" style="font-size:26px"></h3><div class="cl-phone" id="cPhone"></div></div></div>
+    <div class="cl-top"><span class="ava" id="cAva"></span><div class="cl-edit"><input id="cName" class="cl-name-in" maxlength="80" aria-label="Имя клиентки" placeholder="Имя"><input id="cPhone" class="cl-phone-in" type="tel" inputmode="tel" aria-label="Телефон клиентки" placeholder="+7 (7__) ___-__-__"></div></div>
+    <div class="block-hint" id="cPhoneHint" hidden>Все записи, бонусы и история перейдут на новый номер</div>
     <div class="cl-nums" id="cNums"></div>
     <div class="cl-perks" id="cPerks"></div>
     <div class="row2">
@@ -1012,7 +1021,7 @@ function bookingRow(b, nowKey, nowMin) {
     <article class="bk${over && b.status !== 'cancelled' ? ' done' : ''}${b.status === 'cancelled' ? ' cancelled' : ''}" data-id="${b.id}">
       <div class="bk-time"><b>${b.time}</b><span>до ${end}</span></div>
       <div class="bk-main">
-        <div class="bk-name"><span>${esc(b.name)}</span><span class="st ${b.status}">${ST[b.status] || b.status}</span>${b.noshows ? `<span class="warn">⚠ не пришла ${b.noshows}×</span>` : ''}${b.blocked ? '<span class="warn">⛔ запись через WhatsApp</span>' : ''}${b.bday ? `<span class="tag bd">🎂 ДР ${esc(b.bday)}</span>` : ''}${b.source === 'admin' ? '<span class="pill muted">вручную</span>' : ''}</div>
+        <div class="bk-name"><span>${esc(b.name)}</span><span class="st ${b.status}">${ST[b.status] || b.status}</span>${b.noshows ? `<span class="warn">⚠ не пришла ${b.noshows}×</span>` : ''}${b.blocked ? '<span class="warn">⛔ запись через WhatsApp</span>' : ''}${b.bday ? `<span class="tag bd">🎂 ДР ${esc(b.bday)}</span>` : ''}${b.source === 'admin' ? '<span class="pill muted">вручную</span>' : ''}${b.push && b.status !== 'cancelled' ? '<span class="pill muted" title="Клиентке приходят пуш-напоминания: накануне, за 2 часа и когда вы подтверждаете, переносите или отменяете запись">🔔 пуш</span>' : ''}</div>
         <div class="bk-svc">${esc(b.service)}${priceOf(b) ? ` <span style="color:var(--muted);font-weight:500">· ${b.discount ? `<s>${money(b.base_price)}</s> ` : ''}${esc(priceOf(b))}</span>` : ''}${b.discount ? ` <span class="tag disc" title="${esc(b.discount_why || '')}">−${b.discount}% ${esc((b.discount_why || '').split(' ')[0])}</span>` : ''}</div>
         ${b.discount_kind === 'birthday' && !['came', 'cancelled'].includes(b.status) ? `<div class="bk-doc">🪪 Скидка на ДР — попросите показать документ с датой рождения <button class="mini bad" type="button" data-nodisc="${b.id}">Нет документа — убрать скидку</button></div>` : ''}
         ${b.discount && b.discount_kind !== 'birthday' && !['came', 'cancelled'].includes(b.status) ? `<button class="linkish" type="button" data-nodisc="${b.id}">убрать скидку</button>` : ''}
@@ -1265,13 +1274,14 @@ $('blockForm').addEventListener('submit', async e => {
 });
 
 // ---------- Техника визита ----------
-const wishText = w => w ? [w.effect && `${w.effect.toLowerCase()} эффект`, w.curl && `изгиб ${w.curl}`, w.length && `длина ${w.length}`].filter(Boolean).join(' · ') : '';
-const techText = t => t ? [t.effect, t.curl && `изгиб ${t.curl}`, t.length && `${t.length} мм`.replace(' мм мм', ' мм'), t.thickness && `толщина ${t.thickness}`, t.glue && `клей ${t.glue}`, t.note].filter(Boolean).join(' · ') : '';
+const wishText = w => w ? [w.effect && `${w.effect.toLowerCase()} эффект`, w.curl && `изгиб ${w.curl}`, w.length && `длина ${w.length}`, w.color && `цвет: ${w.color.toLowerCase()}`].filter(Boolean).join(' · ') : '';
+const techText = t => t ? [t.effect, t.color && `цвет ${t.color.toLowerCase()}`, t.curl && `изгиб ${t.curl}`, t.length && `${t.length} мм`.replace(' мм мм', ' мм'), t.thickness && `толщина ${t.thickness}`, t.glue && `клей ${t.glue}`, t.note].filter(Boolean).join(' · ') : '';
 const dlgT = $('dlgTech'); let techId = 0, techHints = null;
 const findBk = id => weekBookings.find(b => b.id === id) || (load.ahead || []).find(b => b.id === id) || histCache.find(b => b.id === id);
-function fillTech(t = {}) { $('tEffect').value = t.effect || ''; $('tCurl').value = t.curl || ''; $('tThick').value = t.thickness || ''; $('tLen').value = t.length || ''; $('tGlue').value = t.glue || ''; $('tNote').value = t.note || ''; markTechChips(); }
+function fillTech(t = {}) { $('tColor').value = t.color || ''; $('tEffect').value = t.effect || ''; $('tCurl').value = t.curl || ''; $('tThick').value = t.thickness || ''; $('tLen').value = t.length || ''; $('tGlue').value = t.glue || ''; $('tNote').value = t.note || ''; markTechChips(); }
 function markTechChips() {
   $('tCurlC').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.textContent === $('tCurl').value));
+  $('tColorC').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.v === $('tColor').value));
   $('tThickC').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.textContent === $('tThick').value));
 }
 async function openTech(id) {
@@ -1281,21 +1291,23 @@ async function openTech(id) {
   if (!techHints) techHints = await api('/api/admin/tech-hints').catch(() => ({}));
   const dl = (id, list, base) => $(id).innerHTML = [...new Set([...(list || []), ...base])].map(v => `<option value="${esc(v)}">`).join('');
   dl('tEffectL', techHints.effect, ['Классика', '2D', '3D', '4D', '5D', 'Мокрый эффект', 'Лисий', 'Кукольный', 'Беличий']);
-  dl('tCurlL', techHints.curl, ['B', 'C', 'CC', 'D', 'DD', 'L', 'M']);
+  dl('tCurlL', techHints.curl, ['B', 'C', 'CC', 'D', 'DD', 'L', 'LC', 'LB', 'LJ', 'M']);
   dl('tThickL', techHints.thickness, ['0.05', '0.07', '0.10', '0.12']);
   dl('tLenL', techHints.length, ['6–10', '8–11', '8–12', '9–12', '10–13']);
   dl('tGlueL', techHints.glue, []);
-  $('tCurlC').innerHTML = ['B', 'C', 'CC', 'D', 'DD', 'L', 'M'].map(v => `<button type="button" class="chip" data-v="${v}">${v}</button>`).join('');
+  $('tColorC').innerHTML = [['Чёрные', '#111'], ['Коричневые', '#6b4226'], ['Бургунди', '#7a1f3d'], ['Белые', '#fff']].map(([v, c]) => `<button type="button" class="chip" data-v="${v}"><i class="cdot" style="background:${c}"></i>${v}</button>`).join('');
+  $('tCurlC').innerHTML = ['B', 'C', 'CC', 'D', 'DD', 'L', 'LC', 'LB', 'LJ', 'M'].map(v => `<button type="button" class="chip" data-v="${v}">${v}</button>`).join('');
   $('tThickC').innerHTML = ['0.05', '0.07', '0.10', '0.12'].map(v => `<button type="button" class="chip" data-v="${v}">${v}</button>`).join('');
   const lt = b.lastTech;
   $('tLast').hidden = !lt; $('tCopy').hidden = !lt || !!b.tech;
   if (lt) $('tLast').innerHTML = `<b>Прошлый раз, ${dShort(lt.date)}</b>${esc(lt.text)}`;
   // клиентка сама выбрала детали при записи — подставляем их, если техника ещё не заполнена
   const w = b.wish || {};
-  fillTech(b.tech || (b.wish ? { effect: w.effect || '', curl: w.curl || '', length: (w.length || '').replace(/\s*мм$/, '').replace('+', '') } : {}));
+  fillTech(b.tech || (b.wish ? { effect: w.effect || '', color: w.color || '', curl: w.curl || '', length: (w.length || '').replace(/\s*мм$/, '').replace('+', '') } : {}));
   $('tWish').hidden = !b.wish; if (b.wish) $('tWish').textContent = `✨ Клиентка хочет: ${wishText(b.wish)}`;
   dlgT.showModal();
 }
+$('tColorC').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) { $('tColor').value = $('tColor').value === c.dataset.v ? '' : c.dataset.v; markTechChips(); } });
 $('tCurlC').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) { $('tCurl').value = $('tCurl').value === c.dataset.v ? '' : c.dataset.v; markTechChips(); } });
 $('tThickC').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) { $('tThick').value = $('tThick').value === c.dataset.v ? '' : c.dataset.v; markTechChips(); } });
 ['tCurl', 'tThick'].forEach(id => $(id).addEventListener('input', markTechChips));
@@ -1303,7 +1315,7 @@ $('tCopy').onclick = () => { const b = findBk(techId); if (b?.lastTech?.tech) fi
 $('techForm').addEventListener('submit', async e => {
   e.preventDefault();
   try {
-    const r = await api(`/api/admin/bookings/${techId}/tech`, { method: 'POST', body: JSON.stringify({ effect: $('tEffect').value, curl: $('tCurl').value, thickness: $('tThick').value, length: $('tLen').value, glue: $('tGlue').value, note: $('tNote').value }) });
+    const r = await api(`/api/admin/bookings/${techId}/tech`, { method: 'POST', body: JSON.stringify({ effect: $('tEffect').value, color: $('tColor').value, curl: $('tCurl').value, thickness: $('tThick').value, length: $('tLen').value, glue: $('tGlue').value, note: $('tNote').value }) });
     const b = findBk(techId); if (b) b.tech = r.tech;
     techHints = null; dlgT.close(); toast(r.tech ? 'Техника сохранена 🧵' : 'Техника очищена');
     load.sig = ''; load(); if (dlgC.open && curPhone) openClient(curPhone);
@@ -1455,6 +1467,8 @@ async function loadClients(anim) {
 let cdeb; $('cq').addEventListener('input', () => { clearTimeout(cdeb); cdeb = setTimeout(() => loadClients(true), 250); });
 $('clients').addEventListener('click', e => { const c = e.target.closest('[data-phone]'); if (c) openClient(c.dataset.phone); });
 const dlgC = $('dlgClient'); let curPhone = '', histCache = [];
+$('cPhone').addEventListener('input', e => { phoneMask(e); $('cPhoneHint').hidden = $('cPhone').value === $('cPhone')._orig; });
+$('cName').addEventListener('input', () => { $('cAva').textContent = $('cName').value.trim()[0] || '?'; });
 $('cBday').addEventListener('input', e => { let d = $('cBday').value.replace(/\D/g, '').slice(0, 4); $('cBday').value = d.length > 2 ? d.slice(0, 2) + '.' + d.slice(2) : d; });
 async function openClient(phone) {
   curPhone = phone;
@@ -1476,7 +1490,7 @@ async function openClient(phone) {
   $('cMe')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.meUrl); toast('Личная ссылка скопирована'); } catch { toast(info.meUrl); } });
   $('cRef')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.refUrl); toast('Ссылка скопирована'); } catch { toast(info.refUrl); } });
   const name = history[0]?.name || '';
-  $('cAva').textContent = name.trim()[0] || '?'; $('cName').textContent = name; $('cPhone').textContent = fmtPhone(phone);
+  const nm = info.name || name; $('cAva').textContent = nm.trim()[0] || '?'; $('cName').value = nm; $('cPhone').value = fmtPhone(phone); $('cPhone')._orig = $('cPhone').value; $('cPhoneHint').hidden = true;
   const now = new Date();
   const done = history.filter(b => !['cancelled', 'noshow'].includes(b.status) && new Date(`${b.date}T${b.time}`) < now);
   $('cNums').innerHTML = `<div><b>${done.length}</b><span>${plural(done.length, ['визит', 'визита', 'визитов'])}</span></div><div><b>${money(done.reduce((s, b) => s + (b.price || 0), 0))}</b><span>потратила</span></div><div><b>${history.filter(b => b.status === 'noshow').length}</b><span>не пришла</span></div>`;
@@ -1506,8 +1520,11 @@ $('cDel').onclick = async () => {
 };
 $('cSave').onclick = async () => {
   try {
-    await api('/api/admin/clients/' + encodeURIComponent(curPhone), { method: 'POST', body: JSON.stringify({ note: $('cNote').value, birthday: $('cBday').value, blocked: $('cBlock').value }) });
-    dlgC.close(); toast('Сохранено'); loadClients(false); load.sig = ''; load();
+    const body = { note: $('cNote').value, birthday: $('cBday').value, blocked: $('cBlock').value, name: $('cName').value };
+    if ($('cPhone').value !== $('cPhone')._orig) body.phone = $('cPhone').value;
+    const r = await api('/api/admin/clients/' + encodeURIComponent(curPhone), { method: 'POST', body: JSON.stringify(body) });
+    if (r.phone) curPhone = r.phone;
+    dlgC.close(); toast(body.phone ? 'Сохранено — история перенесена на новый номер' : 'Сохранено'); loadClients(false); load.sig = ''; load();
   } catch (err) { toast(err.message, 'bad'); }
 };
 
