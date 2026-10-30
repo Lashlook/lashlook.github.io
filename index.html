@@ -1678,7 +1678,7 @@ async function greet(me, upcoming) {
   const first = esc(String(me.name || '').trim().split(' ')[0]);
   const svc = findSvc(me.service);
   el.innerHTML = `<div class="me-top"><span class="me-ava">${first ? first[0] : '♡'}</span><div class="me-hi"><b>С возвращением${first ? ', ' + first : ''}!</b><span id="meInfo">Имя и номер уже подставлены в форму 💗</span></div>
-      <button type="button" class="me-x" id="meNot" title="Очистить данные на этом телефоне">Это не я</button></div>
+      <button type="button" class="me-x" id="meNot" title="Очистить данные на этом телефоне">${tokGet() ? 'Выйти' : 'Это не я'}</button></div>
     <div class="me-perks" id="mePerks"></div>
     <div class="me-acts">
       ${upcoming ? `<a class="btn sm" href="?b=${encodeURIComponent(upcoming.token)}">Моя запись: ${esc(fmtShort(upcoming.date))}, ${upcoming.time}</a>` : ''}
