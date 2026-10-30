@@ -1511,8 +1511,15 @@ async function openClient(phone) {
     <div class="cp"><span>🎁 Бонус за подругу</span><b>${info.bonus ? '×' + info.bonus : '—'}</b><small>${info.bonus ? `−${info.bonusPct}% спишется при записи` : 'появится, когда подруга придёт'}</small></div>
     ${info.referredBy ? `<div class="cp"><span>💗 Пришла по совету</span><b style="font-size:16px">${esc(info.referredBy.name || fmtPhone(info.referredBy.phone))}</b></div>` : ''}
     ${info.meUrl ? `<button class="mini" type="button" id="cMe" style="grid-column:1/-1;justify-self:start">🔑 Её личная ссылка — сайт её узнает</button>` : ''}
-    ${info.refUrl ? `<button class="mini" type="button" id="cRef" data-url="${esc(info.refUrl)}" style="grid-column:1/-1;justify-self:start">🔗 Её ссылка «приведи подругу»</button>` : ''}`;
+    ${info.refUrl ? `<button class="mini" type="button" id="cRef" data-url="${esc(info.refUrl)}" style="grid-column:1/-1;justify-self:start">🔗 Её ссылка «приведи подругу»</button>` : ''}
+    ${info.account ? `<div class="cp" style="grid-column:1/-1"><span>🔐 Личный кабинет</span><small>Входит на сайте по номеру и паролю. Забыла пароль — сбросьте, и она задаст новый из своей записи.</small><button class="mini bad" type="button" id="cPassReset" style="justify-self:start;margin-top:6px">Сбросить пароль</button></div>` : ''}`;
   $('cMe')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.meUrl); toast('Личная ссылка скопирована'); } catch { toast(info.meUrl); } });
+  $('cPassReset')?.addEventListener('click', async e => {
+    const b = e.currentTarget;
+    if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Точно сбросить? Нажмите ещё раз'; return; }
+    try { await api('/api/admin/clients/' + encodeURIComponent(phone) + '/reset-pass', { method: 'POST' }); toast('Пароль сброшен — пусть задаст новый из своей записи'); b.closest('.cp').remove(); }
+    catch (err) { toast(err.message, 'bad'); }
+  });
   $('cRef')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.refUrl); toast('Ссылка скопирована'); } catch { toast(info.refUrl); } });
   const name = history[0]?.name || '';
   const nm = info.name || name; $('cAva').textContent = nm.trim()[0] || '?'; $('cName').value = nm; $('cPhone').value = fmtPhone(phone); $('cPhone')._orig = $('cPhone').value; $('cPhoneHint').hidden = true;

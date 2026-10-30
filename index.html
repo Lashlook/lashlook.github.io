@@ -399,6 +399,13 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
   .top-right .app-btn[hidden] { display: none; }
   .top-right .app-btn span { display: none; }
 }
+/* узкий телефон: Instagram есть внизу страницы, а «Войти» важнее — оставляем его со словом */
+@media (max-width: 420px) {
+  .top-right .ig { display: none; }
+  .top-right .app-btn.acc-btn { width: auto; padding: 0 12px; display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; }
+  .top-right .app-btn.acc-btn span { display: inline; }
+}
+@media (max-width: 380px) { .top-right .app-btn:not(.acc-btn) { display: none; } }
 @media (max-width: 360px) {
   .logo { font-size: 16px; }
   .top-right { gap: 5px; }
@@ -781,6 +788,29 @@ input::-webkit-date-and-time-value { text-align: left; }
 .ios-sheet li::before { content: counter(st); flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,46,136,.16); color: #FF5FA2; font-weight: 700; font-size: 13px; }
 .ios-sheet .ios-ic { display: inline-block; vertical-align: -4px; }
 @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+.for-hint { margin: -2px 2px 4px; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+/* личный кабинет */
+.acc-sheet { max-height: 88vh; overflow: auto; overscroll-behavior: contain; }
+.acc-form { display: grid; gap: 12px; margin: 14px 0 6px; }
+.acc-form label { display: grid; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.acc-form input, .acc-inline input { width: 100%; min-height: 48px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: 500 16px var(--body); letter-spacing: 0; text-transform: none; }
+.acc-form input:focus, .acc-inline input:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft); }
+.acc-pw { position: relative; display: block; flex: 1; min-width: 0; }
+.acc-pw input { padding-right: 46px; }
+.acc-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: 0; background: none; cursor: pointer; font-size: 16px; opacity: .7; }
+.acc-msg { color: var(--err); font-size: 13px; min-height: 0; }
+.acc-msg:empty { display: none; }
+.acc-note { font-size: 13px; color: var(--muted); margin: 6px 0 14px; line-height: 1.6; }
+.acc-note a { color: var(--pink-2); }
+.acc-inline { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+.acc-inline .btn { flex: none; }
+@media (max-width: 380px) { .acc-inline { flex-direction: column; align-items: stretch; } }
+.acc-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 12px 14px; margin-top: 8px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.acc-row span { grid-column: 1; color: var(--muted); font-size: 13px; }
+.acc-row i { grid-column: 2; grid-row: 1 / 3; align-self: center; font-style: normal; font-size: 12px; color: var(--pink-2); }
+.acc-row.past { opacity: .6; }
+.acc-h { margin: 16px 0 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.acc-card .muted { color: var(--muted); font-size: 13px; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .svc:active, .day:active, .slot:active { transform: scale(.97); }
 .btn:active { transform: scale(.97); }
@@ -805,7 +835,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 <div class="wrap" id="app">
   <header class="topbar">
     <a class="logo" href="#top" aria-label="browlash.look">browlash<i>.</i>look</a>
-    <div class="top-right"><button type="button" class="app-btn" id="appBtn" hidden data-install>📲 <span>Приложение</span></button><div class="lang" aria-label="Язык / Тіл"><a href="./" hreflang="ru" aria-current="true">РУС</a><a href="kk/" hreflang="kk">ҚАЗ</a></div><a class="ig" href="https://www.instagram.com/browlash.look/" target="_blank" rel="noopener" aria-label="Instagram browlash.look">
+    <div class="top-right"><button type="button" class="app-btn acc-btn" id="accBtn" data-login>🔑 <span>Войти</span></button><button type="button" class="app-btn" id="appBtn" hidden data-install>📲 <span>Приложение</span></button><div class="lang" aria-label="Язык / Тіл"><a href="./" hreflang="ru" aria-current="true">РУС</a><a href="kk/" hreflang="kk">ҚАЗ</a></div><a class="ig" href="https://www.instagram.com/browlash.look/" target="_blank" rel="noopener" aria-label="Instagram browlash.look">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>Instagram</span></a></div>
   </header>
 
@@ -865,6 +895,7 @@ input::-webkit-date-and-time-value { text-align: left; }
       <div class="sec-head"><span class="num">04</span><h2>Как с вами связаться</h2><p>Мастер напишет в WhatsApp, чтобы подтвердить запись</p></div>
       <div class="fields">
         <div class="field"><input id="name" name="name" maxlength="80" autocomplete="given-name" placeholder=" "><label for="name">Ваше имя</label></div>
+        <p class="for-hint" id="forHint" hidden>Записываете дочку, маму или подругу? Впишите её имя — номер можно оставить свой. С одного номера можно записаться на разное время.</p>
         <div class="field"><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" "><label for="phone">Телефон / WhatsApp</label></div>
         <div class="field"><textarea id="comment" name="comment" maxlength="500" placeholder=" "></textarea><label for="comment">Пожелания — необязательно</label></div>
         <div class="field" id="bdayField"><input id="bday" name="bday" inputmode="numeric" maxlength="5" autocomplete="bday" placeholder=" "><label for="bday">День рождения — ДД.ММ</label><div class="fmsg" style="color:var(--muted)">🎂 Необязательно — ко дню рождения подарим скидку</div></div>
@@ -1290,10 +1321,19 @@ function dayWindows(date) {
   if (c.week && Array.isArray(c.week[dow])) return c.week[dow];
   return (c.daysOff || []).includes(dow) ? [] : [{ start: c.open, end: c.close }];
 }
+// Компьютер мастера выключен — время считаем сами по последнему снимку занятости (busy.json),
+// чтобы не предлагать то, что уже занято
+let offBusy = null;
+const loadBusy = () => fetch((location.pathname.includes('/kk/') ? '../' : '') + 'busy.json?t=' + Date.now(), { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : null).then(j => { offBusy = j?.days ? j : null; }).catch(() => {});
 function localSlots(date, duration) {
-  const step = state.cfg.step || 30, isToday = date === ymd(new Date()), now = new Date().getHours() * 60 + new Date().getMinutes(), out = [];
-  for (const w of dayWindows(date))
-    for (let m = toMin(w.start); m + duration <= toMin(w.end); m += step) if (!isToday || m > now + 30) out.push({ time: toHHMM(m), free: true });
+  const step = offBusy?.step || state.cfg.step || 30, isToday = date === ymd(new Date()), now = new Date().getHours() * 60 + new Date().getMinutes(), out = [];
+  const snap = offBusy?.days, d = snap ? snap[date] : null;
+  if (snap && !d && date <= Object.keys(snap).sort().at(-1)) return []; // в снимке есть дни после этого — значит, в этот день мастер не работает
+  const wins = d ? d.w : dayWindows(date).map(w => [toMin(w.start), toMin(w.end)]), busy = d ? d.b : [];
+  for (const [ws, we] of wins)
+    for (let m = ws; m + duration <= we; m += step)
+      if (!isToday || m > now + 30) out.push({ time: toHHMM(m), free: !busy.some(([s, e]) => s < m + duration && m < e) });
   return out;
 }
 // день за пределами записи (прошёл или запись на него ещё не открыта)
@@ -1588,7 +1628,9 @@ $('form').addEventListener('submit', async e => {
       try { await uploadPhoto(booking.token, state.photo); booking.photo = true; } catch {}
     }
     try { localStorage.removeItem('bl_ref'); } catch {}
-    meSave({ name: body.name.trim(), phone: phone.value, bday: $('bday').value.length === 5 ? $('bday').value : (meGet()?.bday || ''), service: body.service, token: booking.token });
+    // тот же номер — имя владелицы номера не меняем (могла записать дочку или подругу)
+    const same = meGet()?.phone && meGet().phone.replace(/\D/g, '').slice(-10) === phone.value.replace(/\D/g, '').slice(-10);
+    meSave({ name: same && meGet().name ? meGet().name : body.name.trim(), phone: phone.value, bday: $('bday').value.length === 5 ? $('bday').value : (meGet()?.bday || ''), service: body.service, token: booking.token });
     showDone(booking, body.name);
   } catch (err) {
     state.sending = false;
@@ -1605,15 +1647,21 @@ $('form').addEventListener('submit', async e => {
 const ME = 'bl_me';
 const meGet = () => { try { return JSON.parse(localStorage.getItem(ME) || 'null'); } catch { return null; } };
 const meSave = v => { try { localStorage.setItem(ME, JSON.stringify({ ...(meGet() || {}), ...v })); } catch {} };
-const meForget = () => { try { ['bl_me', 'bl_bookings', 'bl_ref'].forEach(k => localStorage.removeItem(k)); } catch {} };
+const meForget = () => { try { ['bl_me', 'bl_bookings', 'bl_ref', 'bl_tok'].forEach(k => localStorage.removeItem(k)); } catch {} };
+// секрет личной ссылки — по нему сайт узнаёт клиентку и подтягивает все её записи (после входа по паролю тоже он)
+const tokGet = () => { try { return localStorage.getItem('bl_tok') || ''; } catch { return ''; } };
+const tokSet = t => { try { t ? localStorage.setItem('bl_tok', t) : localStorage.removeItem('bl_tok'); } catch {} };
+let acct = null; // ответ /api/me: имя, номер, все записи, есть ли пароль
 // открыла личную ссылку (?me=… или ?b=…) — запоминаем её в этом браузере
 async function rememberMe(meToken) {
   try {
     const r = await api('/api/me/' + encodeURIComponent(meToken));
     meSave({ name: r.name, phone: r.phone, bday: r.bday || meGet()?.bday || '', service: r.service || meGet()?.service || '', token: r.token || meGet()?.token || '' });
     if (r.upcoming) mySave(r.upcoming);
+    (r.bookings || []).filter(x => !x.past).forEach(mySave); // все будущие записи — даже сделанные с другого телефона
+    tokSet(meToken); acct = r;
     return r;
-  } catch { return null; }
+  } catch (err) { if (err.status === 404 && tokGet() === meToken) tokSet(''); return null; }
 }
 function setPhone(v) {
   let d = String(v || '').replace(/\D/g, ''); if (d[0] === '8') d = '7' + d.slice(1); d = d.slice(0, 11);
@@ -1623,6 +1671,7 @@ function setPhone(v) {
 }
 function fillMe(me) {
   if (!$('name').value && me.name) $('name').value = me.name;
+  $('forHint').hidden = false;
   if (!phone.value.replace(/\D/g, '').length && me.phone) setPhone(me.phone);
   if (!$('bday').value && me.bday) $('bday').value = me.bday;
 }
@@ -1636,6 +1685,7 @@ async function greet(me, upcoming) {
     <div class="me-acts">
       ${upcoming ? `<a class="btn sm" href="?b=${encodeURIComponent(upcoming.token)}">Моя запись: ${esc(fmtShort(upcoming.date))}, ${upcoming.time}</a>` : ''}
       ${svc ? `<button type="button" class="btn ${upcoming ? 'ghost ' : ''}sm" id="meAgain">Повторить: ${esc(svc.name)}</button>` : ''}
+      ${myUpcoming().length > 1 || (acct?.bookings || []).length > 1 ? `<button type="button" class="btn ghost sm" data-mybk>Мои записи (${Math.max(myUpcoming().length, (acct?.bookings || []).filter(x => !x.past).length)})</button>` : ''}
     </div>`;
   document.querySelector('.topbar').after(el);
   $('meNot').onclick = () => {
@@ -1757,6 +1807,7 @@ function showDone(b, name) {
         Так мастер будет знать, что вы точно придёте, и не отдаст ваше время другой клиентке.</div>
       </div>
       ${pushHtml(true)}
+      ${accHtml(b)}
       <div class="linkbox">
         <span class="k">Ваша ссылка на запись — подтвердить, изменить или отменить</span>
         <input readonly value="${esc(link)}" onclick="this.select()">
@@ -1771,6 +1822,7 @@ function showDone(b, name) {
       ${loyaltyHtml(b)}
       ${refHtml(b)}
       <div class="cta-row">
+        <a class="btn ghost" href="./#book">➕ Записать ещё</a>
         <a class="btn ghost" href="${API}/api/b/${encodeURIComponent(b.token)}/ics">Добавить в календарь</a>
         <a class="btn ghost" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">Маршрут в 2ГИС</a>
       </div>
@@ -1779,6 +1831,7 @@ function showDone(b, name) {
   if (!reduce) burst();
   personalStart(b.token);
   initPush(b.token);
+  initAcc(b.token);
   const ap = document.createElement('div'); ap.innerHTML = appHtml(); $('app').querySelector('.done > .cta-row:last-child')?.before(...ap.childNodes);
 }
 
@@ -1882,6 +1935,81 @@ async function initPush(token) {
     }
   };
 }
+// ---------- Личный кабинет: вход по номеру и паролю ----------
+function sheet(html, label) {
+  const bg = document.createElement('div'); bg.className = 'ios-bg';
+  bg.innerHTML = `<div class="ios-sheet acc-sheet" role="dialog" aria-modal="true" aria-label="${label}">${html}</div>`;
+  bg.addEventListener('click', e => { if (e.target === bg || e.target.closest('[data-close]')) bg.remove(); });
+  document.body.append(bg);
+  return bg;
+}
+const phFmt = v => { let d = String(v).replace(/\D/g, ''); if (d[0] === '8') d = '7' + d.slice(1); if (d && d[0] !== '7') d = '7' + d; d = d.slice(0, 11);
+  const p = [d.slice(1, 4), d.slice(4, 7), d.slice(7, 9), d.slice(9, 11)]; return d ? `+7 (${p[0]}${d.length > 4 ? ') ' + p[1] : ''}${d.length > 7 ? '-' + p[2] : ''}${d.length > 9 ? '-' + p[3] : ''}` : ''; };
+const eyeBtn = '<button type="button" class="acc-eye" aria-label="Показать пароль" data-eye>👁</button>';
+document.addEventListener('click', e => { const b = e.target.closest('[data-eye]'); if (b) { const i = b.previousElementSibling; i.type = i.type === 'password' ? 'text' : 'password'; } });
+function loginSheet() {
+  const bg = sheet(`<h3>🔑 Вход</h3><p class="lead" style="font-size:14px">По номеру и паролю — все ваши записи на любом телефоне.</p>
+    <form class="acc-form" novalidate>
+      <label>Телефон<input name="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (7__) ___-__-__" value="${esc(phFmt(meGet()?.phone || ''))}"></label>
+      <label>Пароль<span class="acc-pw"><input name="pw" type="password" autocomplete="current-password" minlength="6">${eyeBtn}</span></label>
+      <div class="msg acc-msg"></div>
+      <button class="btn" type="submit" style="width:100%">Войти</button>
+    </form>
+    <p class="acc-note"><span>Пароля ещё нет? Его можно создать сразу после записи.</span><br><a href="https://wa.me/${waNum()}?text=${encodeURIComponent('Здравствуйте! Забыла пароль от записи на сайте 🙈')}" target="_blank" rel="noopener">Забыли пароль? Напишите мастеру</a></p>
+    <button type="button" class="btn ghost" style="width:100%" data-close>Закрыть</button>`, 'Вход');
+  const f = bg.querySelector('form'), msg = bg.querySelector('.acc-msg');
+  f.ph.addEventListener('input', () => { f.ph.value = phFmt(f.ph.value); });
+  (f.ph.value.length > 17 ? f.pw : f.ph).focus();
+  f.onsubmit = async e => {
+    e.preventDefault(); msg.textContent = '';
+    const btn = f.querySelector('[type=submit]'); btn.disabled = true;
+    try {
+      const r = await api('/api/account/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: f.ph.value, password: f.pw.value }) });
+      await rememberMe(r.me);
+      location.href = location.pathname; // заново открываем главную — уже с её данными и записями
+    } catch (err) { msg.textContent = err instanceof TypeError ? 'Нет связи с мастером — попробуйте чуть позже' : err.message; btn.disabled = false; }
+  };
+}
+const ST_SHORT = { new: 'ждёт подтверждения', confirmed: 'подтверждена', came: 'была', noshow: 'не пришла' };
+function myBookingsSheet() {
+  const list = (acct?.bookings || []).length ? acct.bookings : myGet().map(x => ({ ...x, past: new Date(`${x.date}T${x.time}`) < new Date() }));
+  const up = list.filter(x => !x.past).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)), past = list.filter(x => x.past);
+  const row = x => `<a class="acc-row${x.past ? ' past' : ''}" href="?b=${encodeURIComponent(x.token)}"><b>${esc(fmtShort(x.date))}, ${esc(x.time)}</b><span>${esc(x.service || '')}</span>${x.status ? `<i>${ST_SHORT[x.status] || ''}</i>` : ''}</a>`;
+  sheet(`<h3>📋 Мои записи</h3>
+    ${up.length ? up.map(row).join('') : '<p class="lead" style="font-size:14px">Будущих записей нет.</p>'}
+    ${past.length ? `<h4 class="acc-h">Были</h4>${past.slice(0, 5).map(row).join('')}` : ''}
+    <div class="cta-row" style="margin-top:14px"><a class="btn" href="./#book">Записаться</a>${tokGet() ? '<button type="button" class="btn ghost" data-logout>Выйти</button>' : ''}</div>
+    <button type="button" class="btn ghost" style="width:100%;margin-top:8px" data-close>Закрыть</button>`, 'Мои записи');
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-login]')) return tokGet() ? myBookingsSheet() : loginSheet();
+  if (e.target.closest('[data-mybk]')) return myBookingsSheet();
+  if (e.target.closest('[data-logout]')) { meForget(); location.href = location.pathname; }
+});
+// карточка «придумайте пароль» — после записи и на странице записи, пока пароля нет
+function accHtml(b) {
+  if (!b || b.account) return '';
+  return `<div class="notice soft acc-card" id="accBox"><div class="ic">🔐</div><div><b>Личный кабинет</b>
+    <div class="muted">Придумайте пароль — и входите в свои записи с любого телефона по номеру и паролю.</div>
+    <form class="acc-inline" novalidate><span class="acc-pw"><input name="pw" type="password" autocomplete="new-password" minlength="6" placeholder="Пароль — от 6 символов" aria-label="Пароль">${eyeBtn}</span><button class="btn sm" type="submit">Сохранить</button></form>
+    <div class="msg acc-msg"></div></div></div>`;
+}
+function initAcc(token) {
+  const box = document.getElementById('accBox'); if (!box) return;
+  const f = box.querySelector('form'), msg = box.querySelector('.acc-msg');
+  f.onsubmit = async e => {
+    e.preventDefault(); msg.textContent = '';
+    if (f.pw.value.length < 6) { msg.textContent = 'Пароль — минимум 6 символов'; return; }
+    const btn = f.querySelector('button[type=submit]'); btn.disabled = true;
+    try {
+      const r = await api('/api/account/set', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ b: token, password: f.pw.value }) });
+      tokSet(r.me); rememberMe(r.me);
+      const ph = phFmt(meGet()?.phone || '');
+      box.innerHTML = `<div class="ic">✅</div><div><b>Пароль сохранён</b><div class="muted"><span>Теперь входите по номеру</span> ${esc(ph)} <span>и паролю — кнопка «Войти» вверху сайта.</span></div></div>`;
+    } catch (err) { msg.textContent = err instanceof TypeError ? 'Нет связи с мастером — попробуйте чуть позже' : err.message; btn.disabled = false; }
+  };
+}
+
 function appHtml() {
   if (!canInstall()) return '<div class="notice soft" data-install hidden><div class="ic">📲</div><div><b>Установите browlash как приложение</b> — запись, адрес и напоминания будут под рукой.<div class="cta-row" style="margin-top:10px"><button type="button" class="btn sm ghost">Установить</button></div></div></div>';
   return `<div class="notice soft" data-install><div class="ic">📲</div><div><b>Установите browlash как приложение</b> — иконка на экране, открывается в одно касание, запись и напоминания под рукой.<div class="cta-row" style="margin-top:10px"><button type="button" class="btn sm ghost">${isIOS ? 'Как установить' : 'Установить'}</button></div></div></div>`;
@@ -1924,7 +2052,7 @@ async function manage(token) {
           ${late ? `<a class="btn ghost" href="https://wa.me/${waNum()}?text=${encodeURIComponent(`Здравствуйте! У меня запись ${fmtDay(b.date).toLowerCase()} в ${b.time} — `)}" target="_blank" rel="noopener">Опаздываю / не смогу — написать мастеру</a>` : `<button class="btn ghost" type="button" id="mMove">Изменить запись</button>
           <button class="btn ghost" type="button" id="mCancel">Отменить</button>`}
         </div>
-        <div id="mArea"></div>${pushHtml()}` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
+        <div id="mArea"></div>${pushHtml()}${accHtml(b)}` : `<div class="cta-row"><a class="btn" href="./">Записаться снова</a></div>`}
       ${active ? `<div class="cta-row"><a class="btn ghost sm" href="${API}/api/b/${encodeURIComponent(token)}/ics">Добавить в календарь</a><a class="btn ghost sm" href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">Маршрут в 2ГИС</a></div>
         <div class="extras" style="grid-template-columns:1fr"><button type="button" class="extra" id="mPhoto"${b.photo ? ' aria-expanded="true"' : ''}><span class="ei">📸</span><span><b>${b.photo ? 'Референс прикреплён — заменить' : 'Прикрепить фото-референс'}</b><small>Покажите мастеру, какой эффект хотите</small></span></button></div>
         <input type="file" id="mPhotoIn" accept="image/*" hidden>` : ''}
@@ -1934,6 +2062,7 @@ async function manage(token) {
       ${refHtml(b)}
       ${b.status !== 'cancelled' && !isApp ? appHtml() : ''}`;
   if (b.status !== 'cancelled') personalStart(token);
+  initAcc(token);
   if (!active) return;
   initPush(token);
   $('mPhoto').onclick = () => $('mPhotoIn').click();
@@ -2444,6 +2573,7 @@ if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(
 function goOffline() {
   if (state.offline) return;
   state.offline = true;
+  loadBusy().then(() => { if (state.date && state.service) loadSlots(false); });
   $('submit').textContent = 'Отправить в WhatsApp';
   if (!document.getElementById('offNote')) {
     const n = document.createElement('div'); n.id = 'offNote'; n.className = 'notice';
@@ -2506,17 +2636,30 @@ function goOffline() {
       }).catch(() => {});
     }
     showInstall();
+    // вошла раньше (пароль или личная ссылка) — подтягиваем все её записи с сервера, даже сделанные с другого телефона
+    if (tokGet() && !acct) await rememberMe(tokGet());
+    if (tokGet()) { const ab = $('accBtn'); if (ab) ab.innerHTML = '👤 <span>Мои записи</span>'; }
     // баннер «ваша запись»
     const mine = myUpcoming()[0], me = meGet();
     if (me?.phone) { fillMe(me); update(); greet(me, mine); }
     else if (mine) {
       const a = document.createElement('a');
       a.className = 'mine'; a.href = '?b=' + mine.token;
-      a.innerHTML = `<i></i><span>Ваша запись: <b>${esc(fmtShort(mine.date))}, ${mine.time}</b></span><span class="go">Управлять →</span>`;
+      const n = myUpcoming().length;
+      a.innerHTML = n > 1 ? `<i></i><span>Ваши записи: <b>${n}</b> · ближайшая ${esc(fmtShort(mine.date))}, ${mine.time}</span><span class="go">Смотреть →</span>`
+        : `<i></i><span>Ваша запись: <b>${esc(fmtShort(mine.date))}, ${mine.time}</b></span><span class="go">Управлять →</span>`;
+      if (n > 1) a.addEventListener('click', e => { e.preventDefault(); myBookingsSheet(); });
       document.querySelector('.topbar').after(a);
     }
   } catch {
-    if (params.get('b')) { $('app').innerHTML = '<header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header><section class="done"><h2>Нет связи<span class="script">с мастером</span></h2><p class="lead">Попробуйте открыть ссылку чуть позже.</p></section>'; return; }
+    if (params.get('b')) {
+      // компьютер мастера выключен — показываем запись, какой её запомнил телефон, чтобы не казалось, что она пропала
+      const kb = myGet().find(x => x.token === params.get('b'));
+      $('app').innerHTML = `<header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header><section class="done"><h2>Нет связи<span class="script">с мастером</span></h2>
+        ${kb ? `<div class="notice soft"><div class="ic">📅</div><div><b>Ваша запись сохранена:</b> <span>${esc(fmtDay(kb.date))}, ${esc(kb.time)}</span> · <span>${esc(kb.service || '')}</span><br><span>Изменить или отменить её можно, когда связь вернётся, или напишите мастеру.</span></div></div>` : ''}
+        <p class="lead">Попробуйте открыть ссылку чуть позже.</p><div class="cta-row"><a class="btn ghost" href="https://wa.me/${waNum()}" target="_blank" rel="noopener">Написать мастеру</a></div></section>`;
+      return;
+    }
     const emb = document.getElementById('cfgData');
     if (emb) {
       try { state.cfg = JSON.parse(emb.textContent); } catch {}
