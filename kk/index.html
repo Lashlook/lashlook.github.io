@@ -203,7 +203,9 @@ section.block { padding-block: 56px 0; display: grid; grid-template-columns: min
 .reveal.in { transform: none; opacity: 1; }
 
 /* ---------- Прайс / услуги ---------- */
-.tabs { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
+.tabs { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(max-content, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; scroll-behavior: smooth; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding-inline: 12px !important; }
 .tab { position: relative; z-index: 1; border: 0; background: none; padding: 11px 6px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--muted); transition: color .3s; white-space: nowrap; }
 .tab[aria-selected="true"] { color: #fff; }
 .tab-ind { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; border-radius: 999px; background: var(--pink-fill); box-shadow: 0 6px 22px -8px rgba(255,46,136,.9); transition: transform .45s var(--ease), width .45s var(--ease); }
@@ -492,11 +494,11 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 @keyframes bulb { from { opacity: .35; box-shadow: 0 0 2px 0 var(--c); } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .garland i { animation: none; opacity: .85; } }
 .faq-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 11; display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-radius: 999px; border: 1px solid rgba(255,46,136,.45); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px -10px rgba(0,0,0,.7); transition: bottom .4s var(--ease); }
-body:has(.bar.show) .faq-fab { bottom: calc(96px + env(safe-area-inset-bottom)); }
+@media (max-width: 1179px) { body:has(.bar.show:not(.kb)) .faq-fab { bottom: calc(var(--barh, 96px) + 10px); } }
 @media (max-width: 520px) { .faq-fab span { display: none; } .faq-fab { padding: 12px 14px; } }
 .faq-pan { position: fixed; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 12; width: min(380px, calc(100vw - 24px)); max-height: min(560px, calc(100dvh - 110px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: 0 20px 60px -20px rgba(0,0,0,.8); overflow: hidden; }
 .faq-pan[hidden] { display: none; }
-body:has(.bar.show) .faq-pan { bottom: calc(156px + env(safe-area-inset-bottom)); max-height: min(560px, calc(100dvh - 190px)); }
+@media (max-width: 1179px) { body:has(.bar.show:not(.kb)) .faq-pan { bottom: calc(var(--barh, 96px) + 70px); max-height: min(560px, calc(100dvh - var(--barh, 96px) - 100px)); } }
 .faq-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
 .faq-x { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font-size: 20px; cursor: pointer; }
 .faq-log { overflow-y: auto; padding: 12px; display: grid; gap: 8px; align-content: start; overscroll-behavior: contain; }
@@ -1618,13 +1620,17 @@ function markTabs() {
     const n = state.sel.filter(x => (one(x)?.category || 'Услуги') === t.dataset.cat).length, i = t.querySelector('.tab-n');
     if (String(n) !== i.textContent || i.hidden !== !n) { i.textContent = n; i.hidden = !n; if (n) { i.classList.remove('pop'); void i.offsetWidth; i.classList.add('pop'); } }
   });
+  requestAnimationFrame(moveInd); // счётчик меняет ширину вкладки — подгоняем розовую плашку
 }
 function moveInd() {
   const on = $('tabs')?.querySelector('[aria-selected="true"]'); if (!on) return;
   const ind = $('tabInd');
   ind.style.width = on.offsetWidth + 'px';
   ind.style.transform = `translateX(${on.offsetLeft - 4}px)`;
+  const tb = $('tabs'); if (tb.scrollWidth > tb.clientWidth) tb.scrollTo({ left: on.offsetLeft - (tb.clientWidth - on.offsetWidth) / 2 });
 }
+// высота нижней панели — чтобы кнопка «чат» не наезжала на «Записаться»
+if ('ResizeObserver' in window) { const bar = document.getElementById('bar'); if (bar) new ResizeObserver(() => document.documentElement.style.setProperty('--barh', bar.offsetHeight + 'px')).observe(bar); }
 addEventListener('resize', moveInd);
 
 function renderServices(animate) {
