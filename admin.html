@@ -652,6 +652,11 @@ dialog { overflow: auto; overscroll-behavior: contain; }
           <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
           <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
           <label for="sUntil">🎄 Предзапись до (необязательно)<input id="sUntil" type="date"><small style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">Например, 31.12 — клиентки смогут записаться на любой день до этой даты. Пусто — выключено.</small></label>
+          <label for="sSeason">❄️ Сезонное оформление сайта<select id="sSeason"><option value="1">Да: снег в декабре, сердечки к 14.02, цветы к 8 Марта</option><option value="0">Нет</option></select></label>
+          <label for="sPpAmt">💳 Предоплата к праздникам, ₸ (0 — без предоплаты)<input id="sPpAmt" type="number" min="0" max="100000" step="500" inputmode="numeric"></label>
+          <label for="sPpFrom">💳 Предоплата — с даты<input id="sPpFrom" type="date"></label>
+          <label for="sPpTo">💳 Предоплата — по дату<input id="sPpTo" type="date"></label>
+          <label for="sPpNew">💳 С кого брать<select id="sPpNew"><option value="0">Со всех</option><option value="1">Только с новых клиенток</option></select></label>
         </div>
       </div>
       <div class="panel">
@@ -678,6 +683,9 @@ dialog { overflow: auto; overscroll-behavior: contain; }
           <label>⭐ Размер этой скидки, %<input id="pLoyPct" type="number" min="0" max="90" inputmode="numeric"></label>
           <label>⛔ Чёрный список после неявок<input id="pNoshow" type="number" min="0" max="10" inputmode="numeric"></label>
           <label>🎁 Сертификат действует, мес.<input id="pGiftM" type="number" min="1" max="24" inputmode="numeric"></label>
+          <label>💗 «Соскучились» через, дней без визитов (0 — выкл.)<input id="pCbDays" type="number" min="0" max="365" inputmode="numeric"></label>
+          <label>💗 Бонус за возвращение, % (0 — без бонуса)<input id="pCbPct" type="number" min="0" max="50" inputmode="numeric"></label>
+          <label>✨ Напоминать клиентке о коррекции на телефон<select id="pCorr"><option value="1">Да, сама получит уведомление</option><option value="0">Нет, только мне в бот</option></select></label>
         </div>
       </div>
       <div class="panel">
@@ -1056,6 +1064,8 @@ function bookingRow(b, nowKey, nowMin) {
         ${b.comment ? `<div class="bk-note">«${esc(b.comment)}»</div>` : ''}
         ${b.clientNote ? `<div class="bk-note client">📝 ${esc(b.clientNote)}</div>` : ''}
         ${b.wish ? `<div class="bk-wish">✨ Хочет: ${esc(wishText(b.wish))}</div>` : ''}
+        ${b.prefs?.length ? `<div class="bk-wish">☕ К визиту: ${esc(b.prefs.join(', '))}</div>` : ''}
+        ${b.prepay ? `<div class="bk-wish">💳 Предоплата ${money(b.prepay)}: ${b.prepay_st === 'paid' ? '✅ получена' : b.prepay_st === 'receipt' ? '🧾 прислала чек' : '⏳ не оплачена'}${b.prepay_rc ? ` · <a href="#" data-prc="${b.id}">чек</a>` : ''}${b.prepay_st !== 'paid' && ['new', 'confirmed'].includes(b.status) ? ` · <a href="#" data-ppaid="${b.id}">отметить «пришла»</a>` : ''}</div>` : ''}
         ${b.tech ? `<div class="bk-tech">🧵 ${esc(techText(b.tech))}</div>` : b.lastTech ? `<div class="bk-tech last">🧵 Прошлый раз (${dShort(b.lastTech.date)}): ${esc(b.lastTech.text)}</div>` : ''}
         ${quick ? `<div class="bk-quick">${quick}</div>` : ''}
         <div class="bk-more"><button class="sq" type="button" data-edit="${b.id}" title="Изменить запись: время, процедуру, данные" aria-label="Изменить запись">✏️<span>изменить</span></button><button class="sq" type="button" data-tech="${b.id}" title="Техника: изгиб, длина, толщина" aria-label="Техника">🧵<span>${b.tech ? 'техника' : 'техника +'}</span></button>${b.photo ? `<button class="sq hot" type="button" data-photo="${b.id}" title="Фото-референс от клиентки" aria-label="Фото-референс">📸<span>фото</span></button>` : ''}<button class="sq" type="button" data-client="${esc(b.phone)}" title="Карточка клиентки" aria-label="Карточка клиентки">👤<span>карточка</span></button></div>
@@ -1073,7 +1083,7 @@ function blockRow(bl) {
 
 const PARTS = { any: 'любое время', morning: 'утро', day: 'день', evening: 'вечер' };
 function waitRow(w) {
-  return `<div class="wrow"><span class="wi">⏳</span><div class="wm"><b>${esc(w.name)}</b> ждёт окошко · ${esc(w.service)} · ${PARTS[w.part] || ''}<span>${esc(fmtPhone(w.phone))}${w.comment ? ' · «' + esc(w.comment) + '»' : ''}</span></div>
+  return `<div class="wrow"><span class="wi">⏳</span><div class="wm"><b>${esc(w.name)}</b> ждёт окошко · ${esc(w.service)} · ${PARTS[w.part] || ''}<span>${esc(fmtPhone(w.phone))}${w.comment ? ' · «' + esc(w.comment) + '»' : ''}${w.offer_time ? ' · 📲 ей предложено ' + esc(w.offer_time) : ''}</span></div>
     <a class="icon-btn wa" href="${esc(w.waUrl)}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">${ICON.wa}</a>
     <button class="icon-btn" type="button" data-wdone="${w.id}" title="Убрать из листа" aria-label="Убрать из листа ожидания">${ICON.x}</button></div>`;
 }
@@ -1144,6 +1154,8 @@ $('days').addEventListener('click', async e => {
   if (t.dataset.photo) return openPhoto(Number(t.dataset.photo));
   if (t.dataset.client) return openClient(t.dataset.client);
   if (t.dataset.hours) return openHours(t.dataset.hours);
+  if (t.dataset.ppaid) { e.preventDefault(); try { await api('/api/admin/bookings/' + t.dataset.ppaid + '/prepay', { method: 'POST' }); toast('Предоплата отмечена, запись подтверждена'); } catch (err) { toast(err.message, 'bad'); } load.sig = ''; load(); return; }
+  if (t.dataset.prc) { e.preventDefault(); openReceipt(t.dataset.prc, true); return; }
   if (t.dataset.wdone) { try { await api('/api/admin/waitlist/' + t.dataset.wdone, { method: 'DELETE' }); toast('Убрано из листа ожидания'); } catch (err) { toast(err.message, 'bad'); } load.sig = ''; load(); return; }
   if (t.dataset.break) return openBlock(t.dataset.break);
   if (t.dataset.closeDay) {
@@ -1401,13 +1413,14 @@ $('orders').addEventListener('click', async e => {
     loadGifts();
   } catch (err) { toast(err.message, 'bad'); }
 });
-async function openReceipt(id) {
-  $('phTitle').textContent = 'Чек по заявке №' + id; $('phKind').textContent = 'оплата сертификата'; $('phImg').removeAttribute('src');
+async function openReceipt(id, bk) {
+  const path = bk ? `/api/admin/bookings/${id}/receipt` : `/api/admin/gift-orders/${id}/receipt`;
+  $('phTitle').textContent = bk ? 'Чек предоплаты' : 'Чек по заявке №' + id; $('phKind').textContent = bk ? 'предоплата за запись' : 'оплата сертификата'; $('phImg').removeAttribute('src');
   $('phImg').hidden = false; $('phPdf').hidden = true; $('phPdf').removeAttribute('src'); $('phPdfNote').hidden = true; dlgP.showModal();
   try {
     await apiReady;
-    let r = await fetch(API + `/api/admin/gift-orders/${id}/receipt`, { headers: { Authorization: 'Bearer ' + token } }).catch(() => null);
-    if ((!r || DEAD.includes(r.status)) && await refreshApi()) r = await fetch(API + `/api/admin/gift-orders/${id}/receipt`, { headers: { Authorization: 'Bearer ' + token } });
+    let r = await fetch(API + path, { headers: { Authorization: 'Bearer ' + token } }).catch(() => null);
+    if ((!r || DEAD.includes(r.status)) && await refreshApi()) r = await fetch(API + path, { headers: { Authorization: 'Bearer ' + token } });
     if (!r?.ok) throw new Error();
     const blob = await r.blob(), url = URL.createObjectURL(blob); $('phOpen').href = url;
     if (blob.type === 'application/pdf') { // PDF-чек: на компьютере показываем прямо тут, на телефоне — кнопкой «Открыть целиком»
@@ -1862,13 +1875,13 @@ async function loadSettings() {
   try {
     setCfg = await api('/api/admin/settings');
     renderWeekEd();
-    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21; $('sUntil').value = setCfg.bookUntil || '';
+    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21; $('sUntil').value = setCfg.bookUntil || ''; $('sSeason').value = setCfg.season === false ? '0' : '1'; { const pp = setCfg.prepay || {}; $('sPpAmt').value = pp.amount || ''; $('sPpFrom').value = pp.from || ''; $('sPpTo').value = pp.to || ''; $('sPpNew').value = pp.newOnly ? '1' : '0'; }
     $('sMaster').value = setCfg.master || ''; $('sWa').value = setCfg.whatsapp ? fmtPhone(setCfg.whatsapp) : '';
     $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || ''; $('sKaspi').value = setCfg.kaspi || '';
 
     renderSvcEd();
     const P = setCfg.perks || {};
-    [['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths']]
+    [['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths'], ['pCbDays', 'comebackDays'], ['pCbPct', 'comebackPct'], ['pCorr', 'correctionPush']]
       .forEach(([id, k]) => $(id).value = P[k] ?? '');
     $('careEd').innerHTML = Object.entries(setCfg.aftercare || {}).map(([k, v]) => `<label>${esc(k)}<textarea class="care-t" data-cat="${esc(k)}" rows="6" maxlength="2000">${esc(v)}</textarea></label>`).join('') || '<p style="margin:0;color:var(--muted)">Добавьте услуги — для каждого раздела появится памятка</p>';
     $('setErr').textContent = '';
@@ -1909,6 +1922,7 @@ function renderSvcEd() {
         <label>Цена, ₸<input class="se-price" inputmode="numeric" value="${esc(String(s.price || '').replace(/[^\d]/g, ''))}" placeholder="0"></label>
       </div>
       <input class="se-note" value="${esc(s.note || '')}" placeholder="Пояснение — необязательно" aria-label="Пояснение">
+      <input class="se-note se-vid" type="url" inputmode="url" value="${esc(s.video || '')}" placeholder="▶ Видео процесса: ссылка на Reels в Instagram" aria-label="Ссылка на видео в Instagram">
     </div>`).join('');
 }
 function readSvcEd() {
@@ -1916,7 +1930,7 @@ function readSvcEd() {
     ...setCfg.services[i],
     category: el.querySelector('.se-cat').value.trim(), name: el.querySelector('.se-name').value.trim(),
     duration: Number(el.querySelector('.se-dur').value), price: el.querySelector('.se-price').value.replace(/\D/g, ''),
-    note: el.querySelector('.se-note').value.trim(),
+    note: el.querySelector('.se-note:not(.se-vid)').value.trim(), video: el.querySelector('.se-vid').value.trim(),
     title: setCfg.services[i]?.name === el.querySelector('.se-name').value.trim() ? setCfg.services[i].title : el.querySelector('.se-name').value.trim(),
   }));
 }
@@ -1941,10 +1955,10 @@ $('svcAdd').onclick = () => {
 $('setSave').onclick = async () => {
   $('setErr').textContent = '';
   const body = {
-    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value), bookUntil: $('sUntil').value,
+    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value), bookUntil: $('sUntil').value, season: $('sSeason').value === '1', prepay: { amount: Number($('sPpAmt').value) || 0, from: $('sPpFrom').value, to: $('sPpTo').value, newOnly: $('sPpNew').value === '1' },
     master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value, kaspi: $('sKaspi').value,
     services: readSvcEd(),
-    perks: Object.fromEntries([['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths']].map(([id, k]) => [k, $(id).value])),
+    perks: Object.fromEntries([['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths'], ['pCbDays', 'comebackDays'], ['pCbPct', 'comebackPct'], ['pCorr', 'correctionPush']].map(([id, k]) => [k, $(id).value])),
     aftercare: Object.fromEntries([...document.querySelectorAll('.care-t')].map(t => [t.dataset.cat, t.value])),
   };
   if (Object.values(weekState).flat().some(w => !(w.start && w.end && mm(w.end) > mm(w.start)))) { $('setErr').textContent = 'В графике есть окошко, где конец раньше начала — поправьте'; return; }

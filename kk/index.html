@@ -453,6 +453,69 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .extra[aria-expanded="true"] { border-style: solid; border-color: var(--pink); background: var(--pink-soft); }
 /* ---------- Детали ресниц по желанию: эффект, изгиб, длина ---------- */
 .wish-btn, .wish { grid-column: 1 / -1; }
+.wlp .wl-card { display: grid; gap: 6px; padding: 18px; margin: 6px 0 16px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); text-align: left; }
+.wlp .wl-card b { font-size: 22px; } .wlp .wl-card small { color: var(--muted); line-height: 1.45; }
+.wlp .btn { width: 100%; margin-top: 8px; }
+.pp .pp-k { color: var(--ink); white-space: nowrap; } .pp-up { cursor: pointer; }
+.slot.fit { position: relative; }
+.slot.fit::after { content: '✨'; position: absolute; top: -7px; right: -5px; font-size: 12px; line-height: 1; pointer-events: none; }
+.fit-hint { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.4; } .fit-hint i { font-style: normal; }
+.prefs-btn, .prefs { grid-column: 1 / -1; }
+.prefs { display: grid; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.prefs p { margin: 0; color: var(--muted); font-size: 13px; }
+.prefs h4 { margin: 0 0 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pchip { padding: 9px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+.pchip[aria-pressed="true"] { border-color: var(--pink); background: var(--pink-soft); }
+.pk-vids { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pk-vid { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px 8px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
+.pk-vid .pv-ic { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--pink-fill); color: #fff; font-size: 10px; }
+.has-vid { color: var(--pink-2); }
+.reel-dlg { width: min(400px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 12px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--ink); }
+.reel-dlg::backdrop { background: rgba(0,0,0,.7); }
+.reel-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.reel-x { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font-size: 22px; cursor: pointer; }
+.reel-box { position: relative; aspect-ratio: 9 / 16; max-height: calc(100dvh - 140px); margin: 0 auto; border-radius: 14px; overflow: hidden; background: #000; }
+.reel-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.reel-dlg .link { display: block; margin-top: 10px; text-align: center; }
+#seasonFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9; }
+.garland { position: absolute; top: 0; left: 0; right: 0; height: 26px; display: flex; justify-content: space-around; pointer-events: none; z-index: 41; overflow: hidden;
+  background: radial-gradient(120% 30px at 50% -14px, transparent 60%, rgba(255,255,255,.18) 61%, transparent 64%) 0 0 / 52px 26px repeat-x; }
+.garland i { width: 9px; height: 13px; margin-top: 9px; border-radius: 50% 50% 45% 45%; background: var(--c, #ff2e88); box-shadow: 0 0 10px 2px var(--c, #ff2e88); animation: bulb 1.4s ease-in-out var(--d) infinite alternate; }
+.garland i:nth-child(4n+1) { --c: #ff2e88; } .garland i:nth-child(4n+2) { --c: #ffd166; } .garland i:nth-child(4n+3) { --c: #6fe3a0; } .garland i:nth-child(4n) { --c: #7cc8ff; }
+.garland i:nth-child(n+15) { display: none; } @media (min-width: 700px) { .garland i:nth-child(n+15) { display: block; } }
+@keyframes bulb { from { opacity: .35; box-shadow: 0 0 2px 0 var(--c); } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .garland i { animation: none; opacity: .85; } }
+.faq-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 11; display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-radius: 999px; border: 1px solid rgba(255,46,136,.45); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px -10px rgba(0,0,0,.7); transition: bottom .4s var(--ease); }
+body:has(.bar.show) .faq-fab { bottom: calc(96px + env(safe-area-inset-bottom)); }
+@media (max-width: 520px) { .faq-fab span { display: none; } .faq-fab { padding: 12px 14px; } }
+.faq-pan { position: fixed; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 12; width: min(380px, calc(100vw - 24px)); max-height: min(560px, calc(100dvh - 110px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: 0 20px 60px -20px rgba(0,0,0,.8); overflow: hidden; }
+.faq-pan[hidden] { display: none; }
+body:has(.bar.show) .faq-pan { bottom: calc(156px + env(safe-area-inset-bottom)); max-height: min(560px, calc(100dvh - 190px)); }
+.faq-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.faq-x { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font-size: 20px; cursor: pointer; }
+.faq-log { overflow-y: auto; padding: 12px; display: grid; gap: 8px; align-content: start; overscroll-behavior: contain; }
+.fm { max-width: 88%; padding: 9px 12px; border-radius: 14px; font-size: 14px; line-height: 1.45; }
+.fm.bot { background: var(--surface-2); border-bottom-left-radius: 4px; } .fm.me { justify-self: end; background: var(--pink-fill); color: #fff; border-bottom-right-radius: 4px; }
+.fm a { color: var(--pink-2); }
+.faq-chips { display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px; border-top: 1px solid var(--line); scrollbar-width: none; }
+.faq-chips button { flex: none; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
+.faq-in { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
+.faq-in input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
+.faq-in button { width: 42px; border-radius: 12px; border: 0; background: var(--pink-fill); color: #fff; font-size: 16px; cursor: pointer; }
+.try-btn { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; width: 100%; padding: 12px 14px; margin: 4px 0 6px; border-radius: 14px; border: 1px dashed rgba(255,46,136,.55); background: var(--pink-soft); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.try-btn span { grid-row: span 2; font-size: 22px; } .try-btn small { color: var(--muted); font-size: 12px; }
+.try-dlg { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; background: #000; color: var(--ink); display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+.try-dlg:not([open]) { display: none; }
+.try-stage { position: relative; overflow: hidden; }
+.try-stage video, .try-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.try-st { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 12px 16px; border-radius: 14px; background: rgba(0,0,0,.6); text-align: center; }
+.try-x { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 12px; width: 42px; height: 42px; border-radius: 50%; border: 0; background: rgba(0,0,0,.55); color: #fff; font-size: 24px; cursor: pointer; }
+.try-ctl { display: grid; gap: 8px; padding: 10px 12px calc(12px + env(safe-area-inset-bottom)); background: var(--surface); }
+.try-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.try-row button { flex: none; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
+.try-row button[aria-pressed="true"] { border-color: var(--pink); background: var(--pink-soft); }
+.again-note { grid-column: 1 / -1; margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--pink-soft); border: 1px solid rgba(255,46,136,.3); color: var(--ink); font-size: 14px; line-height: 1.4; }
 .wish { display: grid; gap: 18px; padding: 18px 16px; border-radius: 18px; background: var(--surface); border: 1px solid rgba(255,46,136,.35); animation: rowIn .4s var(--ease); }
 .wish > p { margin: 0; color: var(--muted); font-size: 13px; }
 .wg { display: grid; gap: 10px; }
@@ -911,6 +974,8 @@ input::-webkit-date-and-time-value { text-align: left; }
         <div class="extras">
           <button type="button" class="extra wish-btn" id="wishBtn" aria-expanded="false" aria-controls="wishBox" hidden><span class="ei">✨</span><span><b>Детали ресниц</b><small id="wishSum">эффект, изгиб, длина — если хотите выбрать сами</small></span></button>
           <div class="wish" id="wishBox" hidden></div>
+          <button type="button" class="extra prefs-btn" id="prefsBtn" aria-expanded="false" aria-controls="prefsBox"><span class="ei">☕</span><span><b>Как вам комфортнее</b><small id="prefsSum">поболтать или тишина, чай или кофе</small></span></button>
+          <div class="prefs" id="prefsBox" hidden></div>
           <button type="button" class="extra" id="photoBtn" aria-expanded="false"><span class="ei">📸</span><span><b>Фото-референс</b><small>Қандай эффект керегін көрсетіңіз</small></span></button>
           <button type="button" class="extra" id="giftBtn" aria-expanded="false"><span class="ei">🎁</span><span><b>Сертификат бар</b><small>Сыйлық кодын енгізіңіз</small></span></button>
         </div>
@@ -1095,6 +1160,37 @@ input::-webkit-date-and-time-value { text-align: left; }
     'После ламинирования расчёсывайте брови щёточкой утром и вечером.': 'Ламинациядан кейін қасты таңертең және кешке щеткамен тараңыз.',
     'Коррекция формы — через 3–4 недели.': 'Пішінді түзету — 3–4 аптадан кейін.',
     'Вы уже в листе ожидания на 5 дней — мастер напишет, как освободится время': 'Сіз 5 күнге күту тізіміндесіз — уақыт босаса, шебер жазады',
+    // пожелания к визиту
+    'Как вам комфортнее': 'Сізге қалай ыңғайлы', 'поболтать или тишина, чай или кофе': 'әңгіме не тыныштық, шай не кофе',
+    'Необязательно — мастер подготовится заранее 💗': 'Міндетті емес — шебер алдын ала дайындалады 💗', 'Атмосфера': 'Атмосфера', 'Напиток': 'Сусын', 'Комфорт': 'Жайлылық',
+    '💬 поболтать': '💬 әңгімелесу', '🤫 тишина': '🤫 тыныштық', '😴 подремать': '😴 мызғып алу', '🍵 чай': '🍵 шай', '☕ кофе': '☕ кофе', '💧 вода': '💧 су',
+    '🛏 подушка': '🛏 жастық', '🧣 плед': '🧣 плед', '🎧 музыка потише': '🎧 музыка ақырынырақ',
+    // примерка через камеру
+    'Примерить на себе': 'Өзіңізге киіп көру', 'через камеру телефона — видео никуда не отправляется': 'телефон камерасы арқылы — бейне ешқайда жіберілмейді',
+    'Включаем камеру…': 'Камераны қосып жатырмыз…', 'Загружаем примерку…': 'Киіп көруді жүктеп жатырмыз…', 'Посмотрите в камеру 👀': 'Камераға қараңыз 👀', 'Хочу так ✨': 'Осылай қалаймын ✨',
+    'Нет доступа к камере 😔': 'Камераға рұқсат жоқ 😔', 'Разрешите камеру для сайта в настройках браузера': 'Браузер баптауларында сайтқа камераға рұқсат беріңіз',
+    'Примерка не загрузилась — проверьте интернет и попробуйте ещё раз': 'Киіп көру жүктелмеді — интернетті тексеріп, қайталап көріңіз',
+    // удобные окна, видео
+    '— самое удобное время: мастер без перерывов, а значит, окошки для всех остаются': '— ең ыңғайлы уақыт: шебер үзіліссіз жұмыс істейді, сондықтан барлығына бос уақыт қалады',
+    'Удобное время: сразу до или после другой клиентки — мастеру без простоя': 'Ыңғайлы уақыт: басқа клиенттің дәл алдында не артында — шеберге бос тұру жоқ',
+    '▶ видео': '▶ бейне', 'Открыть в Instagram': 'Instagram-да ашу', 'Видео процедуры': 'Процедура бейнесі',
+    // предоплата
+    'Чек получен — мастер проверит перевод': 'Чек алынды — шебер аударымды тексереді', 'Как только оплата придёт, запись подтвердится автоматически 💗': 'Төлем түскен бойда жазылу өздігінен расталады 💗',
+    'Переведите': 'Аударыңыз', 'на Kaspi:': 'Kaspi-ге:', 'Она вычтется из стоимости процедуры. Затем прикрепите скриншот или PDF чека.': 'Ол процедура құнынан шегеріледі. Содан кейін чектің скриншотын не PDF-ін тіркеңіз.',
+    'Скопировать номер': 'Нөмірді көшіру', '🧾 Прикрепить чек': '🧾 Чекті тіркеу', 'Заменить чек': 'Чекті ауыстыру', 'Жіберілуде чек…': 'Чекті жіберіп жатырмыз…',
+    'Нет связи — попробуйте ещё раз или отправьте чек мастеру в WhatsApp': 'Байланыс жоқ — қайталап көріңіз немесе чекті шеберге WhatsApp-қа жіберіңіз',
+    'Предоплата для этой записи не нужна': 'Бұл жазылуға алдын ала төлем қажет емес', 'Это не похоже на чек': 'Бұл чекке ұқсамайды', 'Файл слишком большой — пришлите скриншот': 'Файл тым үлкен — скриншот жіберіңіз',
+    'Не получилось прочитать чек — пришлите скриншот или PDF': 'Чекті оқу мүмкін болмады — скриншот не PDF жіберіңіз', 'PDF слишком большой (до 4 МБ) — пришлите скриншот перевода': 'PDF тым үлкен (4 МБ-қа дейін) — аударым скриншотын жіберіңіз',
+    // лист ожидания: окошко по пушу
+    'Окошко': 'Бос уақыт', 'не найдено': 'табылмады', 'уже забрали': 'алып қойды', 'Освободилось': 'Босады', 'ваше окошко': 'сіздің уақытыңыз',
+    'Забрать окошко': 'Уақытты алу', 'Записываем': 'Жазып жатырмыз', 'Нет, выберу другое время': 'Жоқ, басқа уақыт таңдаймын', 'Выбрать другое время': 'Басқа уақыт таңдау',
+    'Посмотреть другие окошки': 'Басқа бос уақыттарды көру', 'Написать мастеру': 'Шеберге жазу', 'Ссылка устарела.': 'Сілтеменің мерзімі өткен.', 'Нет связи с мастером. Попробуйте чуть позже.': 'Шебермен байланыс жоқ. Сәлден соң көріңіз.',
+    'Нет связи — попробуйте ещё раз': 'Байланыс жоқ — қайталап көріңіз', 'Это предложение уже не действует': 'Бұл ұсыныс енді жарамсыз', 'Это время уже прошло': 'Бұл уақыт өтіп кетті',
+    'Ой, это окошко уже забрали 😔 Вы остаётесь в листе ожидания — напишем, если освободится ещё': 'Ой, бұл уақытты біреу алып қойды 😔 Сіз күту тізімінде қаласыз — тағы босаса, хабарлаймыз',
+    'Напишите мастеру в WhatsApp, она подберёт время 💗': 'Шеберге WhatsApp-қа жазыңыз, ол уақыт таңдап береді 💗',
+    // чат-помощник
+    'Вопрос?': 'Сұрақ?', 'Вопрос мастеру': 'Шеберге сұрақ', 'Помощник': 'Көмекші', 'Помощник browlash.look': 'browlash.look көмекшісі', 'Ваш вопрос…': 'Сұрағыңыз…', 'Ваш вопрос': 'Сұрағыңыз',
+    'Здравствуйте! 💗 Отвечу на частые вопросы сразу. Выберите или напишите свой:': 'Сәлеметсіз бе! 💗 Жиі қойылатын сұрақтарға бірден жауап беремін. Таңдаңыз не өзіңіз жазыңыз:',
     // личный кабинет
     'Войти': 'Кіру', 'Кабинет': 'Кабинет', '📲 Установить приложение': '📲 Қосымшаны орнату', 'Мои записи': 'Менің жазылуларым', '🔑 Вход': '🔑 Кіру', 'Вход': 'Кіру',
     'По номеру и паролю — все ваши записи на любом телефоне.': 'Нөмір мен құпиясөз арқылы — барлық жазылуларыңыз кез келген телефонда.',
@@ -1336,6 +1432,19 @@ input::-webkit-date-and-time-value { text-align: left; }
     [/^(\d+) (ч|час)( (\d+) мин)?$/, (_, h, __, ___, m) => `${h} сағ${m ? ` ${m} мин` : ''}`],
     [/^Открыта предзапись до (.+)$/, (_, d) => `${date(d)} дейін алдын ала жазылу ашық`],
     [/^· ближайшая (.+)$/, (_, d) => `· ең жақыны ${date(d)}`],
+    [/^Как в прошлый раз: (.+?) · (.+)\. Осталось выбрать день и время$/, (_, sv, w) => `Өткен жолғыдай: ${svc(sv)} · ${w.split(' · ').map(wishPart).join(' · ')}. Күн мен уақытты таңдау қалды`],
+    [/^Как проходит: (.+)$/, (_, x) => `Қалай өтеді: ${svc(x)}`],
+    [/^Внесите предоплату (.+)$/, (_, a) => `${a} алдын ала төлем жасаңыз`],
+    [/^Предоплата (.+) получена$/, (_, a) => `${a} алдын ала төлем алынды`],
+    [/^— спасибо! На месте останется (.+)\.$/, (_, a) => `— рақмет! Орнында ${a} төлейсіз.`],
+    [/^Предоплата ([\d\s ]+₸)$/, (_, a) => `Алдын ала төлем ${a}`],
+    [/^— на праздничные даты \((.+?) – (.+?)\) запись закрепляется предоплатой( для новых клиенток)?\. Она вычтется из стоимости\. Реквизиты Kaspi покажем сразу после записи\.$/,
+      (_, a, b, n) => `— мереке күндері (${date(a)} – ${date(b)}) жазылу алдын ала төлеммен бекітіледі${n ? ' (жаңа клиенттер үшін)' : ''}. Ол құннан шегеріледі. Kaspi деректемелерін жазылғаннан кейін бірден көрсетеміз.`],
+    [/^(.+), это время уже занято 😔 Вы остаётесь в листе ожидания: если освободится ещё, сразу пришлём уведомление\.$/, (_, w) => `${date(w)}, бұл уақыт бос емес 😔 Сіз күту тізімінде қаласыз: тағы босаса, бірден хабарлама жібереміз.`],
+    [/^(?:(.+), в|В)ы были в листе ожидания на этот день\. Кто первая нажмёт — того и время 💗$/, (_, n) => `${n ? n + ', с' : 'С'}із осы күнге күту тізімінде болдыңыз. Кім бірінші басса — уақыт соныкі 💗`],
+    [/^• (.+)$/, (_, x) => `• ${tr(x)}`],
+    [/^(.+?) — (по запросу|[\d\s ]+₸|\d+ (?:ч|час|мин).*)$/, (m, n, r) => svc(n) !== n || SVC[n] ? `${svc(n)} — ${r === 'по запросу' ? 'сұраныс бойынша' : tr(r)}` : m],
+    [/^Первые 24 часа не мочите ресницы и брови, не трите глаза, не ходите в баню и сауну\. Подробную памятку пришлём после записи 💗$/, () => 'Алғашқы 24 сағатта кірпік пен қасты суламаңыз, көзді уқаламаңыз, моншаға және саунаға бармаңыз. Толық жадынаманы жазылғаннан кейін жібереміз 💗'],
     [/^Мои записи \((\d+)\)$/, (_, n) => `Менің жазылуларым (${n})`],
     // «2 сағ · любой изгиб и объём» и подобное — переводим каждую часть отдельно
     [/^[^·]+(?: · [^·]+)+$/, t => t.split(' · ').map(p => tr(p)).join(' · ')],
@@ -1473,6 +1582,7 @@ const selOf = svc => svc ? (svc.parts ? svc.parts.map(x => x.name) : [svc.name])
 state.sel = [];
 // выбрать набор процедур (из прайса, ссылки, сертификата, «повторить»)
 function setSel(names, opts = {}) {
+  document.getElementById('againNote')?.remove();
   state.sel = [...new Set(names)].filter(one).slice(0, MAX_SVC);
   state.service = state.sel.length ? findSvc(state.sel.join(SEP)) : null;
   state.time = null;
@@ -1519,7 +1629,7 @@ function renderServices(animate) {
     b.innerHTML = `<span class="radio">${CHECK}</span>
       <span class="line"><span class="t">${esc(s.title || s.name)}</span><span class="dots"></span></span>
       <span class="p">${esc(s.price || '')}</span>
-      <span class="sub">${dur(s.duration)}${s.note ? ' · ' + esc(s.note) : ''}</span>`;
+      <span class="sub">${dur(s.duration)}${s.note ? ' · ' + esc(s.note) : ''}${reelId(s.video) ? ' · <span class="has-vid">▶ видео</span>' : ''}</span>`;
     b.setAttribute('aria-pressed', state.sel.includes(s.name));
     b.onclick = () => {
       const on = state.sel.includes(s.name);
@@ -1540,6 +1650,8 @@ function renderPicked(fromEl) {
   box.innerHTML = `<div class="pk-head"><b>${list.length > 1 ? 'Ваш визит' : 'Вы выбрали'}</b><span>${dur(mins)}${total ? ' · <span class="pk-sum">' + money(total) + '</span>' : ''}</span></div>
     <div class="pk-list">${list.map(x => `<span class="pk${had.has(x.name) ? '' : ' new'}" data-name="${esc(x.name)}"><span>${esc(x.name)}</span><button type="button" aria-label="Убрать: ${esc(x.name)}">×</button></span>`).join('')}</div>
     ${list.length < MAX_SVC ? `<p class="pk-hint">${list.length > 1 ? 'Процедуры пройдут подряд, одна за другой' : 'Можно добавить ещё процедуру — например, брови к ресницам'}</p>` : ''}<p class="pk-note" id="pkNote"></p>`;
+  const vids = list.filter(x => reelId(x.video));
+  if (vids.length) box.insertAdjacentHTML('beforeend', `<div class="pk-vids">${vids.map(x => `<button type="button" class="pk-vid" data-reel="${esc(reelId(x.video))}" data-t="${esc(x.name)}"><span class="pv-ic">▶</span>Как проходит: ${esc(x.title || x.name)}</button>`).join('')}</div>`);
   box.querySelectorAll('.pk button').forEach(b => b.onclick = () => { const n = b.parentElement.dataset.name; setSel(state.sel.filter(x => x !== n)); });
   // новая процедура «прилетает» из списка в «Ваш визит»
   const nw = box.querySelector('.pk.new');
@@ -1548,6 +1660,22 @@ function renderPicked(fromEl) {
     nw.animate([{ transform: `translate(${a.left - z.left}px, ${a.top - z.top}px) scale(.9)`, opacity: .2 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
   }
 }
+// видео процесса из Instagram (Reels): ссылка в настройках услуги → короткий ролик прямо на сайте
+function reelId(u) { const m = String(u || '').match(/instagram\.com\/(?:[\w.]+\/)?(?:reel|reels|p)\/([\w-]{5,40})/); return m ? m[1] : ''; }
+function openReel(id, title) {
+  let d = $('reelDlg');
+  if (!d) {
+    d = document.createElement('dialog'); d.id = 'reelDlg'; d.className = 'reel-dlg';
+    d.innerHTML = '<div class="reel-top"><b id="reelT"></b><button type="button" class="reel-x" aria-label="Закрыть">×</button></div><div class="reel-box"><iframe id="reelF" title="Видео процедуры" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><a class="link" id="reelA" target="_blank" rel="noopener">Открыть в Instagram</a>';
+    document.body.append(d);
+    d.querySelector('.reel-x').onclick = () => d.close();
+    d.addEventListener('click', e => { if (e.target === d) d.close(); });
+    d.addEventListener('close', () => { $('reelF').src = 'about:blank'; });
+  }
+  $('reelT').textContent = title; $('reelF').src = `https://www.instagram.com/reel/${id}/embed/`; $('reelA').href = `https://www.instagram.com/reel/${id}/`;
+  d.showModal();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-reel]'); if (b) openReel(b.dataset.reel, b.dataset.t || ''); });
 function pickedNote(t) { const n = $('pkNote'); if (!n) return; n.textContent = t; n.classList.remove('show'); void n.offsetWidth; n.classList.add('show'); }
 
 // ---------- Дни ----------
@@ -1648,13 +1776,15 @@ async function loadSlots(scroll) {
       g.innerHTML = `<h3>${title}</h3><div class="slots"></div>`;
       list.forEach(s => {
         const b = document.createElement('button');
-        b.type = 'button'; b.className = 'slot'; b.textContent = s.time; b.style.setProperty('--i', n++);
+        b.type = 'button'; b.className = 'slot' + (s.fit ? ' fit' : ''); b.textContent = s.time; b.style.setProperty('--i', n++);
+        if (s.fit) b.title = 'Удобное время: сразу до или после другой клиентки — мастеру без простоя';
         b.setAttribute('aria-pressed', state.time === s.time);
         b.onclick = () => { state.time = s.time; box.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', x === b)); eyeWink(); update(); };
         g.querySelector('.slots').append(b);
       });
       box.append(g);
     });
+    if (free.some(s => s.fit)) { const h = document.createElement('p'); h.className = 'fit-hint'; h.innerHTML = '<i>✨</i> — самое удобное время: мастер без перерывов, а значит, окошки для всех остаются'; box.prepend(h); }
     const p = document.createElement('p'); p.className = 'dur';
     p.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Процедура ұзақтығы: ${dur(state.service.duration)}`;
     box.append(p);
@@ -1736,7 +1866,7 @@ function waText() {
   return `Здравствуйте! Хочу записаться в browlash.look 💗\n\n💅 ${s.name}${s.price ? ' — ' + s.price : ''}\n📅 ${ruDay}, ${state.time}–${end}\n👤 ${$('name').value.trim()}\n📞 ${phone.value}` +
     ($('comment').value.trim() ? `\n💬 ${$('comment').value.trim()}` : '') +
     (normCode($('gift').value) ? `\n🎁 Сертификат: ${$('gift').value.trim()}` : '') +
-    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + (hasLash() && wishText(state.wish) ? `\n✨ Ресницы: ${wishText(state.wish)}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
+    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + (hasLash() && wishText(state.wish) ? `\n✨ Ресницы: ${wishText(state.wish)}` : '') + (state.prefs?.length ? `\n☕ К визиту: ${state.prefs.join(', ')}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
 }
 function sendWhatsApp() {
   const url = `https://wa.me/${waNum()}?text=${encodeURIComponent(waText())}`;
@@ -1836,6 +1966,18 @@ function refreshPerks() {
     } catch {}
   }, 380);
 }
+// предоплата к праздникам: сумма на выбранную дату (сервер уточняет по номеру — «только новые клиентки»)
+function ppAmount(p = state.perk) {
+  const c = state.cfg?.prepay, d = state.date;
+  if (!c || !d || d < c.from || d > c.to || perkFor()?.price === 0) return 0;
+  const a = p && p.key === perkKey() && 'prepay' in p ? p.prepay : c.amount, price = perkFor()?.price ?? svcPrice(state.service);
+  return price ? Math.min(a, price) : a;
+}
+function ppNote(p) {
+  const a = ppAmount(p); if (!a) return '';
+  const c = state.cfg.prepay;
+  return `<div class="notice pp-note"><div class="ic">💳</div><div><b>Предоплата ${money(a)}</b> — на праздничные даты (${fmtShort(c.from).split(', ')[1]} – ${fmtShort(c.to).split(', ')[1]}) запись закрепляется предоплатой${c.newOnly && !(p && 'prepay' in p) ? ' для новых клиенток' : ''}. Она вычтется из стоимости. Реквизиты Kaspi покажем сразу после записи.</div></div>`;
+}
 function renderPerk() {
   const p = state.perk || {}, box = $('perkBox');
   state.blocked = !!p.blocked;
@@ -1849,6 +1991,7 @@ function renderPerk() {
     const pk = perkFor();
     box.innerHTML = pk ? `<div class="perk"><span class="pi">${esc([...pk.why][0])}</span><div><b>Сіздің жеңілдігіңіз −${pk.pct}%</b> — ${esc(pk.why.replace(/^\S+\s/, '').replace(' (по документу)', ''))}<br><s>${money(pk.base)}</s> → <b>${money(pk.price)}</b>${pk.why.startsWith('🎂') ? '<br><span class="doc">🪪 Скидка действует, если на визите покажете документ с датой рождения — удостоверение или паспорт. Без документа процедура по обычной цене.</span>' : ''}</div></div>` : '';
   }
+  if (!p.blocked) box.insertAdjacentHTML('beforeend', ppNote(p));
   if (p.knownBirthday) $('bdayField').hidden = true;
   const gm = $('giftMsg');
   if (!normCode($('gift').value)) { gm.textContent = ''; gm.className = 'fmsg'; }
@@ -1929,12 +2072,14 @@ function renderWish() {
   const w = state.wish, box = $('wishBox');
   const opt = (g, v, sub, art, cls = '') => `<button type="button" class="wopt${cls}" data-g="${g}" data-v="${esc(v)}" aria-pressed="${w[g] === v}">${art || ''}<b>${esc(v)}</b><small>${esc(sub)}</small></button>`;
   box.innerHTML = `<p>Необязательно. Не знаете — оставьте пустым, мастер подберёт на месте по форме глаз.</p>
+    ${navigator.mediaDevices?.getUserMedia ? '<button type="button" class="try-btn" id="tryOn"><span>📷</span><b>Примерить на себе</b><small>через камеру телефона — видео никуда не отправляется</small></button>' : ''}
     <div class="wg"><h4>Эффект</h4><div class="wopts">${WISH.effect.map(([v, s, f]) => opt('effect', v, s, effectSvg(f))).join('')}</div></div>
     <div class="wg"><h4>Изгиб <small>L, LC, LB, LJ — для нависшего века</small></h4><div class="wopts">${WISH.curl.map(([v, s, d]) => opt('curl', v, s, `<svg viewBox="0 0 40 44" aria-hidden="true"><path class="lid" d="M2 40 H16"/><path class="ls" d="${d}"/></svg>`)).join('')}</div></div>
     <div class="wg"><h4>Длина</h4><div class="wopts">${WISH.length.map(([v, s]) => opt('length', v, s, '', ' len')).join('')}</div></div>
     <div class="wg"><h4>Цвет</h4><div class="wopts">${WISH.color.map(([v, s, c]) => opt('color', v, s, `<svg viewBox="0 -12 80 46" aria-hidden="true"><ellipse cx="40" cy="22" rx="38" ry="15" fill="#e9cdb9"/>${effectSvg(t => 7 + 4 * Math.sin(Math.PI * t)).replace('<svg viewBox="0 -12 80 46" aria-hidden="true">', '').replace('</svg>', '').replace('class="ls"', `class="ls keep" style="stroke:${c};stroke-width:2.2"`).replace('class="lid"', `class="lid keep" style="stroke:#3a2a2e"`)}</svg>`)).join('')}</div></div>
     ${wishText(w) ? '<button type="button" class="wish-clear" id="wishClear">Сбросить — пусть мастер подберёт</button>' : ''}`;
   box.querySelectorAll('.wopt').forEach(b => b.onclick = () => { const g = b.dataset.g; w[g] = w[g] === b.dataset.v ? '' : b.dataset.v; renderWish(); syncWish(); wishChanged?.(); if (w[g]) eyeWink(); });
+  $('tryOn')?.addEventListener('click', tryOn);
   $('wishClear')?.addEventListener('click', () => { state.wish = { effect: '', curl: '', length: '', color: '' }; renderWish(); syncWish(); wishChanged?.(); });
 }
 function bindWish(onChange) {
@@ -1943,6 +2088,137 @@ function bindWish(onChange) {
 }
 let wishChanged = null;
 bindWish();
+// ---------- Примерка ресниц через камеру: лицо находит MediaPipe прямо в браузере, видео не уходит в интернет ----------
+const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+const LID = { l: [133, 173, 157, 158, 159, 160, 161, 246, 33], r: [362, 398, 384, 385, 386, 387, 388, 466, 263] }, LOW = { l: 145, r: 374 };
+const CURL_BEND = { B: .12, C: .26, CC: .34, D: .46, L: .52, LC: .42, LB: .32, LJ: .2, M: .38 };
+let tryStream = null, tryRaf = 0, tryLm = null;
+async function tryOn() {
+  const d = document.createElement('dialog'); d.className = 'try-dlg';
+  const chips = (g, list) => `<div class="try-row" data-g="${g}">${list.map(([v]) => `<button type="button" data-v="${esc(v)}" aria-pressed="${state.wish[g] === v}">${esc(v.replace(' мм', ''))}</button>`).join('')}</div>`;
+  d.innerHTML = `<div class="try-stage"><video playsinline muted autoplay></video><canvas></canvas><div class="try-st" role="status">Включаем камеру…</div>
+      <button type="button" class="try-x" aria-label="Закрыть">×</button></div>
+    <div class="try-ctl">${chips('effect', WISH.effect)}${chips('length', WISH.length)}${chips('color', WISH.color)}${chips('curl', WISH.curl.filter(([v]) => ['B', 'C', 'CC', 'D', 'L', 'M'].includes(v)))}
+      <button type="button" class="btn" id="tryOk">Хочу так ✨</button></div>`;
+  document.body.append(d); d.showModal();
+  const v = d.querySelector('video'), cv = d.querySelector('canvas'), ctx = cv.getContext('2d'), st = d.querySelector('.try-st');
+  const close = () => { cancelAnimationFrame(tryRaf); tryStream?.getTracks().forEach(t => t.stop()); tryStream = null; d.close(); d.remove(); };
+  d.querySelector('.try-x').onclick = close; d.addEventListener('cancel', e => { e.preventDefault(); close(); });
+  d.querySelector('#tryOk').onclick = () => { close(); renderWish(); syncWish(); wishChanged?.(); };
+  d.querySelectorAll('.try-row').forEach(row => row.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return; const g = row.dataset.g;
+    state.wish[g] = state.wish[g] === b.dataset.v ? '' : b.dataset.v;
+    row.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', state.wish[x.parentElement.dataset.g] === x.dataset.v));
+  });
+  try {
+    tryStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 960 } }, audio: false });
+    v.srcObject = tryStream; await v.play();
+  } catch { st.innerHTML = 'Нет доступа к камере 😔<br><small>Разрешите камеру для сайта в настройках браузера</small>'; return; }
+  st.textContent = 'Загружаем примерку…';
+  try {
+    if (!tryLm) {
+      const { FaceLandmarker, FilesetResolver } = await import(MP + '/vision_bundle.mjs');
+      const fs = await FilesetResolver.forVisionTasks(MP + '/wasm');
+      const opts = dl => ({ baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate: dl }, runningMode: 'VIDEO', numFaces: 1 });
+      tryLm = await FaceLandmarker.createFromOptions(fs, opts('GPU')).catch(() => FaceLandmarker.createFromOptions(fs, opts('CPU')));
+    }
+  } catch { st.innerHTML = 'Примерка не загрузилась — проверьте интернет и попробуйте ещё раз'; return; }
+  st.textContent = 'Посмотрите в камеру 👀';
+  let lastT = -1;
+  const loop = () => {
+    if (!tryStream) return;
+    tryRaf = requestAnimationFrame(loop);
+    if (v.readyState < 2 || v.currentTime === lastT) return; lastT = v.currentTime;
+    if (cv.width !== v.videoWidth) { cv.width = v.videoWidth; cv.height = v.videoHeight; }
+    const r = tryLm.detectForVideo(v, performance.now()), lm = r.faceLandmarks?.[0];
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    st.hidden = !!lm; if (!lm) { st.textContent = 'Посмотрите в камеру 👀'; return; }
+    drawLashes(ctx, lm, cv.width, cv.height);
+  };
+  loop();
+}
+function drawLashes(ctx, lm, W, H) {
+  const w = state.wish, P = i => ({ x: lm[i].x * W, y: lm[i].y * H });
+  const fn = (WISH.effect.find(([n]) => n === w.effect) || WISH.effect[0])[2];
+  const mm = { '8–9 мм': 8.5, '10–11 мм': 10.5, '12–13 мм': 12.5, '14+ мм': 14.5 }[w.length] || 10.5;
+  const col = (WISH.color.find(([n]) => n === w.color) || WISH.color[0])[2], bend = CURL_BEND[w.curl] ?? .28;
+  let max = 0; for (let k = 0; k <= 20; k++) max = Math.max(max, fn(k / 20, k));
+  for (const side of ['l', 'r']) {
+    const pts = LID[side].map(P), inner = pts[0], outer = pts.at(-1), ew = Math.hypot(outer.x - inner.x, outer.y - inner.y);
+    const low = P(LOW[side]), mid = pts[4], cx = (mid.x + low.x) / 2, cy = (mid.y + low.y) / 2;
+    // полилиния века → равномерные точки
+    const seg = []; let L = 0; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y); seg.push(l); L += l; }
+    const at = u => { let dd = u * L, i = 0; while (i < seg.length - 1 && dd > seg[i]) { dd -= seg[i]; i++; } const f = seg[i] ? dd / seg[i] : 0, a = pts[i], b = pts[i + 1];
+      return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, tx: (b.x - a.x) / (seg[i] || 1), ty: (b.y - a.y) / (seg[i] || 1) }; };
+    ctx.strokeStyle = col; ctx.lineCap = 'round'; ctx.globalAlpha = .95;
+    ctx.lineWidth = Math.max(1.5, ew / 34); ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke(); // линия роста
+    const n = 26; ctx.lineWidth = Math.max(1, ew / 85);
+    for (let k = 0; k < n; k++) {
+      const u = .06 + .9 * k / (n - 1), p = at(u);
+      let nx = -p.ty, ny = p.tx; if ((p.x - cx) * nx + (p.y - cy) * ny < 0) { nx = -nx; ny = -ny; } // наружу от глаза
+      const len = ew * (mm / 30) * (fn(u, k) / max) * (.92 + .16 * ((k * 7) % 5) / 5);
+      const ox = (outer.x - inner.x) / ew, oy = (outer.y - inner.y) / ew, lean = (u - .45) * .35; // к внешнему уголку ресницы наклоняются наружу
+      const dx = nx + ox * lean, dy = ny + oy * lean, dl = Math.hypot(dx, dy);
+      const ex = p.x + dx / dl * len, ey = p.y + dy / dl * len;
+      // изгиб: чем сильнее (B → D, L), тем выше загибается кончик
+      const qx = p.x + dx / dl * len * .55, qy = p.y + dy / dl * len * .55;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.quadraticCurveTo(qx, qy, ex, ey - len * bend * .9); ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+// пожелания к визиту — мастер видит их в записи; запоминаем на телефоне для следующего раза
+const PREF_G = [['Атмосфера', ['поболтать', 'тишина', 'подремать'], 1], ['Напиток', ['чай', 'кофе', 'вода'], 1], ['Комфорт', ['подушка', 'плед', 'музыка потише'], 0]];
+const PREF_IC = { 'поболтать': '💬', 'тишина': '🤫', 'подремать': '😴', 'чай': '🍵', 'кофе': '☕', 'вода': '💧', 'подушка': '🛏', 'плед': '🧣', 'музыка потише': '🎧' };
+try { state.prefs = JSON.parse(localStorage.getItem('bl_prefs') || '[]').filter(x => PREF_IC[x]); } catch { state.prefs = []; }
+function syncPrefs() { const el = $('prefsSum'); if (el) el.textContent = state.prefs.length ? state.prefs.map(x => PREF_IC[x] + ' ' + x).join(' · ') : 'поболтать или тишина, чай или кофе'; }
+function renderPrefs() {
+  const box = $('prefsBox'); if (!box) return;
+  box.innerHTML = '<p>Необязательно — мастер подготовится заранее 💗</p>' + PREF_G.map(([t, list]) => `<div class="pg"><h4>${t}</h4><div class="pchips">${list.map(v => `<button type="button" class="pchip" data-pref="${esc(v)}" aria-pressed="${state.prefs.includes(v)}">${PREF_IC[v]} ${esc(v)}</button>`).join('')}</div></div>`).join('');
+  box.querySelectorAll('[data-pref]').forEach(b => b.onclick = () => {
+    const v = b.dataset.pref, g = PREF_G.find(([, l]) => l.includes(v));
+    if (state.prefs.includes(v)) state.prefs = state.prefs.filter(x => x !== v);
+    else state.prefs = [...state.prefs.filter(x => !(g[2] && g[1].includes(x))), v];
+    try { localStorage.setItem('bl_prefs', JSON.stringify(state.prefs)); } catch {}
+    renderPrefs(); syncPrefs();
+  });
+}
+function bindPrefs() {
+  const btn = $('prefsBtn'); if (!btn) return;
+  btn.onclick = () => { const box = $('prefsBox'), open = box.hidden; box.hidden = !open; btn.setAttribute('aria-expanded', open); if (open) renderPrefs(); };
+  syncPrefs();
+}
+bindPrefs();
+// «как в прошлый раз»: заметку мастера («изгиб С», «11 мм») приводим к вариантам на сайте
+function normWish(raw) {
+  if (!raw) return null;
+  const o = {}, low = v => String(v || '').toLowerCase().replace(/ё/g, 'е').trim();
+  const byStart = (list, v) => { const x = low(v).slice(0, 4); return x.length >= 3 ? list.find(([n]) => low(n).startsWith(x) || low(v).includes(low(n).slice(0, 5)))?.[0] : undefined; };
+  if (raw.effect) o.effect = byStart(WISH.effect, raw.effect);
+  if (raw.color) o.color = byStart(WISH.color, raw.color);
+  if (raw.curl) { const c = String(raw.curl).toUpperCase().replace(/С/g, 'C').replace(/В/g, 'B').replace(/Д/g, 'D').replace(/Л/g, 'L').replace(/М/g, 'M').replace(/[^A-Z]/g, ''); o.curl = WISH.curl.find(([n]) => n === c)?.[0]; }
+  if (raw.length) {
+    const ex = WISH.length.find(([n]) => n === raw.length)?.[0], n = parseFloat(String(raw.length).replace(',', '.'));
+    o.length = ex || (n >= 6 && n <= 20 ? WISH.length[n < 10 ? 0 : n < 12 ? 1 : n < 14 ? 2 : 3][0] : undefined);
+  }
+  Object.keys(o).forEach(k => o[k] || delete o[k]);
+  return Object.keys(o).length ? o : null;
+}
+function repeatVisit(svc, raw) {
+  if (!svc) return;
+  state.cat = svc.category || 'Услуги'; renderTabs(); renderServices(false); setSel(selOf(svc));
+  const w = hasLash() && normWish(raw);
+  state.wish = Object.assign({ effect: '', curl: '', length: '', color: '' }, w || {});
+  syncWish();
+  if (w) showNote('Как в прошлый раз: ' + esc(svc.name) + ' · ' + esc(wishText(state.wish)) + '. Осталось выбрать день и время');
+  $('book').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  setTimeout(() => document.querySelector('#days')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }), 700);
+}
+function showNote(html) {
+  let n = document.getElementById('againNote');
+  if (!n) { n = document.createElement('div'); n.id = 'againNote'; n.className = 'again-note'; n.setAttribute('role', 'status'); }
+  n.innerHTML = html; ($('picked') || $('wishBtn'))?.after(n); n.hidden = false;
+}
 
 // фото-референс: сжимаем на телефоне перед отправкой
 async function shrinkPhoto(file) {
@@ -1976,7 +2252,7 @@ $('form').addEventListener('submit', async e => {
   if (state.sending) return;
   const btn = $('submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Жіберілуде'; state.sending = true;
   try {
-    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time, wish: hasLash() ? state.wish : null, hp_extra: $('hpExtra').value, t: Date.now() - T0,
+    const body = { name: $('name').value, phone: phone.value, comment: $('comment').value, service: state.service.name, date: state.date, time: state.time, wish: hasLash() ? state.wish : null, prefs: state.prefs, hp_extra: $('hpExtra').value, t: Date.now() - T0,
       birthday: $('bday').value, gift: $('gift').value, ref: state.ref };
     const { booking } = await api('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (state.photo) {
@@ -2049,10 +2325,11 @@ async function greet(me, upcoming) {
     ['name', 'bday', 'comment'].forEach(id => $(id).value = ''); phone.value = ''; phone._n = 0; $('bdayField').hidden = false;
     state.perk = null; renderPerk(); update();
   };
-  $('meAgain')?.addEventListener('click', () => {
-    state.cat = svc.category || 'Услуги'; renderTabs(); renderServices(false); setSel(selOf(svc));
-    $('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(() => document.querySelector('#days')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 700);
+  $('meAgain')?.addEventListener('click', async () => {
+    let raw = me.again || null;
+    const t = me.token || myGet().at(-1)?.token;
+    if (!raw && t) raw = await api('/api/b/' + encodeURIComponent(t)).then(r => r.booking?.again || r.booking?.wish).catch(() => null);
+    repeatVisit(svc, raw);
   });
   // бонусы — по секретной ссылке её последней записи
   if (!me.token) return;
@@ -2128,6 +2405,29 @@ function refHtml(b) {
         ${navigator.share ? `<button type="button" class="btn ghost sm" data-share="${esc(text)}">Поделиться</button>` : ''}${copyBtn(url)}</div>
     </div>`;
 }
+// предоплата: реквизиты Kaspi + чек (на экране «Вы записаны» и в «Моей записи»)
+function ppHtml(b) {
+  const p = b.prepay; if (!p || ['cancelled', 'came', 'noshow'].includes(b.status)) return '';
+  if (p.st === 'paid') return `<div class="notice soft pp"><div class="ic">💳</div><div><b>Предоплата ${money(p.amount)} получена</b> — спасибо! На месте останется ${money(Math.max(0, (b.price || 0) - p.amount))}.</div></div>`;
+  return `<div class="notice pp" data-pp="${esc(b.token)}"><div class="ic">💳</div><div>
+    <b>${p.st === 'receipt' ? 'Чек получен — мастер проверит перевод' : 'Внесите предоплату ' + money(p.amount)}</b>
+    ${p.st === 'receipt' ? `<br>Как только оплата придёт, запись подтвердится автоматически 💗` : `<br>Переведите <b>${money(p.amount)}</b> на Kaspi: <b class="pp-k">${esc(p.kaspi || 'номер уточнит мастер')}</b>. Она вычтется из стоимости процедуры. Затем прикрепите скриншот или PDF чека.`}
+    <div class="cta-row" style="margin-top:10px">${p.kaspi ? copyBtn(String(p.kaspi).replace(/\s*\(.*$/, '')).replace('Сілтемені көшіру', 'Скопировать номер') : ''}
+      <label class="btn sm pp-up"><input type="file" accept="image/*,application/pdf,.pdf" hidden data-pp-in>${p.st === 'receipt' ? 'Заменить чек' : '🧾 Прикрепить чек'}</label></div>
+    <div class="fmsg" data-pp-msg role="status"></div></div></div>`;
+}
+document.addEventListener('change', async e => {
+  const inp = e.target.closest('[data-pp-in]'); if (!inp) return;
+  const box = inp.closest('[data-pp]'), msg = box.querySelector('[data-pp-msg]'), f = inp.files[0]; if (!f) return;
+  msg.className = 'fmsg'; msg.innerHTML = '<span class="spin"></span> Жіберілуде чек…';
+  try {
+    const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+    if (isPdf && f.size > 4 * 1024 * 1024) throw new Error('PDF слишком большой (до 4 МБ) — пришлите скриншот перевода');
+    const data = isPdf ? await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).replace(/^data:[^;]*;/, 'data:application/pdf;')); r.onerror = bad; r.readAsDataURL(f); }) : await shrinkPhoto(f);
+    const r = await api(`/api/b/${encodeURIComponent(box.dataset.pp)}/receipt`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+    const t = document.createElement('div'); t.innerHTML = ppHtml(r.booking); box.replaceWith(...t.childNodes);
+  } catch (err) { msg.className = 'fmsg bad'; msg.textContent = err instanceof TypeError ? 'Нет связи — попробуйте ещё раз или отправьте чек мастеру в WhatsApp' : err.message; inp.value = ''; }
+});
 function careHtml(b, open) {
   if (!b.aftercare) return '';
   return `<details class="care"${open ? ' open' : ''}><summary>💗 Жадынама: процедурадан кейінгі күтім</summary><ul>${b.aftercare.split('\n').filter(Boolean).map(l => `<li>${esc(l)}</li>`).join('')}</ul></details>`;
@@ -2157,6 +2457,7 @@ function showDone(b, name) {
       <svg class="check" viewBox="0 0 84 84"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg>
       <h2>${esc(name.trim().split(' ')[0])}, сіз<span class="script">жазылдыңыз!</span></h2>
       ${ticketHtml(b)}
+      ${ppHtml(b)}
       <div class="notice">
         <div class="ic">💗</div>
         <div><b>Жазылуды растаңыз</b> — төмендегі сілтеме арқылы немесе шеберге WhatsApp-та жауап беріп, процедурадан <b>2 сағат бұрын</b>.
@@ -2405,6 +2706,7 @@ async function manage(token) {
       <h2>${esc(b.name)},<span class="script">ваша запись</span></h2>
       <span class="status ${stCls}">${stTxt}</span>
       ${ticketHtml(b)}
+      ${ppHtml(b)}
       ${active && b.status === 'new' ? `<div class="notice"><div class="ic">💗</div><div>Подтвердите запись не позднее чем <b>за 2 часа</b> до процедуры — так мастер не отдаст ваше время другой клиентке.</div></div>` : ''}
       ${active ? `<div class="cta-row" id="mActs">
           ${b.status === 'new' ? '<button class="btn" type="button" id="mConfirm">Подтвердить запись</button>' : ''}
@@ -2523,6 +2825,33 @@ async function manage(token) {
 }
 
 // ---------- Подарочный сертификат (?g=КОД) ----------
+// пуш «освободилось окошко» из листа ожидания: ?wl=ТОКЕН → «Забрать» в одно нажатие
+async function wlPage(tok) {
+  const app = $('app');
+  $('bar').classList.remove('show'); $('bar').hidden = true;
+  app.innerHTML = `<header class="topbar"><a class="logo" href="./">browlash<i>.</i>look</a></header><section class="giftp wlp"><div class="skeleton" style="height:220px;width:min(100%,460px)"></div></section>`;
+  const box = app.querySelector('.wlp'), wa = 'https://wa.me/' + (waNum() || '77075938677');
+  let o;
+  try { o = await api('/api/wl/' + encodeURIComponent(tok)); }
+  catch (err) { box.innerHTML = `<h2>Окошко<span class="script">не найдено</span></h2><p class="lead">${err instanceof TypeError ? 'Нет связи с мастером. Попробуйте чуть позже.' : 'Ссылка устарела.'}</p><a class="btn" href="./#book">Выбрать другое время</a>`; return; }
+  const when = `${fmtShort(o.date)}, ${o.time}`;
+  if (!o.free) { box.innerHTML = `<h2>Окошко<span class="script">уже забрали</span></h2><p class="lead">${esc(when)} — это время уже занято 😔 Вы остаётесь в листе ожидания: если освободится ещё, сразу пришлём уведомление.</p><a class="btn" href="./#book">Посмотреть другие окошки</a><a class="btn ghost" href="${wa}" target="_blank" rel="noopener">Написать мастеру</a>`; return; }
+  box.innerHTML = `<h2>Освободилось<span class="script">ваше окошко</span></h2>
+    <div class="wl-card"><b>${esc(when)}</b><span>${esc(o.service)}${o.price ? ' · ' + money(o.price) : ''}</span><small>${o.name ? esc(o.name) + ', в' : 'В'}ы были в листе ожидания на этот день. Кто первая нажмёт — того и время 💗</small></div>
+    <button type="button" class="btn" id="wlGo">Забрать окошко</button><p class="fmsg" id="wlMsg" role="status"></p>
+    <a class="btn ghost" href="./#book">Нет, выберу другое время</a>`;
+  $('wlGo').onclick = async () => {
+    const btn = $('wlGo'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Записываем';
+    try {
+      const { booking } = await api('/api/wl/' + encodeURIComponent(tok), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      mySave(booking); location.replace('?b=' + encodeURIComponent(booking.token));
+    } catch (err) {
+      btn.hidden = true; $('wlMsg').className = 'fmsg bad';
+      $('wlMsg').textContent = err instanceof TypeError ? 'Нет связи — попробуйте ещё раз' : err.message;
+      if (err instanceof TypeError) { btn.hidden = false; btn.disabled = false; btn.textContent = 'Забрать окошко'; }
+    }
+  };
+}
 async function giftPage(code) {
   const app = $('app');
   $('bar').classList.remove('show'); $('bar').hidden = true;
@@ -2879,6 +3208,102 @@ async function orderBanner() {
 }
 
 // ---------- Салют из розовых «ресничек» ----------
+// ---------- Сайт по сезону: снег и гирлянда к Новому году, сердечки к 14 февраля, цветы к 8 Марта ----------
+function seasonNow(d = new Date()) {
+  const f = new URLSearchParams(location.search).get('season'); if (f) return f; // предпросмотр: ?season=winter|love|spring|nauryz
+  const m = d.getMonth() + 1, day = d.getDate();
+  if ((m === 12 && day >= 1) || (m === 1 && day <= 10)) return 'winter';
+  if (m === 2 && day >= 7 && day <= 14) return 'love';
+  if (m === 3 && day >= 1 && day <= 8) return 'spring';
+  if (m === 3 && day >= 20 && day <= 23) return 'nauryz';
+  return '';
+}
+function seasonFx() {
+  const kind = seasonNow(); if (!kind || state.cfg?.season === false || document.getElementById('seasonFx')) return;
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.dataset.season = kind;
+  if (kind === 'winter') { // гирлянда под шапкой
+    const g = document.createElement('div'); g.className = 'garland'; g.setAttribute('aria-hidden', 'true');
+    g.innerHTML = Array.from({ length: 28 }, (_, i) => `<i style="--d:${(i % 4) * .35}s"></i>`).join('');
+    document.body.prepend(g);
+  }
+  const cv = document.createElement('canvas'); cv.id = 'seasonFx'; cv.setAttribute('aria-hidden', 'true'); document.body.append(cv);
+  const ctx = cv.getContext('2d'); let W = 0, H = 0, dpr = Math.min(2, devicePixelRatio || 1);
+  const size = () => { W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener('resize', size);
+  const EMO = { love: ['💗', '💕', '❤️', '💖'], spring: ['🌷', '🌸', '💐', '🌼'], nauryz: ['🌷', '✨', '🌸'] }[kind];
+  const N = calm ? (kind === 'winter' ? 18 : 6) : (kind === 'winter' ? (W < 700 ? 45 : 80) : (W < 700 ? 10 : 16));
+  const mk = top => ({ x: Math.random() * W, y: top ? -20 - Math.random() * H * .3 : Math.random() * H, r: kind === 'winter' ? 1 + Math.random() * 2.6 : 14 + Math.random() * 12,
+    vy: kind === 'winter' ? .35 + Math.random() * .9 : .45 + Math.random() * .7, ph: Math.random() * 6.3, sw: .4 + Math.random() * .8, e: EMO ? EMO[Math.random() * EMO.length | 0] : '', a: .35 + Math.random() * .55 });
+  const P = Array.from({ length: N }, () => mk(false));
+  let last = 0, run = true;
+  document.addEventListener('visibilitychange', () => { run = !document.hidden; if (run) requestAnimationFrame(tick); });
+  function tick(t) {
+    if (!run) return;
+    if (t - last > 33) { // ~30 кадров в секунду — бережём батарею
+      last = t; ctx.clearRect(0, 0, W, H);
+      for (const p of P) {
+        p.y += p.vy * (calm ? .5 : 1); p.ph += .02; p.x += Math.sin(p.ph) * p.sw * .5;
+        if (p.y > H + 30) Object.assign(p, mk(true));
+        ctx.globalAlpha = p.a;
+        if (kind === 'winter') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); }
+        else { ctx.font = `${p.r}px serif`; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(Math.sin(p.ph) * .4); ctx.fillText(p.e, 0, 0); ctx.restore(); }
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+// ---------- Чат-помощник: частые вопросы — ответ сразу, остальное — мастеру в WhatsApp ----------
+const FAQ = [
+  { q: 'Сколько стоит?', qk: 'Қанша тұрады?', re: /цен|стоит|стоимост|прайс|сколько|почём|почем|₸|тенге|бағас|бағасы|қанша|құны/i, a: () => {
+    const by = {}; state.cfg.services.forEach(s => (by[s.category || 'Услуги'] ||= []).push(s));
+    return Object.entries(by).map(([c, l]) => `<b>${esc(c)}</b><br>${l.map(s => `${esc(s.title || s.name)} — ${esc(s.price || 'по запросу')}`).join('<br>')}`).join('<br><br>') + (location.pathname.includes('/kk/') ? '<br><br><a href="#book" data-faq-go>Процедура мен уақытты таңдау →</a>' : '<br><br><a href="#book" data-faq-go>Выбрать процедуру и время →</a>'); } },
+  { q: 'Где вы находитесь?', qk: 'Қай жерде орналасқансыз?', ak: () => 'Петропавл, <b>Ульянов к-сі, 49</b>.<br><a href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">2ГИС-те маршрутты ашу →</a>', re: /адрес|где|находит|доехать|как найти|маршрут|2гис|2gis|ульянов|мекенжай|қайда|мекенжай|қалай бару|жол/i, a: () => 'Петропавловск, <b>ул. Ульянова, 49</b>.<br><a href="https://2gis.kz/petropavlovsk/geo/69.124288%2C54.867849" target="_blank" rel="noopener">Открыть маршрут в 2ГИС →</a>' },
+  { q: 'Как подготовиться?', qk: 'Қалай дайындалу керек?', ak: () => 'Ұзарту мен ламинация алдында:<br>• <b>тушьсіз және көз макияжынсыз</b> келіңіз (не орнында жуамыз);<br>• контактілі линзаларды шешкен дұрыс;<br>• бір тәулік бұрын көз айналасына майлы крем жақпаңыз;<br>• процедура кезінде көз 1,5–2 сағат жұмулы болады — мызғып алуға болады 😴', re: /подготов|перед процедур|накраш|макияж|тушь|линз|прийти|что взять|брать с собой|дайындал|бояу|макияж|линза/i, a: () => 'Перед наращиванием и ламинированием:<br>• приходите <b>без туши и макияжа глаз</b> (или смоем на месте);<br>• контактные линзы лучше снять;<br>• за сутки не используйте жирные кремы и масла вокруг глаз;<br>• на процедуре глаза закрыты 1,5–2 часа — можно подремать 😴' },
+  { q: 'Уход после процедуры', qk: 'Процедурадан кейінгі күтім', re: /уход|после процедур|мочить|умыва|баня|сауна|спать|масл|памятк|күтім|суламау|жуу|монша|сауна/i, a: () => {
+    const a = state.cfg.aftercare || {}, keys = Object.keys(a).filter(k => a[k]);
+    return keys.length ? keys.map(k => `<b>${esc(k)}</b><br>${a[k].split('\n').filter(Boolean).map(l => '• ' + esc(l.replace(/^[-•]\s*/, ''))).join('<br>')}`).join('<br><br>') : 'Первые 24 часа не мочите ресницы и брови, не трите глаза, не ходите в баню и сауну. Подробную памятку пришлём после записи 💗'; } },
+  { q: 'Противопоказания', qk: 'Қарсы көрсетілімдер', ak: () => 'Процедураны <b>көздің қабынуы, конъюнктивит, арпа</b> кезінде, көзге жақында жасалған операциядан кейін, желімге қатты аллергия болса кейінге қалдырған дұрыс.<br>Жүктілік пен емізу — қатаң тыйым емес, бірақ гормондар кірпіктің сақталуына әсер етуі мүмкін. Күмәніңіз болса — <a href="#" data-faq-wa>шеберден сұраңыз</a>.', re: /противопок|нельзя|аллерг|беремен|кормлю|гв\b|конъюнктив|болит глаз|чувствит|химиотерап|қарсы көрсет|болмайды|аллерг|жүкті|емізу/i, a: () => 'Процедуру лучше перенести при <b>воспалении глаз, конъюнктивите, ячмене</b>, после недавних операций на глазах, при сильной аллергии на клей или составы.<br>Беременность и кормление — не строгий запрет, но гормоны могут влиять на носку. Если сомневаетесь — <a href="#" data-faq-wa>спросите мастера</a>, она подскажет.' },
+  { q: 'Когда коррекция?', qk: 'Түзету қашан?', ak: () => 'Ұзартылған кірпік 3–5 аптаға сақталады, <b>түзетуді 3–4 аптадан кейін</b> жасаған дұрыс. Ламинация — 6–8 апта. Уақыты келгенде еске саламыз 💗', re: /коррекц|сколько держ|носк|держатся|продерж|как часто|түзету|қанша уақыт сақтал|ұсталады/i, a: () => 'Наращивание держится 3–5 недель, <b>коррекцию лучше делать через 3–4 недели</b>. Ламинирование — 6–8 недель. Мы напомним, когда будет пора 💗' },
+  { q: 'Сколько длится?', qk: 'Қанша уақыт созылады?', re: /длит|долго|сколько времени|сколько час|по времени|ұзақтығы|созылады|неше сағат/i, a: () => state.cfg.services.map(s => `${esc(s.title || s.name)} — ${dur(s.duration)}`).join('<br>') },
+  { q: 'Как перенести или отменить?', qk: 'Қалай ауыстыру не тоқтату?', ak: () => 'Жазылуыңызды сілтеме бойынша ашыңыз (ол жазылғаннан кейінгі хабарламада не жоғарыдағы «Менің жазылуларым» бөлімінде) — онда <b>«Өзгерту»</b> және <b>«Тоқтату»</b> батырмалары бар. Келуге 2 сағаттан аз қалса — <a href="#" data-faq-wa>шеберге жазыңыз</a>.', re: /перенес|отмен|опозда|не успева|не смогу|изменить запис|ауыстыр|тоқтат|кешік|үлгермей/i, a: () => 'Откройте свою запись по ссылке (она есть в сообщении после записи или в «Мои записи» вверху) — там кнопки <b>«Изменить»</b> и <b>«Отменить»</b>. Если до визита меньше 2 часов — лучше <a href="#" data-faq-wa>напишите мастеру</a>.' },
+  { q: 'Как оплатить?', qk: 'Қалай төлеуге болады?', ak: () => 'Төлем — <b>процедурадан кейін орнында</b>' + (state.cfg.kaspi ? `, Kaspi-ге аударуға болады: ${esc(state.cfg.kaspi)}` : '') + '. Басқа тәсіл — <a href="#" data-faq-wa>шебермен нақтылаңыз</a>.' + (state.cfg.prepay ? ` Мереке күндері (${fmtShort(state.cfg.prepay.from).split(', ')[1]} – ${fmtShort(state.cfg.prepay.to).split(', ')[1]}) — ${money(state.cfg.prepay.amount)} алдын ала төлем, ол құннан шегеріледі.` : ''), re: /оплат|kaspi|каспи|налич|картой|перевод|предоплат|төле|каспи|қолма-қол/i, a: () => 'Оплата — <b>на месте после процедуры</b>' + (state.cfg.kaspi ? `, можно переводом на Kaspi: ${esc(state.cfg.kaspi)}` : '') + '. Другой способ — <a href="#" data-faq-wa>уточните у мастера</a>.' + (state.cfg.prepay ? ` На праздничные даты (${fmtShort(state.cfg.prepay.from).split(', ')[1]} – ${fmtShort(state.cfg.prepay.to).split(', ')[1]}) — предоплата ${money(state.cfg.prepay.amount)}, она вычитается из стоимости.` : '') },
+  { q: 'Есть сертификаты?', qk: 'Сертификат бар ма?', ak: () => 'Иә! Сомаға не процедураға сыйлық сертификатын сайттың өзінде рәсімдеуге болады — төмендегі <a href="#giftSec" data-faq-close>«Сыйлық сертификаты»</a> бөлімі 🎁', re: /сертифик|подар|подруге|маме|сертификат|сыйлық|сыйға/i, a: () => 'Да! Подарочный сертификат на сумму или процедуру можно оформить прямо на сайте — блок <a href="#giftSec" data-faq-close>«Подарочный сертификат»</a> ниже 🎁' },
+  { q: 'Какой изгиб выбрать?', qk: 'Қандай иілім таңдау керек?', ak: () => 'Өзіңіз таңдауыңыз міндетті емес — шебер көз пішініне қарай таңдайды. Қаласаңыз, жазылу формасында суреттері бар <b>«Кірпік мәліметтері»</b> бар. Салбыраған қабаққа L, LC, M иілімдері сай келеді.', re: /изгиб|эффект|длин|какие ресниц|лисий|кукольн|натурал|нависш|иілім|эффект|ұзындығ|салбыраған/i, a: () => 'Не обязательно выбирать самой — мастер подберёт по форме глаз. Если хочется — в форме записи есть <b>«Детали ресниц»</b> с картинками эффектов и изгибов. При нависшем веке подойдут изгибы L, LC, M.' },
+];
+function faqInit() {
+  if (document.getElementById('faqFab')) return;
+  const KK = location.pathname.includes('/kk/'), Q = f => KK ? f.qk || f.q : f.q, A = f => (KK && f.ak ? f.ak : f.a)();
+  const fab = document.createElement('button'); fab.id = 'faqFab'; fab.type = 'button'; fab.className = 'faq-fab'; fab.setAttribute('aria-label', 'Вопрос мастеру'); fab.innerHTML = '💬<span>Вопрос?</span>';
+  const pan = document.createElement('div'); pan.id = 'faqPan'; pan.className = 'faq-pan'; pan.hidden = true; pan.setAttribute('role', 'dialog'); pan.setAttribute('aria-label', 'Помощник');
+  pan.innerHTML = `<div class="faq-top"><b>Помощник browlash.look</b><button type="button" class="faq-x" aria-label="Закрыть">×</button></div>
+    <div class="faq-log" id="faqLog" aria-live="polite"><div class="fm bot">Здравствуйте! 💗 Отвечу на частые вопросы сразу. Выберите или напишите свой:</div></div>
+    <div class="faq-chips" id="faqChips">${FAQ.map((f, i) => `<button type="button" data-fq="${i}">${esc(Q(f))}</button>`).join('')}</div>
+    <form class="faq-in" id="faqForm"><input id="faqQ" maxlength="200" placeholder="Ваш вопрос…" autocomplete="off" aria-label="Ваш вопрос"><button type="submit" aria-label="Отправить">➤</button></form>`;
+  document.body.append(fab, pan);
+  const log = $('faqLog');
+  const say = (html, who) => { const m = document.createElement('div'); m.className = 'fm ' + who; m.innerHTML = html; log.append(m); log.scrollTop = log.scrollHeight; };
+  const answer = (text, f0) => {
+    say(esc(text), 'me');
+    const hit = f0 ? [f0] : FAQ.filter(f => f.re.test(text));
+    setTimeout(() => {
+      if (hit.length) hit.slice(0, 2).forEach(f => say(A(f), 'bot'));
+      else say(KK ? `Бұған шебердің өзі жақсырақ жауап береді 💗 <a href="https://wa.me/${waNum()}?text=${encodeURIComponent('Сәлеметсіз бе! Сайттан сұрақ: ' + text)}" target="_blank" rel="noopener">WhatsApp-та сұрау →</a>` : `Тут лучше ответит сама мастер 💗 <a href="https://wa.me/${waNum()}?text=${encodeURIComponent('Здравствуйте! Вопрос с сайта: ' + text)}" target="_blank" rel="noopener">Спросить в WhatsApp →</a>`, 'bot');
+    }, 350);
+  };
+  const open = v => { pan.hidden = !v; fab.setAttribute('aria-expanded', v); if (v && innerWidth > 700) setTimeout(() => $('faqQ').focus(), 50); };
+  fab.onclick = () => open(pan.hidden);
+  pan.querySelector('.faq-x').onclick = () => open(false);
+  $('faqChips').onclick = e => { const b = e.target.closest('[data-fq]'); if (b) answer(Q(FAQ[b.dataset.fq]), FAQ[b.dataset.fq]); };
+  $('faqForm').onsubmit = e => { e.preventDefault(); const t = $('faqQ').value.trim(); if (t) { answer(t); $('faqQ').value = ''; } };
+  log.addEventListener('click', e => {
+    const a = e.target.closest('a'); if (!a) return;
+    if (a.hasAttribute('data-faq-wa')) { e.preventDefault(); open(false); location.href = `https://wa.me/${waNum()}`; }
+    else if (a.hasAttribute('data-faq-go') || a.hasAttribute('data-faq-close')) open(false);
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !pan.hidden) open(false); });
+}
 function burst() {
   const c = document.createElement('canvas'); c.id = 'burst'; document.body.append(c);
   const x = c.getContext('2d'), dpr = devicePixelRatio || 1;
@@ -2969,6 +3394,7 @@ function goOffline() {
     }
     if (params.get('b')) return manage(params.get('b'));
     if (params.get('g')) return giftPage(params.get('g'));
+    if (params.get('wl')) return wlPage(params.get('wl'));
     if (params.get('go')) { goSave([...goGet().filter(t => t !== params.get('go')), params.get('go')]); setTimeout(() => openOrder(params.get('go')), 300); }
     else orderBanner();
     if (state.cfg.master) $('masterName').textContent = state.cfg.master;
@@ -2983,6 +3409,8 @@ function goOffline() {
     });
     $('hours').textContent = hoursText(state.cfg);
     preNote();
+    try { seasonFx(); } catch {}
+    try { faqInit(); } catch {}
     if (state.cfg.review) document.querySelectorAll('.rv-2gis a:not(.rv-g)').forEach(a => a.href = state.cfg.review);
     document.querySelectorAll('.rv-g').forEach(a => { if (state.cfg.reviewG) a.href = state.cfg.reviewG; else a.remove(); });
     state.cat = cats()[0];
@@ -2993,6 +3421,12 @@ function goOffline() {
     const d = params.get('d');
     if (pre && d && /^\d{4}-\d{2}-\d{2}$/.test(d)) state.date = inWindow(d) ? d : null;
     renderDays(); loadAvailability();
+    // пуш «пора на коррекцию» / кнопка «как в прошлый раз»: ?again=ТОКЕН прошлой записи
+    if (params.get('again') && !pre) {
+      const tk = params.get('again'); params.delete('again');
+      history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '') + location.hash);
+      api('/api/b/' + encodeURIComponent(tk)).then(r => { const b = r.booking; if (b) repeatVisit(findSvc(b.service), b.again || b.wish); }).catch(() => {});
+    }
     if (pre) { loadSlots(); update(); setTimeout(() => $(state.date ? 'timeSec' : 'book').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }), 400); }
     // сертификат по ссылке ?gift=КОД
     const gc = params.get('gift');
