@@ -478,12 +478,12 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .reel-box { position: relative; aspect-ratio: 9 / 16; max-height: calc(100dvh - 140px); margin: 0 auto; border-radius: 14px; overflow: hidden; background: #000; }
 .reel-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .reel-dlg .link { display: block; margin-top: 10px; text-align: center; }
-#seasonFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9; }
-.garland { position: absolute; top: 0; left: 0; right: 0; height: 26px; display: flex; justify-content: space-around; pointer-events: none; z-index: 41; overflow: hidden;
+#seasonFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; } /* эффекты сезона — на заднем фоне, под текстом и карточками */
+.garland { position: absolute; top: 0; left: 0; right: 0; height: 26px; display: flex; justify-content: space-around; pointer-events: none; z-index: -1; overflow: hidden;
   background: radial-gradient(120% 30px at 50% -14px, transparent 60%, rgba(255,255,255,.18) 61%, transparent 64%) 0 0 / 52px 26px repeat-x; }
 .garland i { width: 9px; height: 13px; margin-top: 9px; border-radius: 50% 50% 45% 45%; background: var(--c, #ff2e88); box-shadow: 0 0 10px 2px var(--c, #ff2e88); animation: bulb 1.4s ease-in-out var(--d) infinite alternate; }
 .garland i:nth-child(4n+1) { --c: #ff2e88; } .garland i:nth-child(4n+2) { --c: #ffd166; } .garland i:nth-child(4n+3) { --c: #6fe3a0; } .garland i:nth-child(4n) { --c: #7cc8ff; }
-.hw-web { position: absolute; top: 0; left: 0; right: 0; height: 0; pointer-events: none; z-index: 8; }
+.hw-web { position: absolute; top: 0; left: 0; right: 0; height: 0; pointer-events: none; z-index: -1; }
 .hw-web svg { position: absolute; top: 0; width: 140px; height: 140px; overflow: visible; }
 @media (max-width: 520px) { .hw-web svg { width: 100px; height: 100px; } }
 [data-season="autumn"] .atmo, [data-season="school"] .atmo { filter: hue-rotate(50deg) saturate(1.1); }
@@ -503,6 +503,8 @@ body:has(.bar.show) .faq-pan { bottom: calc(156px + env(safe-area-inset-bottom))
 .fm { max-width: 88%; padding: 9px 12px; border-radius: 14px; font-size: 14px; line-height: 1.45; }
 .fm.bot { background: var(--surface-2); border-bottom-left-radius: 4px; } .fm.me { justify-self: end; background: var(--pink-fill); color: #fff; border-bottom-right-radius: 4px; }
 .fm a { color: var(--pink-2); }
+.faq-sugs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.faq-sug { padding: 7px 11px; border-radius: 999px; border: 1px solid rgba(255,46,136,.5); background: var(--pink-soft); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; text-align: left; }
 .faq-chips { display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px; border-top: 1px solid var(--line); scrollbar-width: none; }
 .faq-chips button { flex: none; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
 .faq-in { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
@@ -2945,7 +2947,7 @@ const FAQ = [
   { q: 'Это больно?', qk: 'Ауырта ма?', chip: 1, re: /больно|боль|неприятн|щиплет|жжет|страшно|ауыр|ауырта/i,
     a: () => 'Нет, процедура безболезненная 💗 Глаза всё время закрыты, можно расслабиться и даже подремать. Иногда в первые минуты бывает лёгкое пощипывание от паров клея — скажите мастеру, она сразу поможет.',
     ak: () => 'Жоқ, процедура ауыртпайды 💗 Көз үнемі жұмулы, демалып, тіпті мызғып алуға болады. Алғашқы минуттарда желім буынан сәл шымшу болуы мүмкін — шеберге айтыңыз, бірден көмектеседі.' },
-  { q: 'Наращивание или ламинирование?', qk: 'Ұзарту ма, ламинация ма?', chip: 1, re: /что лучше|чем отлича|разниц|или ламин|или наращ|ламинир.*наращ|наращ.*ламинир|айырмашы|қайсысы жақсы/i,
+  { q: 'Наращивание или ламинирование?', qk: 'Ұзарту ма, ламинация ма?', chip: 1, re: /что лучше|чем отлича|разниц|нараст|короткие|редкие|или ламин|или наращ|ламинир.*наращ|наращ.*ламинир|айырмашы|қайсысы жақсы/i,
     a: () => '<b>Наращивание</b> — к своим ресницам крепятся искусственные: длина, объём и эффект, как вы хотите. Держится 3–5 недель, нужна коррекция.<br><b>Ламинирование</b> — свои ресницы подкручиваются и окрашиваются: натурально, без ухода и коррекций, держится 6–8 недель. Подходит, если свои ресницы неплохой длины.<br>Сомневаетесь — <a href="#" data-faq-wa>спросите мастера</a>, она подскажет по фото.',
     ak: () => '<b>Ұзарту</b> — өз кірпігіңізге жасанды кірпік жапсырылады: ұзындығы, көлемі мен эффекті қалағаныңыздай. 3–5 аптаға сақталады, түзету қажет.<br><b>Ламинация</b> — өз кірпігіңіз бұйраланып, боялады: табиғи, күтімсіз және түзетусіз, 6–8 аптаға сақталады. Өз кірпігіңіз жеткілікті ұзын болса сай келеді.<br>Күмәндансаңыз — <a href="#" data-faq-wa>шеберден сұраңыз</a>, фото бойынша кеңес береді.' },
   { q: 'Что такое 2D, 3D?', qk: '2D, 3D деген не?', re: /(^|[^\d])[2-5] ?[dд]([^а-яa-z]|$)|объ[её]м|классик|голливуд|көлем/i,
@@ -2987,6 +2989,16 @@ const FAQ = [
   { q: 'Брови: что делаете?', qk: 'Қас: не жасайсыздар?', re: /бров|қас/i,
     a: () => { const l = state.cfg.services.filter(x => /бров/i.test((x.category || '') + ' ' + x.name)); return l.length ? '<b>Для бровей:</b><br>' + l.map(x => `${esc(x.title || x.name)} — ${esc(x.price || 'по запросу')}`).join('<br>') + '<br><a href="#book" data-faq-go>Записаться →</a>' : 'Про брови лучше <a href="#" data-faq-wa>спросить мастера</a>.'; },
     ak: () => { const l = state.cfg.services.filter(x => /бров/i.test((x.category || '') + ' ' + x.name)); return l.length ? '<b>Қасқа:</b><br>' + l.map(x => `${esc(x.title || x.name)} — ${esc(x.price || 'сұраныс бойынша')}`).join('<br>') + '<br><a href="#book" data-faq-go>Жазылу →</a>' : 'Қас туралы <a href="#" data-faq-wa>шеберден сұраңыз</a>.'; } },
+  { q: 'Привет', qk: 'Сәлем', re: /^(привет|здравствуй|здрасьте|добрый (день|вечер)|доброе утро|салем|сәлем|сәлеметсіз|hi|hello)[!.,\s]*$/i,
+    a: () => 'Здравствуйте! 💗 Спросите что угодно о процедурах, ценах или записи — или нажмите вопрос ниже.', ak: () => 'Сәлеметсіз бе! 💗 Процедура, баға не жазылу туралы кез келген сұрақ қойыңыз — не төмендегі сұрақты басыңыз.' },
+  { q: 'Спасибо', qk: 'Рақмет', re: /^(спасибо|спс|благодарю|рахмет|рақмет|ок|окей|понятно|ясно)[!.,\s💗❤️]*$/i,
+    a: () => 'Пожалуйста! 💗 Будем ждать вас. <a href="#book" data-faq-go>Записаться →</a>', ak: () => 'Оқасы жоқ! 💗 Сізді күтеміз. <a href="#book" data-faq-go>Жазылу →</a>' },
+  { q: 'Ламинирование', qk: 'Ламинация', re: /ламинир|ламинац|ламинаш|ламин/i,
+    a: () => { const l = state.cfg.services.filter(x => /ламин/i.test((x.category || '') + ' ' + x.name)); return '<b>Ламинирование</b> — свои ресницы (или брови) подкручиваются, укрепляются и окрашиваются. Выглядит натурально, держится 6–8 недель, уход почти не нужен.' + (l.length ? '<br><br>' + l.map(x => `${esc(x.title || x.name)} — ${esc(x.price || 'по запросу')}`).join('<br>') : '') + '<br><a href="#book" data-faq-go>Записаться →</a>'; },
+    ak: () => { const l = state.cfg.services.filter(x => /ламин/i.test((x.category || '') + ' ' + x.name)); return '<b>Ламинация</b> — өз кірпігіңіз (не қасыңыз) бұйраланып, нығайып, боялады. Табиғи көрінеді, 6–8 аптаға сақталады, күтім дерлік қажет емес.' + (l.length ? '<br><br>' + l.map(x => `${esc(x.title || x.name)} — ${esc(x.price || 'сұраныс бойынша')}`).join('<br>') : '') + '<br><a href="#book" data-faq-go>Жазылу →</a>'; } },
+  { q: 'Какие материалы?', qk: 'Қандай материалдар?', re: /клей|материал|гипоаллерг|из чего|какие ресницы используе|желім|материал/i,
+    a: () => 'Мастер работает на профессиональных материалах для наращивания. Если у вас была аллергия на клей или чувствительные глаза — обязательно скажите заранее, мастер подберёт вариант. Подробно про бренды — <a href="#" data-faq-wa>у мастера</a>.',
+    ak: () => 'Шебер ұзартуға арналған кәсіби материалдармен жұмыс істейді. Желімге аллергия болса не көзіңіз сезімтал болса — алдын ала міндетті түрде айтыңыз, шебер лайықты нұсқа таңдайды. Брендтер туралы толығырақ — <a href="#" data-faq-wa>шеберден</a>.' },
 ];
 function faqInit() {
   if (document.getElementById('faqFab')) return;
@@ -3000,18 +3012,48 @@ function faqInit() {
   document.body.append(fab, pan);
   const log = $('faqLog');
   const say = (html, who) => { const m = document.createElement('div'); m.className = 'fm ' + who; m.innerHTML = html; log.append(m); log.scrollTop = log.scrollHeight; };
+  // ---- понимание вопроса: точные слова + опечатки и другие окончания («скока стоет», «ресници», «запистаься») ----
+  const lev = (a, b) => { const d = Array.from({ length: a.length + 1 }, (_, i) => [i]); for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
+  // ключевые слова каждого ответа — из его шаблона (только «чистые» слова без спецсимволов)
+  FAQ.forEach(f => { f.kw = f.re.source.split('|').filter(x => !/[.*+?\[\]{}]|\\[^sb]/.test(x)).map(x => x.replace(/\\[sb]|[()^$]/g, '').replace(/\s+/g, ' ').trim()).filter(x => x.length >= 3 && /^[а-яәғқңөұүһіa-z0-9 ]+$/i.test(x)); });
+  const SYN = { скока: 'сколько', скоко: 'сколько', стоет: 'стоит', стоют: 'стоит', прайс: 'цен', ценник: 'цен', почем: 'цен', ресницы: 'ресниц', реснички: 'ресниц', бровки: 'бров',
+    адресс: 'адрес', находитесь: 'находит', записатся: 'записат', записаца: 'записат', запишите: 'запиш', нарощенные: 'наращ', нарастить: 'наращ', ламинация: 'ламинир', ламинашка: 'ламинир', корекция: 'коррекц', корекцию: 'коррекц' };
+  const fuzzy = (norm, f) => {
+    const toks = norm.split(/[^а-яәғқңөұүһіa-z0-9]+/i).filter(t => t.length >= 3).map(t => SYN[t] || SYN[Object.keys(SYN).find(k => k.length >= 5 && t.startsWith(k.slice(0, -1)))] || t);
+    let sc = 0;
+    for (const k of f.kw) {
+      const parts = k.split(' ');
+      if (parts.length > 1) { if (parts.every(p => toks.some(t => t.startsWith(p.slice(0, Math.max(3, p.length - 2)))))) sc += k.length; continue; }
+      for (const t of toks) {
+        if (t.startsWith(k) || (k.length >= 4 && t.length >= 4 && k.startsWith(t.slice(0, Math.min(t.length, k.length))))) { sc += k.length; break; }
+        if (k.length >= 4 && t.length >= 4) { const L = Math.min(t.length, k.length + 1), dd = lev(t.slice(0, L), k); if (dd <= (k.length >= 7 ? 2 : 1)) { sc += k.length * .7; break; } }
+      }
+    }
+    return sc;
+  };
+  const exact = (norm, f) => (norm.match(new RegExp(f.re.source, 'gi')) || []).reduce((t, x) => t + x.length, 0);
+  const sayPick = (list, text) => {
+    const btn = list.map(f => `<button type="button" class="faq-sug" data-fq="${FAQ.indexOf(f)}">${esc(Q(f))}</button>`).join('');
+    const wa = `<a href="https://wa.me/${waNum()}?text=${encodeURIComponent((KK ? 'Сәлеметсіз бе! Сайттан сұрақ: ' : 'Здравствуйте! Вопрос с сайта: ') + text)}" target="_blank" rel="noopener">${KK ? 'Шеберден WhatsApp-та сұрау →' : 'Спросить мастера в WhatsApp →'}</a>`;
+    say((KK ? 'Дәл түсінбедім 🙈 Мүмкін, сіз мына туралы:' : 'Не совсем поняла 🙈 Может, вы об этом:') + `<div class="faq-sugs">${btn}</div>` + (KK ? 'Немесе ' : 'Или ') + wa, 'bot');
+  };
   const answer = (text, f0) => {
     say(esc(text), 'me');
     const norm = text.toLowerCase().replace(/ё/g, 'е');
     // самый точный ответ — у кого совпало больше текста; второй показываем, только если он почти так же точен
-    const score = f => (norm.match(new RegExp(f.re.source, 'gi')) || []).reduce((t, x) => t + x.length, 0);
-    let hit = f0 ? [f0] : FAQ.map(f => [f, score(f)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).filter((x, i, a) => i === 0 || x[1] >= a[0][1] * .8).map(x => x[0]);
+    const ranked = FAQ.map(f => { const e = exact(norm, f); return [f, Math.max(e, fuzzy(norm, f)), e]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+    let hit = f0 ? [f0] : ranked.filter((x, i, a) => (x[2] > 0 || x[1] >= 3) && (i === 0 || x[1] >= a[0][1] * .8)).map(x => x[0]);
     if (hit.length > 1 && hit.some(f => f.q === 'Как перенести или отменить?')) hit = hit.filter(f => f.q !== 'Как записаться?');
     setTimeout(() => {
       if (hit.length) hit.slice(0, 2).forEach(f => say(A(f), 'bot'));
-      else say(KK ? `Бұған шебердің өзі жақсырақ жауап береді 💗 <a href="https://wa.me/${waNum()}?text=${encodeURIComponent('Сәлеметсіз бе! Сайттан сұрақ: ' + text)}" target="_blank" rel="noopener">WhatsApp-та сұрау →</a>` : `Тут лучше ответит сама мастер 💗 <a href="https://wa.me/${waNum()}?text=${encodeURIComponent('Здравствуйте! Вопрос с сайта: ' + text)}" target="_blank" rel="noopener">Спросить в WhatsApp →</a>`, 'bot');
+      else { // не поняли — не тупик: предлагаем самые похожие темы кнопками
+        const sug = [...ranked.map(x => x[0]), ...FAQ.filter(f => f.chip)].filter((f, i, a) => a.indexOf(f) === i).slice(0, 4);
+        sayPick(sug, text);
+      }
     }, 350);
   };
+  log.addEventListener('click', e => { const b = e.target.closest('.faq-sug'); if (b) answer(Q(FAQ[b.dataset.fq]), FAQ[b.dataset.fq]); });
   const open = v => { pan.hidden = !v; fab.setAttribute('aria-expanded', v); if (v && innerWidth > 700) setTimeout(() => $('faqQ').focus(), 50); };
   fab.onclick = () => open(pan.hidden);
   pan.querySelector('.faq-x').onclick = () => open(false);
