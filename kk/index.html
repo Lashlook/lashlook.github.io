@@ -1106,6 +1106,7 @@ input::-webkit-date-and-time-value { text-align: left; }
     '➕ Записать ещё': '➕ Тағы жазу',
     '⭐ Оставить отзыв в 2ГИС': '⭐ 2ГИС-те пікір қалдыру', 'Все отзывы в 2ГИС': '2ГИС-тегі барлық пікірлер', 'Как вам результат?': 'Нәтиже ұнады ма?',
     'Будем очень рады отзыву в 2ГИС или Google — пара слов очень помогает мастеру.': '2ГИС-те не Google-да пікір қалдырсаңыз, қуанамыз — бірер сөз шеберге көп көмектеседі.', '⭐ Отзыв в Google': '⭐ Google-да пікір',
+    'Другие записи с этого номера:': 'Осы нөмірден басқа жазылулар:',
     // приложение и пуш-напоминания
     'Напомнить о записи?': 'Жазылу туралы еске салайық па?',
     'Пришлём уведомление накануне и за 2 часа до визита — и сразу, если мастер подтвердит или перенесёт время.': 'Келуден бір күн және 2 сағат бұрын хабарландыру жібереміз — ал шебер уақытты растаса не ауыстырса, бірден хабарлаймыз.',
@@ -2012,7 +2013,7 @@ async function greet(me, upcoming) {
     <div class="me-acts">
       ${upcoming ? `<a class="btn sm" href="?b=${encodeURIComponent(upcoming.token)}">Менің жазылуым: ${esc(fmtShort(upcoming.date))}, ${upcoming.time}</a>` : ''}
       ${svc ? `<button type="button" class="btn ${upcoming ? 'ghost ' : ''}sm" id="meAgain">Қайталау: ${esc(svc.name)}</button>` : ''}
-      ${myUpcoming().length > 1 || (acct?.bookings || []).length > 1 ? `<button type="button" class="btn ghost sm" data-mybk>Мои записи (${Math.max(myUpcoming().length, (acct?.bookings || []).filter(x => !x.past).length)})</button>` : ''}
+      ${myUpcoming().length > 1 || (acct?.bookings || []).filter(x => !x.past).length > 1 ? `<button type="button" class="btn ghost sm" data-mybk>Мои записи (${Math.max(myUpcoming().length, (acct?.bookings || []).filter(x => !x.past).length)})</button>` : ''}
     </div>`;
   document.querySelector('.topbar').after(el);
   $('meNot').onclick = () => {
@@ -2365,6 +2366,7 @@ async function manage(token) {
     return;
   }
   if (b.status !== 'cancelled') mySave(b); else mySet(myGet().filter(x => x.token !== token));
+  (b.others || []).forEach(mySave); // её остальные записи — тоже запоминаем на этом телефоне
   // приложение с иконки открыло старую запись — узнаём клиентку и ведём на главную, там её следующая запись и приветствие
   if (isApp && firstScreen && (b.past || b.status === 'cancelled')) { if (b.me) await rememberMe(b.me); location.replace('./'); return; }
   if (b.me) rememberMe(b.me).then(() => meSave({ token })); else if (meGet()?.phone) meSave({ token });
@@ -2386,6 +2388,7 @@ async function manage(token) {
         <div class="extras" style="grid-template-columns:1fr"><button type="button" class="extra" id="mPhoto"${b.photo ? ' aria-expanded="true"' : ''}><span class="ei">📸</span><span><b>${b.photo ? 'Референс прикреплён — заменить' : 'Прикрепить фото-референс'}</b><small>Покажите мастеру, какой эффект хотите</small></span></button></div>
         <input type="file" id="mPhotoIn" accept="image/*" hidden>` : ''}
       <div class="msg" id="mMsg" style="color:var(--err)"></div>
+      ${(b.others || []).length ? `<div class="notice soft"><div class="ic">📅</div><div><b>Другие записи с этого номера:</b>${b.others.map(o => `<a class="acc-row" href="?b=${encodeURIComponent(o.token)}"><b>${esc(fmtShort(o.date))}, ${esc(o.time)}</b><span>${esc(o.service)}</span><i>${ST_SHORT[o.status] || ''}</i></a>`).join('')}</div></div>` : ''}
       ${b.status === 'came' ? `<div class="notice"><div class="ic">⭐</div><div><b>Как вам результат?</b> <span>Будем очень рады отзыву в 2ГИС или Google — пара слов очень помогает мастеру.</span><div class="cta-row" style="margin-top:10px"><a class="btn sm" href="${esc(state.cfg?.review || '')}" target="_blank" rel="noopener">⭐ Оставить отзыв в 2ГИС</a>${state.cfg?.reviewG ? `<a class="btn ghost sm" href="${esc(state.cfg.reviewG)}" target="_blank" rel="noopener">⭐ Отзыв в Google</a>` : ''}</div></div></div>` : ''}
       ${careHtml(b, b.past && b.status === 'came')}
       ${b.status !== 'cancelled' ? loyaltyHtml(b) : ''}
