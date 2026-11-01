@@ -790,6 +790,12 @@ input::-webkit-date-and-time-value { text-align: left; }
 .pre-note { border-color: rgba(216,181,122,.45); background: linear-gradient(135deg, rgba(216,181,122,.12), rgba(255,46,136,.08)); }
 .pre-note b { color: var(--gold); }
 .day.m1 { margin-left: 14px; } /* начало нового месяца — небольшой отступ в ленте дней */
+.months { display: flex; gap: 8px; margin: -4px 0 12px; flex-wrap: wrap; }
+.months .chip-p { padding: 8px 14px; font-size: 13px; }
+.days-wrap { position: relative; }
+.days-arr { position: absolute; top: 50%; transform: translateY(-60%); z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: rgba(20,18,22,.92); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.5); }
+.days-arr.l { left: -22px; } .days-arr.r { right: -22px; }
+@media (pointer: coarse) { .days-arr { display: none; } }
 .for-hint { margin: -2px 2px 4px; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
 /* личный кабинет */
 .acc-sheet { max-height: 88vh; overflow: auto; overscroll-behavior: contain; }
@@ -885,7 +891,8 @@ input::-webkit-date-and-time-value { text-align: left; }
 
     <section class="block reveal">
       <div class="sec-head"><span class="num">02</span><h2>Удобный день</h2></div>
-      <div class="days" id="days"></div>
+      <div class="months" id="months" hidden role="group" aria-label="Месяц"></div>
+      <div class="days-wrap"><button type="button" class="days-arr l" id="daysL" aria-label="Раньше" hidden>‹</button><div class="days" id="days"></div><button type="button" class="days-arr r" id="daysR" aria-label="Дальше" hidden>›</button></div>
     </section>
 
     <section class="block reveal" id="timeSec">
@@ -1242,6 +1249,20 @@ function renderDays() {
     };
     box.append(b);
   }
+  // запись открыта на несколько месяцев (предзапись) — кнопки месяцев над лентой, чтобы не листать 60 дней
+  const mbox = $('months'), keys = [...box.querySelectorAll('.day')].map(x => x.dataset.key), months = [...new Set(keys.map(k => k.slice(0, 7)))];
+  mbox.hidden = months.length < 2;
+  mbox.innerHTML = months.map(m => `<button type="button" class="chip-p" data-m="${m}">${cap(new Date(m + '-01T00:00').toLocaleDateString('ru-RU', { month: 'long' }))}</button>`).join('');
+  const markMonth = () => { const left = box.scrollLeft + 10, first = [...box.querySelectorAll('.day')].find(d => d.offsetLeft + d.offsetWidth > left); const m = first?.dataset.key.slice(0, 7);
+    mbox.querySelectorAll('[data-m]').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === m));
+    $('daysL').hidden = box.scrollLeft < 10; $('daysR').hidden = box.scrollLeft + box.clientWidth >= box.scrollWidth - 10; };
+  mbox.onclick = e => { const b = e.target.closest('[data-m]'); if (!b) return; const d = box.querySelector(`.day[data-key^="${b.dataset.m}"]`); if (d) box.scrollTo({ left: d.offsetLeft - box.offsetLeft - 4, behavior: reduce ? 'auto' : 'smooth' }); };
+  box.onscroll = () => requestAnimationFrame(markMonth);
+  $('daysL').onclick = () => box.scrollBy({ left: -box.clientWidth * .8, behavior: 'smooth' });
+  $('daysR').onclick = () => box.scrollBy({ left: box.clientWidth * .8, behavior: 'smooth' });
+  // колесо мыши на компьютере листает ленту вбок
+  box.onwheel = e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && box.scrollWidth > box.clientWidth) { const before = box.scrollLeft; box.scrollLeft += e.deltaY; if (box.scrollLeft !== before) e.preventDefault(); } };
+  setTimeout(markMonth, 50);
 }
 
 // сколько свободных окошек в каждый день для выбранной процедуры
