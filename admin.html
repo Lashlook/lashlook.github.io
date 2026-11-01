@@ -652,7 +652,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
           <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
           <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
           <label for="sUntil">🎄 Предзапись до (необязательно)<input id="sUntil" type="date"><small style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">Например, 31.12 — клиентки смогут записаться на любой день до этой даты. Пусто — выключено.</small></label>
-          <label for="sSeason">❄️ Сезонное оформление сайта<select id="sSeason"><option value="1">Да: снег в декабре, сердечки к 14.02, цветы к 8 Марта</option><option value="0">Нет</option></select></label>
+          <label for="sSeason">❄️ Сезонное оформление сайта<select id="sSeason"><option value="1">Да: Хеллоуин, снег в декабре, сердечки к 14.02, цветы к 8 Марта</option><option value="0">Нет</option></select></label>
           <label for="sPpAmt">💳 Предоплата к праздникам, ₸ (0 — без предоплаты)<input id="sPpAmt" type="number" min="0" max="100000" step="500" inputmode="numeric"></label>
           <label for="sPpFrom">💳 Предоплата — с даты<input id="sPpFrom" type="date"></label>
           <label for="sPpTo">💳 Предоплата — по дату<input id="sPpTo" type="date"></label>
@@ -1064,7 +1064,7 @@ function bookingRow(b, nowKey, nowMin) {
         ${b.comment ? `<div class="bk-note">«${esc(b.comment)}»</div>` : ''}
         ${b.clientNote ? `<div class="bk-note client">📝 ${esc(b.clientNote)}</div>` : ''}
         ${b.wish ? `<div class="bk-wish">✨ Хочет: ${esc(wishText(b.wish))}</div>` : ''}
-        ${b.prefs?.length ? `<div class="bk-wish">☕ К визиту: ${esc(b.prefs.join(', '))}</div>` : ''}
+        ${b.prefs?.length ? `<div class="bk-wish">💬 К визиту: ${esc(b.prefs.join(', '))}</div>` : ''}
         ${b.prepay ? `<div class="bk-wish">💳 Предоплата ${money(b.prepay)}: ${b.prepay_st === 'paid' ? '✅ получена' : b.prepay_st === 'receipt' ? '🧾 прислала чек' : '⏳ не оплачена'}${b.prepay_rc ? ` · <a href="#" data-prc="${b.id}">чек</a>` : ''}${b.prepay_st !== 'paid' && ['new', 'confirmed'].includes(b.status) ? ` · <a href="#" data-ppaid="${b.id}">отметить «пришла»</a>` : ''}</div>` : ''}
         ${b.tech ? `<div class="bk-tech">🧵 ${esc(techText(b.tech))}</div>` : b.lastTech ? `<div class="bk-tech last">🧵 Прошлый раз (${dShort(b.lastTech.date)}): ${esc(b.lastTech.text)}</div>` : ''}
         ${quick ? `<div class="bk-quick">${quick}</div>` : ''}

@@ -483,6 +483,10 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
   background: radial-gradient(120% 30px at 50% -14px, transparent 60%, rgba(255,255,255,.18) 61%, transparent 64%) 0 0 / 52px 26px repeat-x; }
 .garland i { width: 9px; height: 13px; margin-top: 9px; border-radius: 50% 50% 45% 45%; background: var(--c, #ff2e88); box-shadow: 0 0 10px 2px var(--c, #ff2e88); animation: bulb 1.4s ease-in-out var(--d) infinite alternate; }
 .garland i:nth-child(4n+1) { --c: #ff2e88; } .garland i:nth-child(4n+2) { --c: #ffd166; } .garland i:nth-child(4n+3) { --c: #6fe3a0; } .garland i:nth-child(4n) { --c: #7cc8ff; }
+.hw-web { position: absolute; top: 0; left: 0; right: 0; height: 0; pointer-events: none; z-index: 8; }
+.hw-web svg { position: absolute; top: 0; width: 140px; height: 140px; overflow: visible; }
+@media (max-width: 520px) { .hw-web svg { width: 100px; height: 100px; } }
+[data-season="halloween"] .atmo { filter: hue-rotate(55deg) saturate(1.3); }
 .garland i:nth-child(n+15) { display: none; } @media (min-width: 700px) { .garland i:nth-child(n+15) { display: block; } }
 @keyframes bulb { from { opacity: .35; box-shadow: 0 0 2px 0 var(--c); } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .garland i { animation: none; opacity: .85; } }
@@ -974,7 +978,7 @@ input::-webkit-date-and-time-value { text-align: left; }
         <div class="extras">
           <button type="button" class="extra wish-btn" id="wishBtn" aria-expanded="false" aria-controls="wishBox" hidden><span class="ei">✨</span><span><b>Детали ресниц</b><small id="wishSum">эффект, изгиб, длина — если хотите выбрать сами</small></span></button>
           <div class="wish" id="wishBox" hidden></div>
-          <button type="button" class="extra prefs-btn" id="prefsBtn" aria-expanded="false" aria-controls="prefsBox"><span class="ei">☕</span><span><b>Как вам комфортнее</b><small id="prefsSum">поболтать или тишина, чай или кофе</small></span></button>
+          <button type="button" class="extra prefs-btn" id="prefsBtn" aria-expanded="false" aria-controls="prefsBox"><span class="ei">💬</span><span><b>Как вам комфортнее</b><small id="prefsSum">поболтать, тишина или подремать</small></span></button>
           <div class="prefs" id="prefsBox" hidden></div>
           <button type="button" class="extra" id="photoBtn" aria-expanded="false"><span class="ei">📸</span><span><b>Фото-референс</b><small>Покажите, какой эффект хотите</small></span></button>
           <button type="button" class="extra" id="giftBtn" aria-expanded="false"><span class="ei">🎁</span><span><b>Есть сертификат</b><small>Введите код подарка</small></span></button>
@@ -1500,7 +1504,7 @@ function waText() {
   return `Здравствуйте! Хочу записаться в browlash.look 💗\n\n💅 ${s.name}${s.price ? ' — ' + s.price : ''}\n📅 ${ruDay}, ${state.time}–${end}\n👤 ${$('name').value.trim()}\n📞 ${phone.value}` +
     ($('comment').value.trim() ? `\n💬 ${$('comment').value.trim()}` : '') +
     (normCode($('gift').value) ? `\n🎁 Сертификат: ${$('gift').value.trim()}` : '') +
-    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + (hasLash() && wishText(state.wish) ? `\n✨ Ресницы: ${wishText(state.wish)}` : '') + (state.prefs?.length ? `\n☕ К визиту: ${state.prefs.join(', ')}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
+    ($('bday').value.length === 5 ? `\n🎂 День рождения: ${$('bday').value}` : '') + (hasLash() && wishText(state.wish) ? `\n✨ Ресницы: ${wishText(state.wish)}` : '') + (state.prefs?.length ? `\n💬 К визиту: ${state.prefs.join(', ')}` : '') + `\n\nПодскажите, пожалуйста, свободно ли это время?`;
 }
 function sendWhatsApp() {
   const url = `https://wa.me/${waNum()}?text=${encodeURIComponent(waText())}`;
@@ -1802,10 +1806,10 @@ function drawLashes(ctx, lm, W, H) {
   ctx.globalAlpha = 1;
 }
 // пожелания к визиту — мастер видит их в записи; запоминаем на телефоне для следующего раза
-const PREF_G = [['Атмосфера', ['поболтать', 'тишина', 'подремать'], 1], ['Напиток', ['чай', 'кофе', 'вода'], 1], ['Комфорт', ['подушка', 'плед', 'музыка потише'], 0]];
-const PREF_IC = { 'поболтать': '💬', 'тишина': '🤫', 'подремать': '😴', 'чай': '🍵', 'кофе': '☕', 'вода': '💧', 'подушка': '🛏', 'плед': '🧣', 'музыка потише': '🎧' };
+const PREF_G = [['Атмосфера', ['поболтать', 'тишина', 'подремать'], 1], ['Комфорт', ['подушка', 'плед'], 0]];
+const PREF_IC = { 'поболтать': '💬', 'тишина': '🤫', 'подремать': '😴', 'подушка': '🛏', 'плед': '🧣' };
 try { state.prefs = JSON.parse(localStorage.getItem('bl_prefs') || '[]').filter(x => PREF_IC[x]); } catch { state.prefs = []; }
-function syncPrefs() { const el = $('prefsSum'); if (el) el.textContent = state.prefs.length ? state.prefs.map(x => PREF_IC[x] + ' ' + x).join(' · ') : 'поболтать или тишина, чай или кофе'; }
+function syncPrefs() { const el = $('prefsSum'); if (el) el.textContent = state.prefs.length ? state.prefs.map(x => PREF_IC[x] + ' ' + x).join(' · ') : 'поболтать, тишина или подремать'; }
 function renderPrefs() {
   const box = $('prefsBox'); if (!box) return;
   box.innerHTML = '<p>Необязательно — мастер подготовится заранее 💗</p>' + PREF_G.map(([t, list]) => `<div class="pg"><h4>${t}</h4><div class="pchips">${list.map(v => `<button type="button" class="pchip" data-pref="${esc(v)}" aria-pressed="${state.prefs.includes(v)}">${PREF_IC[v]} ${esc(v)}</button>`).join('')}</div></div>`).join('');
@@ -2844,8 +2848,9 @@ async function orderBanner() {
 // ---------- Салют из розовых «ресничек» ----------
 // ---------- Сайт по сезону: снег и гирлянда к Новому году, сердечки к 14 февраля, цветы к 8 Марта ----------
 function seasonNow(d = new Date()) {
-  const f = new URLSearchParams(location.search).get('season'); if (f) return f; // предпросмотр: ?season=winter|love|spring|nauryz
+  const f = new URLSearchParams(location.search).get('season'); if (f) return f; // предпросмотр: ?season=winter|love|spring|nauryz|halloween
   const m = d.getMonth() + 1, day = d.getDate();
+  if ((m === 10 && day >= 25) || (m === 11 && day <= 2)) return 'halloween';
   if ((m === 12 && day >= 1) || (m === 1 && day <= 10)) return 'winter';
   if (m === 2 && day >= 7 && day <= 14) return 'love';
   if (m === 3 && day >= 1 && day <= 8) return 'spring';
@@ -2865,8 +2870,13 @@ function seasonFx() {
   const ctx = cv.getContext('2d'); let W = 0, H = 0, dpr = Math.min(2, devicePixelRatio || 1);
   const size = () => { W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
   size(); addEventListener('resize', size);
-  const EMO = { love: ['💗', '💕', '❤️', '💖'], spring: ['🌷', '🌸', '💐', '🌼'], nauryz: ['🌷', '✨', '🌸'] }[kind];
-  const N = calm ? (kind === 'winter' ? 18 : 6) : (kind === 'winter' ? (W < 700 ? 45 : 80) : (W < 700 ? 10 : 16));
+  const EMO = { love: ['💗', '💕', '❤️', '💖'], spring: ['🌷', '🌸', '💐', '🌼'], nauryz: ['🌷', '✨', '🌸'], halloween: ['🎃', '🦇', '👻', '🦇', '🍬', '🕷️'] }[kind];
+  if (kind === 'halloween') { // паутина в углах
+    const web = document.createElement('div'); web.className = 'hw-web'; web.setAttribute('aria-hidden', 'true');
+    const svg = flip => `<svg viewBox="0 0 120 120" style="${flip ? 'right:0;transform:scaleX(-1)' : 'left:0'}"><g fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1">${[0, 18, 36, 54, 72, 90].map(a => `<line x1="0" y1="0" x2="${(120 * Math.cos(a * Math.PI / 180)).toFixed(1)}" y2="${(120 * Math.sin(a * Math.PI / 180)).toFixed(1)}"/>`).join('')}${[24, 48, 72, 96].map(r => `<path d="M${r} 0 ${[18, 36, 54, 72, 90].map(a => `Q${(r * .8 * Math.cos((a - 9) * Math.PI / 180)).toFixed(1)} ${(r * .8 * Math.sin((a - 9) * Math.PI / 180)).toFixed(1)} ${(r * Math.cos(a * Math.PI / 180)).toFixed(1)} ${(r * Math.sin(a * Math.PI / 180)).toFixed(1)}`).join(' ')}"/>`).join('')}</g><line x1="64" y1="0" x2="64" y2="78" stroke="rgba(255,255,255,.35)"/><text x="64" y="92" font-size="16" text-anchor="middle">🕷️</text></svg>`;
+    web.innerHTML = svg(false) + svg(true); document.body.prepend(web);
+  }
+  const N = calm ? (kind === 'winter' ? 18 : 6) : (kind === 'winter' ? (W < 700 ? 45 : 80) : kind === 'halloween' ? (W < 700 ? 9 : 14) : (W < 700 ? 10 : 16));
   const mk = top => ({ x: Math.random() * W, y: top ? -20 - Math.random() * H * .3 : Math.random() * H, r: kind === 'winter' ? 1 + Math.random() * 2.6 : 14 + Math.random() * 12,
     vy: kind === 'winter' ? .35 + Math.random() * .9 : .45 + Math.random() * .7, ph: Math.random() * 6.3, sw: .4 + Math.random() * .8, e: EMO ? EMO[Math.random() * EMO.length | 0] : '', a: .35 + Math.random() * .55 });
   const P = Array.from({ length: N }, () => mk(false));
