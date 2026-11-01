@@ -651,6 +651,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
         <div class="row2">
           <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
           <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
+          <label for="sUntil">🎄 Предзапись до (необязательно)<input id="sUntil" type="date"><small style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">Например, 31.12 — клиентки смогут записаться на любой день до этой даты. Пусто — выключено.</small></label>
         </div>
       </div>
       <div class="panel">
@@ -1861,7 +1862,7 @@ async function loadSettings() {
   try {
     setCfg = await api('/api/admin/settings');
     renderWeekEd();
-    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21;
+    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21; $('sUntil').value = setCfg.bookUntil || '';
     $('sMaster').value = setCfg.master || ''; $('sWa').value = setCfg.whatsapp ? fmtPhone(setCfg.whatsapp) : '';
     $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || ''; $('sKaspi').value = setCfg.kaspi || '';
 
@@ -1940,7 +1941,7 @@ $('svcAdd').onclick = () => {
 $('setSave').onclick = async () => {
   $('setErr').textContent = '';
   const body = {
-    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value),
+    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value), bookUntil: $('sUntil').value,
     master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value, kaspi: $('sKaspi').value,
     services: readSvcEd(),
     perks: Object.fromEntries([['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths']].map(([id, k]) => [k, $(id).value])),
