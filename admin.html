@@ -213,6 +213,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .modal-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; }
 .modal-foot .err { margin-right: auto; flex: 1 1 100%; }
 
+.toast[popover] { inset: auto; top: auto; right: auto; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); margin: 0; border: 0; overflow: visible; }
 .toast.bad { background: #3a1416 !important; color: #FFB4AB !important; border: 1px solid rgba(255,138,128,.5); box-shadow: 0 16px 40px -16px rgba(229,72,77,.8) !important; max-width: min(92vw, 420px); }
 .toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: inline-flex; align-items: center; gap: 10px;
   background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 18px; font-weight: 600; box-shadow: 0 16px 40px -12px rgba(255,46,136,1);
@@ -924,7 +925,25 @@ const ICON = {
 function toast(t, kind) {
   const el = $('toast'); $('toastT').textContent = t; el.classList.toggle('bad', kind === 'bad');
   el.querySelector('path').setAttribute('d', kind === 'bad' ? 'M12 7v6M12 17h.01' : 'M5 12.5l4.5 4.5L19 7.5');
-  el.hidden = true; void el.offsetWidth; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, kind === 'bad' ? 4500 : 2400);
+  // уведомление должно быть поверх открытого окна (карточки и т.п.), иначе его не видно
+  const pop = typeof el.showPopover === 'function';
+  if (pop) { if (!el.hasAttribute('popover')) el.setAttribute('popover', 'manual'); }
+  else { const host = [...document.querySelectorAll('dialog[open]')].pop() || document.body; if (el.parentNode !== host) host.appendChild(el); }
+  el.hidden = true; void el.offsetWidth; el.hidden = false;
+  if (pop) try { if (el.matches(':popover-open')) el.hidePopover(); el.showPopover(); } catch {}
+  clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; if (pop) try { el.hidePopover(); } catch {} }, kind === 'bad' ? 4500 : 2400);
+}
+// поделиться ссылкой (на телефоне — меню «Отправить»), иначе скопировать; не вышло — показать ссылку
+async function shareOrCopy(url, okMsg) {
+  if (!url) return toast('Ссылки нет — адрес сайта не настроен', 'bad');
+  if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ url }); return; } catch (e) { if (e?.name === 'AbortError') return; } }
+  try { await navigator.clipboard.writeText(url); return toast(okMsg); } catch {}
+  try { // запасной путь: поле внутри открытого окна (всё вне модального окна неактивно)
+    const ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0;left:0;top:0';
+    ([...document.querySelectorAll('dialog[open]')].pop() || document.body).appendChild(ta); ta.select(); ta.setSelectionRange(0, url.length);
+    const ok = document.execCommand('copy'); ta.remove(); if (ok) return toast(okMsg);
+  } catch {}
+  prompt('Скопируйте ссылку:', url);
 }
 
 // На GitHub Pages адрес сервера берём из config.json (его обновляет сервер при запуске)
@@ -1527,14 +1546,14 @@ async function openClient(phone) {
     ${info.meUrl ? `<button class="mini" type="button" id="cMe" style="grid-column:1/-1;justify-self:start">🔑 Её личная ссылка — сайт её узнает</button>` : ''}
     ${info.refUrl ? `<button class="mini" type="button" id="cRef" data-url="${esc(info.refUrl)}" style="grid-column:1/-1;justify-self:start">🔗 Её ссылка «приведи подругу»</button>` : ''}
     ${info.account ? `<div class="cp" style="grid-column:1/-1"><span>🔐 Личный кабинет</span><small>Входит на сайте по номеру и паролю. Забыла пароль — сбросьте, и она задаст новый из своей записи.</small><button class="mini bad" type="button" id="cPassReset" style="justify-self:start;margin-top:6px">Сбросить пароль</button></div>` : ''}`;
-  $('cMe')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.meUrl); toast('Личная ссылка скопирована'); } catch { toast(info.meUrl); } });
+  $('cMe')?.addEventListener('click', () => shareOrCopy(info.meUrl, 'Личная ссылка скопирована'));
   $('cPassReset')?.addEventListener('click', async e => {
     const b = e.currentTarget;
     if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = 'Точно сбросить? Нажмите ещё раз'; return; }
     try { await api('/api/admin/clients/' + encodeURIComponent(phone) + '/reset-pass', { method: 'POST' }); toast('Пароль сброшен — пусть задаст новый из своей записи'); b.closest('.cp').remove(); }
     catch (err) { toast(err.message, 'bad'); }
   });
-  $('cRef')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(info.refUrl); toast('Ссылка скопирована'); } catch { toast(info.refUrl); } });
+  $('cRef')?.addEventListener('click', () => shareOrCopy(info.refUrl, 'Ссылка скопирована'));
   const name = history[0]?.name || '';
   const nm = info.name || name; $('cAva').textContent = nm.trim()[0] || '?'; $('cName').value = nm; $('cPhone').value = fmtPhone(phone); $('cPhone')._orig = $('cPhone').value; $('cPhoneHint').hidden = true;
   const now = new Date();
