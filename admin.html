@@ -652,7 +652,8 @@ dialog { overflow: auto; overscroll-behavior: contain; }
         <div class="row2">
           <label for="sStep">Шаг записи<select id="sStep"><option value="15">каждые 15 минут</option><option value="30">каждые 30 минут</option><option value="60">каждый час</option></select></label>
           <label for="sAhead">Запись вперёд, дней<input id="sAhead" type="number" min="1" max="90" inputmode="numeric"></label>
-          <label for="sUntil">🎄 Предзапись до (необязательно)<input id="sUntil" type="date"><small style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">Например, 31.12 — клиентки смогут записаться на любой день до этой даты. Пусто — выключено.</small></label>
+          <label for="sFrom">🎄 Предзапись с (необязательно)<input id="sFrom" type="date"><small style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">Например, 01.12 — тогда откроются только ближайшие дни + период «с … по …», дни между ними будут закрыты. Пусто — предзапись со дня сегодня.</small></label>
+          <label for="sUntil">🎄 Предзапись до (необязательно)<input id="sUntil" type="date"><small style="text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted)">Например, 31.12 — клиентки смогут записаться на дни до этой даты (с даты «Предзапись с», если она указана). Пусто — выключено.</small></label>
           <label for="sSeason">❄️ Сезонное оформление сайта<select id="sSeason"><option value="1">Да: праздники и сезоны (Новый год, 14.02, 8 Марта, Наурыз, День матери, 1 сентября, Хеллоуин…)</option><option value="0">Нет</option></select></label>
           <label for="sPpAmt">💳 Предоплата к праздникам, ₸ (0 — без предоплаты)<input id="sPpAmt" type="number" min="0" max="100000" step="500" inputmode="numeric"></label>
           <label for="sPpFrom">💳 Предоплата — с даты<input id="sPpFrom" type="date"></label>
@@ -1894,7 +1895,7 @@ async function loadSettings() {
   try {
     setCfg = await api('/api/admin/settings');
     renderWeekEd();
-    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21; $('sUntil').value = setCfg.bookUntil || ''; $('sSeason').value = setCfg.season === false ? '0' : '1'; { const pp = setCfg.prepay || {}; $('sPpAmt').value = pp.amount || ''; $('sPpFrom').value = pp.from || ''; $('sPpTo').value = pp.to || ''; $('sPpNew').value = pp.newOnly ? '1' : '0'; }
+    $('sStep').value = String(setCfg.step || 30); $('sAhead').value = setCfg.daysAhead || 21; $('sUntil').value = setCfg.bookUntil || ''; $('sFrom').value = setCfg.bookFrom || ''; $('sSeason').value = setCfg.season === false ? '0' : '1'; { const pp = setCfg.prepay || {}; $('sPpAmt').value = pp.amount || ''; $('sPpFrom').value = pp.from || ''; $('sPpTo').value = pp.to || ''; $('sPpNew').value = pp.newOnly ? '1' : '0'; }
     $('sMaster').value = setCfg.master || ''; $('sWa').value = setCfg.whatsapp ? fmtPhone(setCfg.whatsapp) : '';
     $('sRemind').value = setCfg.reminderTime || '19:00'; $('sReview').value = setCfg.reviewUrl || ''; $('sKaspi').value = setCfg.kaspi || '';
 
@@ -1974,7 +1975,7 @@ $('svcAdd').onclick = () => {
 $('setSave').onclick = async () => {
   $('setErr').textContent = '';
   const body = {
-    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value), bookUntil: $('sUntil').value, season: $('sSeason').value === '1', prepay: { amount: Number($('sPpAmt').value) || 0, from: $('sPpFrom').value, to: $('sPpTo').value, newOnly: $('sPpNew').value === '1' },
+    week: Object.fromEntries(Object.entries(weekState).map(([d, ws]) => [d, mergeWins(ws)])), step: Number($('sStep').value), daysAhead: Number($('sAhead').value), bookUntil: $('sUntil').value, bookFrom: $('sFrom').value, season: $('sSeason').value === '1', prepay: { amount: Number($('sPpAmt').value) || 0, from: $('sPpFrom').value, to: $('sPpTo').value, newOnly: $('sPpNew').value === '1' },
     master: $('sMaster').value, whatsapp: $('sWa').value, reminderTime: $('sRemind').value, reviewUrl: $('sReview').value, kaspi: $('sKaspi').value,
     services: readSvcEd(),
     perks: Object.fromEntries([['pBdPct', 'birthdayPct'], ['pBdDays', 'birthdayDays'], ['pBdRemind', 'birthdayRemind'], ['pRefPct', 'referralPct'], ['pRefBonus', 'referrerPct'], ['pLoyN', 'loyaltyEvery'], ['pLoyPct', 'loyaltyPct'], ['pNoshow', 'noshowLimit'], ['pGiftM', 'giftMonths'], ['pCbDays', 'comebackDays'], ['pCbPct', 'comebackPct'], ['pCorr', 'correctionPush']].map(([id, k]) => [k, $(id).value])),
