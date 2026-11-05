@@ -1769,7 +1769,7 @@ async function loadSlots(scroll) {
   if (!state.service || !state.date) return;
   const seq = ++slotSeq; // быстро переключали дни — показываем только последний ответ
   if (!inWindow(state.date)) {
-    box.innerHTML = `<div class="empty">Запись на ${esc(fmtShort(state.date))} әлі ашылмаған — шебер ${state.cfg.daysAhead} күн алдын ала жазады.<br>Жақын күнді таңдаңыз немесе <a href="https://wa.me/${waNum()}" target="_blank" rel="noopener" style="color:var(--pink-2)">шеберге жазыңыз</a> — ол алдын ала жазып қояды.</div>`;
+    box.innerHTML = `<div class="empty">Запись на ${esc(fmtShort(state.date))} әлі ашылмаған — шебер ${state.cfg.baseAhead || state.cfg.daysAhead} күн алдын ала жазады.<br>Жақын күнді таңдаңыз немесе <a href="https://wa.me/${waNum()}" target="_blank" rel="noopener" style="color:var(--pink-2)">шеберге жазыңыз</a> — ол алдын ала жазып қояды.</div>`;
     return;
   }
   box.innerHTML = '<div class="skeleton"></div>';

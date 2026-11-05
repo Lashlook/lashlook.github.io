@@ -1402,7 +1402,7 @@ async function loadSlots(scroll) {
   if (!state.service || !state.date) return;
   const seq = ++slotSeq; // быстро переключали дни — показываем только последний ответ
   if (!inWindow(state.date)) {
-    box.innerHTML = `<div class="empty">Запись на ${esc(fmtShort(state.date))} ещё не открыта — мастер открывает запись на ${state.cfg.daysAhead} ${state.cfg.daysAhead === 1 ? 'день' : state.cfg.daysAhead < 5 ? 'дня' : 'дней'} вперёд.<br>Выберите ближайший день или <a href="https://wa.me/${waNum()}" target="_blank" rel="noopener" style="color:var(--pink-2)">напишите мастеру</a> — она запишет заранее.</div>`;
+    box.innerHTML = `<div class="empty">Запись на ${esc(fmtShort(state.date))} ещё не открыта — мастер открывает запись на ${state.cfg.baseAhead || state.cfg.daysAhead} ${(state.cfg.baseAhead || state.cfg.daysAhead) === 1 ? 'день' : (state.cfg.baseAhead || state.cfg.daysAhead) < 5 ? 'дня' : 'дней'} вперёд.<br>Выберите ближайший день или <a href="https://wa.me/${waNum()}" target="_blank" rel="noopener" style="color:var(--pink-2)">напишите мастеру</a> — она запишет заранее.</div>`;
     return;
   }
   box.innerHTML = '<div class="skeleton"></div>';
