@@ -39,10 +39,19 @@
 <meta property="og:title" content="Наращивание ресниц в Петропавловске — browlash.look">
 <meta property="og:description" content="Ресницы, которые говорят за тебя 💗 Наращивание, ламинирование, брови. Петропавловск, Ульянова 49. Онлайн-запись.">
 <title>Наращивание ресниц в Петропавловске — browlash.look · онлайн-запись</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Marck+Script&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="preload" as="font" type="font/woff2" href="/fonts/playfair-cyrillic.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/onest-cyrillic.woff2" crossorigin>
 <style>
+/* Шрифты лежат на сайте (папка fonts), а не на Google: быстрее грузятся и не зависят от чужого сервера.
+   Playfair — заголовки (штрихи тоньше на крупном размере), Onest — текст (есть казахские буквы), Marck Script — вывеска. */
+@font-face { font-family: "Playfair"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/playfair-cyrillic.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Playfair"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/playfair-kk.woff2") format("woff2"); unicode-range: U+0492-0493,U+049A-049B,U+04A2-04A3,U+04AE-04AF,U+04BA-04BB,U+04D8-04D9,U+04E8-04E9; }
+@font-face { font-family: "Playfair"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/playfair-latin.woff2") format("woff2"); unicode-range: U+0000-00FF,U+2000-206F,U+20AC,U+2212; }
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/onest-cyrillic.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/onest-kk.woff2") format("woff2"); unicode-range: U+0492-0493,U+049A-049B,U+04A2-04A3,U+04AE-04AF,U+04BA-04BB,U+04D8-04D9,U+04E8-04E9; }
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/onest-latin.woff2") format("woff2"); unicode-range: U+0000-00FF,U+2000-206F,U+20AC,U+2212; }
+@font-face { font-family: "Marck Script"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/marck-cyrillic.woff2") format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+@font-face { font-family: "Marck Script"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/marck-latin.woff2") format("woff2"); unicode-range: U+0000-00FF,U+2000-206F,U+20AC,U+2212; }
 /* Layout: тёмная витрина в духе её прайса — герой со «смотрящим» глазом, затем запись четырьмя шагами (услуга из прайса с пунктирными выносками → день → время → контакты), карта и липкая плашка с итогом и ценой */
 :root {
   --bg: #0A090B;
@@ -57,9 +66,9 @@
   --pink-soft: rgba(255, 46, 136, .14);
   --gold: #D8B57A;
   --err: #FF8A80;
-  --display: "Playfair Display", "Times New Roman", serif;
+  --display: "Playfair", "Times New Roman", serif;
   --script: "Marck Script", "Segoe Script", cursive;
-  --body: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --body: "Onest", "Segoe UI", system-ui, sans-serif;
   --r: 16px;
   --ease: cubic-bezier(.2, .8, .2, 1);
   color-scheme: dark;
@@ -842,7 +851,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 
 .topbar { padding-top: max(18px, env(safe-area-inset-top, 0px)); }
 /* приложение и уведомления */
-.app-btn { font: 600 12px/1 Montserrat, sans-serif; color: var(--ink); background: var(--pink-soft); border: 1px solid rgba(255,46,136,.35); border-radius: 999px; padding: 8px 12px; cursor: pointer; white-space: nowrap; flex: none; transition: background .2s, transform .2s; }
+.app-btn { font: 600 12px/1 var(--body); color: var(--ink); background: var(--pink-soft); border: 1px solid rgba(255,46,136,.35); border-radius: 999px; padding: 8px 12px; cursor: pointer; white-space: nowrap; flex: none; transition: background .2s, transform .2s; }
 .app-btn:hover { background: rgba(255,46,136,.22); } .app-btn:active { transform: scale(.96); }
 .pushbox { position: relative; overflow: hidden; }
 .pushbox .bell { display: inline-block; transform-origin: 50% 10%; animation: ring 2.6s ease-in-out 1s infinite; }
@@ -853,7 +862,7 @@ input::-webkit-date-and-time-value { text-align: left; }
 .pushbox .muted { color: var(--muted); font-size: 13px; }
 .ios-bg { position: fixed; inset: 0; z-index: 90; background: rgba(5,4,6,.72); backdrop-filter: blur(6px); display: flex; align-items: flex-end; justify-content: center; animation: fadeIn .25s ease; }
 .ios-sheet { width: min(480px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 0 0; padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px)); animation: sheetUp .35s cubic-bezier(.2,.9,.3,1.2); }
-.ios-sheet h3 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 22px; margin: 0 0 6px; }
+.ios-sheet h3 { font-family: var(--display); font-weight: 600; font-size: 22px; margin: 0 0 6px; }
 .ios-sheet ol { padding-left: 0; list-style: none; margin: 14px 0 18px; counter-reset: st; }
 .ios-sheet li { counter-increment: st; display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px dashed rgba(255,255,255,.08); }
 .ios-sheet li::before { content: counter(st); flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,46,136,.16); color: #FF5FA2; font-weight: 700; font-size: 13px; }
@@ -908,6 +917,251 @@ input::-webkit-date-and-time-value { text-align: left; }
 }
 @media (pointer: coarse) { .ig { padding: 11px 16px; } }
 .bar-in, .look-zoom, .hero-photo .look-media { will-change: transform; }
+
+/* ================================================================
+   Дизайн 2.0 (11.2026). Слой поверх прежних стилей.
+   Идея: на странице светится только одна вещь — неоновая вывеска в заголовке,
+   как на стене студии. Всё остальное — спокойное: тонкие линии, крупный
+   контрастный шрифт с «волосяными» штрихами, плоский розовый без свечения.
+   Тексты и разметку не трогаем — на них завязан казахский перевод.
+   ================================================================ */
+:root {
+  --display: "Playfair", "Playfair Display", "Times New Roman", serif;
+  --script: "Marck Script", "Segoe Script", cursive;
+  --body: "Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --on-pink: #1B0410;          /* текст на розовой заливке: контраст 5.6 вместо 3.5 у белого */
+  --pink-hi: #FF5CA3;          /* розовый при наведении */
+  --pink-fill: var(--pink);
+  --line: #2E2830;
+  --line-2: #413943;           /* граница, по которой видно, что это кнопка или поле */
+  --tube: #FFE8F1;             /* «стекло» неоновой трубки */
+  --r: 18px;
+  --r-lg: 26px;
+}
+body { font: 16px/1.55 var(--body); font-optical-sizing: auto; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+::selection { background: var(--pink); color: var(--on-pink); }
+:focus-visible { outline: 2px solid var(--pink-2); outline-offset: 3px; }
+
+/* ---------- Фон: без плавающих пятен, одна тихая дымка сверху ---------- */
+.atmo .blob { animation: none; filter: blur(110px); }
+.atmo .b1 { width: 620px; height: 620px; top: -320px; right: -260px; opacity: .34; }
+.atmo .b2 { display: none; }
+.atmo .grain { animation: none; opacity: .05; }
+
+/* ---------- Появление секций: без «всплывания» на каждом блоке ---------- */
+.reveal { transform: none; opacity: 1; transition: none; }
+
+/* ---------- Шапка ---------- */
+.topbar { padding-block: max(16px, env(safe-area-inset-top, 0px)) 0; }
+.logo { font: 450 21px/1 var(--display); letter-spacing: 0; font-variation-settings: "opsz" 40; }
+.app-btn { font: 500 13.5px/1 var(--body); background: transparent; border: 1px solid var(--line-2); padding: 9px 14px; }
+.app-btn:hover { background: var(--surface-2); }
+.app-btn .ic-k { display: none; }
+.ig { font-weight: 500; letter-spacing: 0; font-size: 13.5px; border-color: var(--line-2); }
+.lang { border-color: var(--line-2); }
+.lang a { font-weight: 600; letter-spacing: .02em; }
+.lang a[aria-current="true"] { background: var(--ink); color: var(--bg); }
+
+/* ---------- Кнопки: плоский розовый, тёмный текст, без блика и свечения ---------- */
+.btn { background: var(--pink); color: var(--on-pink); font-weight: 600; font-size: 16px; letter-spacing: 0; padding: 17px 26px; box-shadow: none;
+  transition: background .2s, transform .2s var(--ease), opacity .2s; }
+.btn::after { content: none !important; }
+@media (hover: hover) { .btn:hover { background: var(--pink-hi); transform: none; box-shadow: none; } }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-2); font-weight: 500; }
+@media (hover: hover) { .btn.ghost:hover { background: var(--surface-2); border-color: var(--muted); } }
+.btn.sm { padding: 12px 18px; font-size: 14.5px; }
+.btn:disabled { opacity: 1; background: var(--surface-2); color: #7d727a; }
+.btn .spin { border-color: rgba(27,4,16,.25); border-top-color: var(--on-pink); }
+.btn.ghost .spin { border-color: rgba(255,255,255,.3); border-top-color: #fff; }
+#submit.ready { animation: readyPop .7s var(--ease); }
+
+/* ---------- Герой ---------- */
+.hero { padding-block: 14px 0; }
+.eye .lid { stroke-width: 1.6; }
+.eye .lash { stroke-width: 1.1; }
+.eye .iris { stroke-width: 1.4; }
+.eye .lower { stroke-width: 1; }
+.kicker { font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--muted); gap: 0; }
+.kicker::before { content: none; }
+.kicker #masterName { color: var(--ink); }
+h1 { font: 450 clamp(46px, 13.2vw, 68px)/.96 var(--display); letter-spacing: -.012em; font-variation-settings: "opsz" 260; text-wrap: balance; }
+h1 em { font-style: normal; }
+h1 .script { font: 400 clamp(64px, 19vw, 104px)/.82 var(--script); letter-spacing: 0; margin-top: .1em; padding-bottom: .12em; color: var(--tube); transform: rotate(-3deg); transform-origin: 0 60%; word-spacing: -.1em;
+  text-shadow: 0 0 1px #fff, 0 0 7px #FF9CC8, 0 0 16px var(--pink), 0 0 38px var(--pink), 0 0 84px rgba(255,46,136,.6);
+  animation: neonOn 2.4s .55s both; }
+/* вывеска включается: пара вспышек — и горит ровно */
+@keyframes neonOn {
+  0%, 9%, 13%, 22%, 26% { color: #6B2A49; text-shadow: none; }
+  11%, 24%, 30%, 100% { color: var(--tube); text-shadow: 0 0 1px #fff, 0 0 7px #FF9CC8, 0 0 16px var(--pink), 0 0 38px var(--pink), 0 0 84px rgba(255,46,136,.6); }
+}
+.lead { font-size: 16.5px; line-height: 1.55; max-width: 44ch; }
+.lead b { font-weight: 500; }
+.hero .cta-row { gap: 10px; }
+.hero .cta-row .btn svg { display: none; }
+.next-slot { margin-top: 0; padding: 0; border: 0; background: none; backdrop-filter: none; font-size: 14.5px; gap: 10px; }
+.next-slot i { animation: none; box-shadow: 0 0 0 4px rgba(111,227,160,.16); }
+.next-slot b { font-weight: 600; }
+.facts { gap: 0; background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; margin-top: 0; overflow: visible; }
+.fact { background: none; padding: 16px 0 0; justify-items: start; text-align: left; font-size: 13px; line-height: 1.35; gap: 6px; }
+.fact + .fact { padding-left: 14px; border-left: 1px solid var(--line); }
+.fact b { font: 450 clamp(24px, 6.8vw, 32px)/1 var(--display); font-variation-settings: "opsz" 90; font-variant-numeric: lining-nums; }
+.spark { filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px rgba(190,215,255,.8)); }
+
+/* Телефон и планшет: фото сверху во всю ширину, заголовок лежит на его тёмном низу.
+   Порядок: фото → заголовок → кто и где → кнопка записи → ближайшее окошко → описание → цифры.
+   Кнопка записи видна на первом экране без прокрутки. */
+@media (max-width: 959px) {
+  .hero { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .hero-text { display: contents; }
+  .hero-photo { position: relative; grid-area: 1 / 1; top: auto; right: auto; z-index: 0; width: 100vw; max-width: none; margin-inline: calc(50% - 50vw); margin-top: -64px; aspect-ratio: auto; height: min(104vw, 56svh, 620px); opacity: 1;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24%, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 24%, #000 62%, transparent 100%);
+    -webkit-mask-composite: source-over; mask-composite: add; }
+  .look-zoom img { object-position: 60% 30%; }
+  .eye { display: none; }
+  h1 { grid-area: 2 / 1; position: relative; z-index: 2; margin-top: -78px; font-size: clamp(34px, 10.6vw, 58px); text-shadow: 0 2px 26px rgba(10,9,11,.85); }
+  h1 .script { font-size: clamp(60px, 19vw, 104px); }
+  .kicker { grid-area: 3 / 1; margin-top: 16px; position: relative; z-index: 2; text-wrap: balance; }
+  .hero .cta-row { grid-area: 4 / 1; margin-top: 20px; flex-wrap: nowrap; }
+  .hero .cta-row .btn { flex: 1 1 auto; padding: 17px 16px; white-space: nowrap; }
+  .hero .cta-row .btn.ghost { flex: 0 0 auto; padding-inline: 18px; }
+  .next-slot { grid-area: 5 / 1; margin-top: 16px; }
+  .lead { grid-area: 6 / 1; margin-top: 26px; }
+  .facts { grid-area: 7 / 1; margin-top: 26px; }
+}
+@media (max-width: 480px) { .kicker { font-size: 13.5px; } }
+@media (max-width: 380px) { h1 { font-size: clamp(30px, 10.4vw, 40px); } .hero .cta-row .btn { font-size: 15px; padding-inline: 12px; } .hero .cta-row .btn.ghost { padding-inline: 14px; } }
+/* Компьютер: текст слева, фото справа */
+@media (min-width: 960px) {
+  .hero { padding-block: 26px 0; gap: 40px; align-items: center; }
+  .hero-text { gap: 20px; }
+  .eye { width: 132px; margin: 0 0 6px -3px; }
+  h1 { font-size: clamp(64px, 6.6vw, 98px); line-height: .94; font-variation-settings: "opsz" 400; }
+  h1 .script { font-size: clamp(88px, 9.4vw, 138px); }
+  .lead { font-size: 17.5px; }
+  .hero .cta-row { margin-top: 6px; }
+  .next-slot { margin-top: 2px; }
+  .facts { margin-top: 12px; max-width: 520px; }
+}
+
+/* ---------- Заголовки секций: тонкая линия, у шагов записи — их номер ---------- */
+section.block { padding-block: 64px 0; gap: 20px; }
+.sec-head { gap: 10px; }
+.sec-head .num { display: flex; align-items: center; gap: 14px; font: 500 14px/1 var(--body); color: var(--pink-2); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.sec-head .num::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+/* подписи-словечки над заголовками («работы», «отзывы», «где»…) убраны: остаётся только линия */
+#works .sec-head .num, #reviews .sec-head .num, #place .sec-head .num, .seo-price .sec-head .num, .faq .sec-head .num { font-size: 0; gap: 0; }
+.gp-text .num { display: none; }
+.sec-head h2, .gp-text h2 { font: 450 clamp(32px, 8.6vw, 46px)/1.04 var(--display); letter-spacing: -.01em; font-variation-settings: "opsz" 140; }
+.sec-head p { font-size: 15.5px; max-width: 52ch; }
+.seo-price .sec-head h2 { font-size: clamp(26px, 6.8vw, 38px); line-height: 1.1; }
+
+/* ---------- Процедуры ---------- */
+.tabs { border-color: var(--line); background: var(--surface); }
+.tab { font-size: 14px; font-weight: 500; letter-spacing: 0; }
+.tab[aria-selected="true"] { color: var(--on-pink); font-weight: 600; }
+.tab-ind { background: var(--pink); box-shadow: none; }
+.tab-n { background: var(--on-pink); color: var(--pink-2); }
+.tab:not([aria-selected="true"]) .tab-n { background: var(--pink); color: var(--on-pink); }
+.price { gap: 0; }
+.svc { padding: 17px 14px; border-radius: 16px; border-bottom-color: transparent; }
+.svc .radio { border-color: var(--line-2); border-radius: 8px; }
+.svc .t { font-weight: 500; font-size: 16.5px; }
+.svc .sub { font-size: 13.5px; margin-top: 3px; }
+.svc .p { font: 450 19px/1 var(--display); font-variation-settings: "opsz" 60; font-variant-numeric: lining-nums tabular-nums; }
+.svc[aria-pressed="true"] { background: var(--surface-2); border-color: rgba(255,46,136,.55); box-shadow: none; }
+.svc[aria-pressed="true"] .radio svg { color: var(--on-pink); }
+.svc[aria-pressed="true"] .radio svg path { stroke: var(--on-pink); }
+.picked { border-style: solid; border-color: rgba(255,46,136,.4); background: rgba(255,46,136,.06); border-radius: var(--r); }
+.pk-head b { font: 450 22px/1.1 var(--display); }
+.pk { font-weight: 500; border-color: var(--line-2); }
+.pk button:hover, .pk button:focus-visible { background: var(--pink); color: var(--on-pink); }
+.disc { background: var(--pink); color: var(--on-pink); font-weight: 600; }
+.pre-note b { font-weight: 600; }
+
+/* ---------- Дни и время ---------- */
+.chip-p { font-weight: 500; font-size: 14.5px; border-color: var(--line-2); background: transparent; }
+.chip-p[aria-pressed="true"] { background: var(--pink); border-color: var(--pink); color: var(--on-pink); font-weight: 600; box-shadow: none; }
+.day { flex-basis: 68px; padding: 13px 0 14px; border-radius: 20px; background: transparent; border-color: var(--line-2); gap: 2px; }
+.day .wd { font-size: 12.5px; font-weight: 500; letter-spacing: 0; text-transform: lowercase; }
+.day .dn { font: 450 28px/1.05 var(--display); font-variation-settings: "opsz" 80; font-variant-numeric: lining-nums; }
+.day .mo { font-size: 12px; }
+@media (hover: hover) { .day:hover { transform: none; border-color: var(--pink); background: var(--surface); } }
+.day[aria-pressed="true"] { background: var(--pink); border-color: var(--pink); color: var(--on-pink); transform: none; box-shadow: none; }
+.day[aria-pressed="true"] .wd, .day[aria-pressed="true"] .mo, .day[aria-pressed="true"] .cnt { color: var(--on-pink); opacity: .78; }
+.day:disabled { opacity: .32; border-style: dashed; }
+.slot-group h3 { font-size: 13.5px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.slot { padding: 13px 0; border-radius: 14px; background: transparent; border-color: var(--line-2); font-weight: 500; font-size: 16px; }
+@media (hover: hover) { .slot:hover { transform: none; background: var(--surface); } }
+.slot[aria-pressed="true"] { background: var(--pink); border-color: var(--pink); color: var(--on-pink); font-weight: 600; box-shadow: none; }
+.empty { border-color: var(--line-2); border-radius: var(--r); }
+
+/* ---------- Поля ---------- */
+.field input, .field textarea { border-color: var(--line-2); border-radius: 16px; background: var(--surface); }
+.field label { font-size: 16px; top: 18px; }
+.field input:focus + label, .field input:not(:placeholder-shown) + label,
+.field textarea:focus + label, .field textarea:not(:placeholder-shown) + label { top: 8px; font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--pink-2); }
+.field input:focus, .field textarea:focus { box-shadow: 0 0 0 3px var(--pink-soft); }
+.extra { border-style: solid; border-color: var(--line); border-radius: var(--r); padding: 13px 14px; }
+.extra b { font-size: 15px; font-weight: 500; }
+.extra small { font-size: 13px; }
+.acc-form label, .acc-h, .linkbox .k, .prefs h4, .gs-or, .kaspi .kl { font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+
+/* ---------- Прайс и вопросы ---------- */
+.pl-group h3 { font: 450 24px/1.1 var(--display); letter-spacing: 0; text-transform: none; color: var(--ink); margin-bottom: 6px; }
+.pl-group .n { font-weight: 500; font-size: 16.5px; }
+.pl-group .n small { font-size: 13.5px; }
+.pl-group .pr { font: 450 19px/1 var(--display); font-variant-numeric: lining-nums tabular-nums; }
+.pl-group .tm { font-size: 13.5px; }
+.faq details { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+.faq details + details { margin-top: 0; }
+.faq summary { padding: 18px 40px 18px 0; font-weight: 500; font-size: 17px; }
+.faq summary::after { right: 6px; width: 9px; height: 9px; border-width: 1.5px; border-color: var(--pink-2); }
+.faq details p { padding: 0 0 20px; max-width: 60ch; }
+
+/* ---------- Сертификат, отзывы, адрес ---------- */
+.gpromo { border-radius: var(--r-lg); border-color: var(--line-2); }
+.gp-text p { font-size: 15.5px; }
+.cert-k, .cert-to .k { font-weight: 500; letter-spacing: .04em; text-transform: none; font-size: 12px; }
+.rv-score b { font: 450 40px/1 var(--display); font-variant-numeric: lining-nums; }
+.rv-hearts i { animation: none; text-shadow: none; }
+.rv-meta { font-size: 12.5px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.rv-tag { letter-spacing: 0; }
+.rv { font-size: 15px; }
+.rv-hint { letter-spacing: 0; font-size: 13px; }
+.place { border-radius: var(--r-lg); border-color: var(--line-2); background: var(--surface); }
+.place h3 { font: 450 28px/1.1 var(--display); font-variant-numeric: lining-nums; }
+.place p { font-size: 15px; }
+.pin::before, .pin::after { animation: none; opacity: .35; transform: scale(1.12); }
+.pin::after { transform: scale(1.36); opacity: .16; }
+.pin span { color: var(--on-pink); box-shadow: none; }
+.place .btn { padding: 14px 20px; font-size: 15px; }
+footer { font-size: 14px; gap: 12px; }
+footer .sig { font-size: 38px; }
+
+/* ряды кнопок на телефоне: главная — во всю ширину, две второстепенные — поровну под ней */
+@media (max-width: 600px) {
+  .rv-2gis .btn, .place .cta-row .btn { flex: 1 1 100%; padding-inline: 14px; white-space: nowrap; }
+  .rv-2gis .btn.ghost, .place .cta-row .btn.ghost { flex: 1 1 0; min-width: 0; font-size: 14.5px; }
+  .works-ig { justify-self: stretch; }
+}
+
+/* ---------- Нижняя плашка и окна ---------- */
+.bar-in { border-color: var(--line-2); border-radius: var(--r-lg); background: rgba(24, 21, 26, .9); }
+.sum b { font-weight: 500; }
+.sum span { font-size: 13.5px; }
+.bar .btn { padding: 14px 22px; }
+#bar .bar-title { font: 450 26px/1 var(--display); }
+.fm.me, .faq-in button, .pk-vid .pv-ic { background: var(--pink); color: var(--on-pink); }
+.ios-sheet h3, .done h2 { font-family: var(--display); font-weight: 450; }
+/* «вы записаны!» — та же вывеска загорается ещё раз */
+.done h2 .script { color: var(--tube); padding-bottom: .1em; text-shadow: 0 0 1px #fff, 0 0 7px #FF9CC8, 0 0 16px var(--pink), 0 0 38px var(--pink), 0 0 84px rgba(255,46,136,.6); animation: neonOn 2.4s .3s both; }
+
+/* ---------- Спокойный режим: без анимаций, если так настроено в телефоне ---------- */
+@media (prefers-reduced-motion: reduce) {
+  h1 .script, .done h2 .script, .eye .draw, .eye .pop, .eye .look, .eye-blink, .look-zoom, .spark, .btn, .cert, .gp-card .cert, .cert-in::before, .next-slot, .skeleton, .be-blink { animation: none !important; transition: none !important; }
+  .eye .draw { stroke-dashoffset: 0; } .eye .pop { opacity: 1; } .spark { opacity: 0; }
+  html { scroll-behavior: auto; }
+}
 </style>
 </head>
 <body>
