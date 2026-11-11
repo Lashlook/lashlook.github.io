@@ -503,7 +503,9 @@ footer .sig { font: 400 34px/1 var(--script); color: var(--pink); }
 .garland i:nth-child(n+15) { display: none; } @media (min-width: 700px) { .garland i:nth-child(n+15) { display: block; } }
 @keyframes bulb { from { opacity: .35; box-shadow: 0 0 2px 0 var(--c); } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .garland i { animation: none; opacity: .85; } }
-.faq-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 11; display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-radius: 999px; border: 1px solid rgba(255,46,136,.45); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px -10px rgba(0,0,0,.7); transition: bottom .4s var(--ease); }
+.faq-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 11; display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-radius: 999px; border: 1px solid rgba(255,46,136,.45); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 30px -10px rgba(0,0,0,.7); transition: bottom .4s var(--ease), opacity .25s, transform .25s; }
+/* кнопка прячется, пока лежит поверх текста первого экрана (кнопки записи, «ближайшее окошко», описание) */
+.faq-fab.duck { opacity: 0; transform: translateY(10px); pointer-events: none; }
 @media (max-width: 1179px) { body:has(.bar.show:not(.kb)) .faq-fab { bottom: calc(var(--barh, 96px) + 10px); } }
 @media (max-width: 520px) { .faq-fab span { display: none; } .faq-fab { padding: 12px 14px; } }
 .faq-pan { position: fixed; right: 12px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 12; width: min(380px, calc(100vw - 24px)); max-height: min(560px, calc(100dvh - 110px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: 0 20px 60px -20px rgba(0,0,0,.8); overflow: hidden; }
@@ -3277,6 +3279,11 @@ function faqInit() {
     <div class="faq-chips" id="faqChips">${FAQ.map((f, i) => f.chip ? `<button type="button" data-fq="${i}">${esc(Q(f))}</button>` : '').join('')}</div>
     <form class="faq-in" id="faqForm"><input id="faqQ" maxlength="200" placeholder="Ваш вопрос…" autocomplete="off" aria-label="Ваш вопрос"><button type="submit" aria-label="Отправить">➤</button></form>`;
   document.body.append(fab, pan);
+  // не закрывать собой текст первого экрана: пока кнопка лежит поверх него — она скрыта, при прокрутке появляется
+  const duck = () => { const f = fab.getBoundingClientRect();
+    fab.classList.toggle('duck', [...document.querySelectorAll('.hero .cta-row, .hero .next-slot, .hero .lead, .hero .facts')].some(e => { const r = e.getBoundingClientRect(); return r.width && r.left < f.right && r.right > f.left && r.top < f.bottom + 6 && r.bottom > f.top - 6; })); };
+  let duckT = 0; const duckSoon = () => { if (!duckT) duckT = requestAnimationFrame(() => { duckT = 0; duck(); }); };
+  addEventListener('scroll', duckSoon, { passive: true }); addEventListener('resize', duckSoon); duck(); setTimeout(duck, 1500);
   const log = $('faqLog');
   const say = (html, who) => { const m = document.createElement('div'); m.className = 'fm ' + who; m.innerHTML = html; log.append(m); log.scrollTop = log.scrollHeight; };
   // ---- понимание вопроса: точные слова + опечатки и другие окончания («скока стоет», «ресници», «запистаься») ----
