@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>browlash.look — журнал записей</title>
 <meta name="robots" content="noindex">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="admin.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -379,6 +380,12 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(6px); }
 .panel { padding: 20px; border-radius: var(--r); border: 1px solid var(--line); background: rgba(20,18,22,.78); display: grid; gap: 16px; backdrop-filter: blur(10px); }
 .panel h3 { margin: 0; font: 500 22px/1.2 var(--display); }
 .panel h3 small { display: block; font: 500 12.5px/1.5 var(--body); color: var(--muted); }
+.sec-warn { padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,138,128,.45); background: rgba(255,138,128,.1); color: var(--err); font-size: 14px; font-weight: 600; line-height: 1.45; }
+.sess { display: grid; gap: 8px; }
+.sess-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); font-size: 14px; }
+.sess-row b { font-weight: 600; }
+.sess-row small { color: var(--muted); font-size: 12.5px; flex: 1; min-width: 150px; }
+.sess-row .cur { color: var(--accent-2); font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
 .hbars { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
@@ -525,7 +532,7 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 </head>
 <body>
 <div class="atmo" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="grain"></div></div>
-<div class="wrap">
+<div class="wrap" role="main">
   <div class="login-wrap" id="loginWrap">
   <form id="login">
     <div class="login-photo"><picture><source srcset="look.webp" type="image/webp"><img alt="" src="look.jpg" decoding="async"></picture><p class="q">Ресницы, от которых<br>сложно оторвать взгляд</p></div>
@@ -699,6 +706,29 @@ dialog { overflow: auto; overscroll-behavior: contain; }
         <div class="svc-ed" id="svcEd"></div>
         <button class="btn ghost" type="button" id="svcAdd">+ Добавить услугу</button>
       </div>
+      <div class="panel" id="secPanel">
+        <h3>Безопасность<small>Пароль от журнала и устройства, на которых он открыт. Сменили пароль — остальные устройства попросят войти заново</small></h3>
+        <div class="sec-warn" id="secWarn" hidden role="alert">⚠️ Пароль слишком простой — такой можно подобрать перебором. Поставьте новый: минимум 10 символов, не только цифры.</div>
+        <div class="row2">
+          <label for="pwCur">Текущий пароль<input id="pwCur" type="password" autocomplete="current-password" maxlength="200"></label>
+          <label for="pwNew">Новый пароль (от 10 символов)<input id="pwNew" type="password" autocomplete="new-password" minlength="10" maxlength="100"></label>
+        </div>
+        <div class="row2">
+          <label for="pwNew2">Новый пароль ещё раз<input id="pwNew2" type="password" autocomplete="new-password" maxlength="100"></label>
+          <div style="display:flex;align-items:end;gap:10px"><button class="btn ghost" type="button" id="pwShow" aria-pressed="false">👁 Показать</button><button class="btn shine" type="button" id="pwSave" style="flex:1">Сменить пароль</button></div>
+        </div>
+        <div class="err" id="pwErr" role="alert"></div>
+        <div class="chips-hint">Устройства с доступом</div>
+        <div class="sess" id="sessList"></div>
+        <button class="btn ghost" type="button" id="sessAll">🚪 Выйти на остальных устройствах</button>
+      </div>
+      <div class="panel">
+        <h3>Выгрузка в Excel<small>Файл со всеми клиентками или записями — открывается в Excel и Google Таблицах. Храните его аккуратно: в нём телефоны</small></h3>
+        <div class="row2">
+          <button class="btn ghost" type="button" data-export="clients">📥 Клиентки</button>
+          <button class="btn ghost" type="button" data-export="bookings">📥 Все записи</button>
+        </div>
+      </div>
       <div class="panel">
         <h3>Сервер<small>Если что-то зависло или после обновлений — перезапуск займёт секунд 10, записи не пропадут</small></h3>
         <button class="btn ghost" type="button" id="restartBtn">🔄 Перезапустить сервер</button>
@@ -711,10 +741,10 @@ dialog { overflow: auto; overscroll-behavior: contain; }
 
     <div class="view" id="v-stats" hidden>
       <div class="period">
-        <div class="seg" id="perSeg">
+        <div class="seg" id="perSeg" role="tablist" aria-label="Период">
           <span class="ind" id="perInd"></span>
-          <button type="button" data-per="week" aria-selected="true">Неделя</button>
-          <button type="button" data-per="month" aria-selected="false">Месяц</button>
+          <button type="button" role="tab" data-per="week" aria-selected="true">Неделя</button>
+          <button type="button" role="tab" data-per="month" aria-selected="false">Месяц</button>
         </div>
         <button class="icon-btn" id="sPrev" type="button" aria-label="Раньше">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -1018,7 +1048,7 @@ $('tabs').addEventListener('click', e => {
   if (view === 'gifts') loadGifts();
   if (view === 'stats') loadStats();
   if (view === 'feed') loadFeed(true);
-  if (view === 'settings') loadSettings();
+  if (view === 'settings') { loadSettings(); loadSecurity(); }
   $('tabs').querySelector('[aria-selected="true"]').scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   requestAnimationFrame(() => moveInd($('perSeg'), $('perInd')));
 });
@@ -1780,6 +1810,60 @@ $('hSave').onclick = async () => {
   } catch (err) { $('hErr').textContent = err.message; }
 };
 
+// ---------- Безопасность: пароль и устройства ----------
+const whenTs = t => { if (!t) return '—'; const d = new Date(t), k = ymd(d), hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return k === ymd(new Date()) ? `сегодня, ${hm}` : k === ymd(addDays(new Date(), -1)) ? `вчера, ${hm}` : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); };
+async function loadSecurity() {
+  try {
+    const s = await api('/api/admin/security');
+    $('secWarn').hidden = !s.weak;
+    $('sessList').innerHTML = s.sessions.map(x => `<div class="sess-row"><b>${esc(x.device)}</b>${x.current ? '<span class="cur">это устройство</span>' : ''}
+      <small>${x.ip ? 'адрес ' + esc(x.ip) + ' · ' : ''}вход: ${esc(whenTs(x.created))} · последняя активность: ${esc(whenTs(x.seen))}</small>
+      ${x.current ? '' : `<button class="mini" type="button" data-sess="${esc(x.id)}">Закрыть доступ</button>`}</div>`).join('');
+    $('sessAll').hidden = s.sessions.length < 2;
+  } catch (err) { $('sessList').textContent = err.message; }
+}
+$('sessList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-sess]'); if (!b) return;
+  try { await api('/api/admin/sessions/revoke', { method: 'POST', body: JSON.stringify({ id: b.dataset.sess }) }); toast('Доступ закрыт'); loadSecurity(); } catch (err) { toast(err.message, 'bad'); }
+});
+$('sessAll').onclick = async () => {
+  const b = $('sessAll');
+  if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Точно? Нажмите ещё раз'; b._t = setTimeout(() => { b.dataset.sure = ''; b.textContent = '🚪 Выйти на остальных устройствах'; }, 4000); return; }
+  clearTimeout(b._t); b.dataset.sure = ''; b.textContent = '🚪 Выйти на остальных устройствах';
+  try { const r = await api('/api/admin/sessions/revoke', { method: 'POST', body: JSON.stringify({ all: true }) }); toast(r.removed ? `Закрыто устройств: ${r.removed}` : 'Других устройств нет'); loadSecurity(); } catch (err) { toast(err.message, 'bad'); }
+};
+$('pwShow').onclick = () => { const on = $('pwShow').getAttribute('aria-pressed') !== 'true'; $('pwShow').setAttribute('aria-pressed', on); $('pwShow').textContent = on ? '🙈 Скрыть' : '👁 Показать';
+  ['pwCur', 'pwNew', 'pwNew2'].forEach(id => { $(id).type = on ? 'text' : 'password'; }); };
+$('pwSave').onclick = async () => {
+  const cur = $('pwCur').value, nw = $('pwNew').value; $('pwErr').textContent = '';
+  if (!cur) { $('pwErr').textContent = 'Введите текущий пароль'; return $('pwCur').focus(); }
+  if (nw.length < 10) { $('pwErr').textContent = 'Новый пароль — минимум 10 символов'; return $('pwNew').focus(); }
+  if (nw !== $('pwNew2').value) { $('pwErr').textContent = 'Новые пароли не совпадают — введите ещё раз'; return $('pwNew2').focus(); }
+  $('pwSave').disabled = true;
+  try {
+    await api('/api/admin/password', { method: 'POST', body: JSON.stringify({ current: cur, next: nw }) });
+    ['pwCur', 'pwNew', 'pwNew2'].forEach(id => { $(id).value = ''; });
+    toast('Пароль изменён ✓ Остальные устройства войдут заново'); loadSecurity();
+  } catch (err) { $('pwErr').textContent = err.message; }
+  $('pwSave').disabled = false;
+};
+// ---------- Выгрузка в Excel ----------
+document.querySelectorAll('[data-export]').forEach(b => b.onclick = async () => {
+  const what = b.dataset.export, was = b.textContent; b.disabled = true; b.textContent = 'Готовлю файл…';
+  try {
+    await apiReady;
+    const go = () => fetch(API + '/api/admin/export?what=' + what, { headers: { Authorization: 'Bearer ' + token } });
+    let r = await go().catch(() => null);
+    if ((!r || DEAD.includes(r.status)) && await refreshApi()) r = await go();
+    if (!r || !r.ok) throw new Error();
+    const a = document.createElement('a'), url = URL.createObjectURL(await r.blob());
+    a.href = url; a.download = `browlash-${what === 'clients' ? 'klientki' : 'zapisi'}-${ymd(new Date())}.csv`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000); toast('Файл скачан');
+  } catch { toast('Не получилось выгрузить — проверьте связь', 'bad'); }
+  b.disabled = false; b.textContent = was;
+});
+
 // ---------- Перезапуск сервера ----------
 $('restartBtn').onclick = async () => {
   const b = $('restartBtn');
@@ -1816,6 +1900,9 @@ $('restartBtn').onclick = async () => {
 };
 
 // ---------- Лента бота ----------
+// Текст ленты приходит с оформлением Telegram. Пропускаем только безобидные теги, любой другой «<» становится обычным символом —
+// даже если в сообщение попадёт чужой текст, он не превратится в код на странице.
+const tgHtml = t => String(t ?? '').replace(/<(?!\/?(?:b|i|u|s|code|pre)>)/g, '&lt;').replace(/\n/g, '<br>');
 let feedLast = Number(store.get('feedSeen') || 0), feedMax = 0, feedTimer = null;
 const FEED_ICON = t => /Чек по заявке/.test(t) ? '🧾' : /Заявка на сертификат|сертификат|Сертификат/.test(t) ? '🎁' : /Новая запись/.test(t) ? '🆕' : /отменил|удалена|отменена/.test(t) ? '❌' : /подтвердила/.test(t) ? '✅' : /перенесла/.test(t) ? '🔁' : /отзыв/i.test(t) ? '💌' : /коррекц/i.test(t) ? '✨' : /ожидани|Освободил|Открылось/.test(t) ? '⏳' : /Напомни/.test(t) ? '🔔' : /не подтвердила/.test(t) ? '⏰' : /Отметь/.test(t) ? '📝' : '💬';
 function feedTime(ts) {
@@ -1836,7 +1923,7 @@ async function loadFeed(seen) {
         const btns = (m.markup?.inline_keyboard || []).flat();
         return `<article class="msg-card${m.id > feedLast ? ' fresh' : ''}" style="--i:${Math.min(i, 12)}">
           <div class="mc-top"><span class="mc-ic">${FEED_ICON(m.text)}</span><span class="mc-time">${feedTime(m.ts)}</span><button class="mc-del" type="button" data-fdel="${m.id}" title="Убрать из ленты" aria-label="Убрать из ленты">${ICON.x}</button></div>
-          <div class="mc-text">${m.text.replace(/\n/g, '<br>')}</div>
+          <div class="mc-text">${tgHtml(m.text)}</div>
           ${btns.length ? `<div class="mc-btns">${btns.map(b => b.url
             ? `<a class="mini" href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.text)}</a>`
             : `<button class="mini" type="button" data-cb="${esc(b.callback_data)}">${esc(b.text)}</button>`).join('')}</div>` : ''}
@@ -2016,6 +2103,7 @@ $('login').addEventListener('submit', async e => {
   try {
     const j = await api('/api/login', { method: 'POST', body: JSON.stringify({ password: $('pw').value }) });
     token = j.token; store.set('lashlookToken', token); $('pw').value = ''; showPanel();
+    if (j.weak) setTimeout(() => toast('⚠️ Пароль слишком простой — смените его: Настройки → Безопасность', 'bad'), 1500);
   } catch (err) { $('loginErr').textContent = err instanceof TypeError ? 'Нет связи с сервером — компьютер мастера выключен?' : err.message; }
 });
 $('logout').onclick = () => logout(true);
